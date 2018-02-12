@@ -1,0 +1,38 @@
+# canned command sequence for binary data
+#---------------------------------------------------------------------------------
+define bin2o
+	bin2s $< | $(AS) -o $(@)
+	echo "extern const u8" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(<F) | tr . _)`.h
+	echo "extern const u8" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(<F) | tr . _)`.h
+	echo "extern const u32" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(<F) | tr . _)`.h
+endef
+
+test : pc_main/main.cpp pc_main/pc_launch.c \
+	common/menu.c common/font.c common/language.c common/launch.c \
+	common/menu-entry.c common/menu-list.c common/text.c \
+	common/nanojpeg.c common/ui.c \
+	build_pc/tahoma24.o build_pc/tahoma12.o build_pc/switchicon_questionmark.bin.o build_pc/folder_icon.bin.o
+	gcc -Wall -O2 -g0 $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -I. -Ibuild_pc -o $@
+
+build_pc/tahoma12.o	:	data/tahoma12.nxfnt
+	mkdir -p $(dir $@)
+	@echo $(notdir $<)
+	@$(bin2o)
+
+build_pc/tahoma24.o	:	data/tahoma24.nxfnt
+	mkdir -p $(dir $@)
+	@echo $(notdir $<)
+	@$(bin2o)
+
+build_pc/switchicon_questionmark.bin.o	:	data/switchicon_questionmark.bin
+	mkdir -p $(dir $@)
+	@echo $(notdir $<)
+	@$(bin2o)
+
+build_pc/folder_icon.bin.o	:	data/folder_icon.bin
+	mkdir -p $(dir $@)
+	@echo $(notdir $<)
+	@$(bin2o)
+
+clean:
+	rm -rf build_pc/ test
