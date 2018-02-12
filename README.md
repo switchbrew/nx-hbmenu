@@ -1,3 +1,6 @@
+#### Download
+The latest release is available from the [releases](https://github.com/switchbrew/nx-hbmenu/releases/latest) page.
+
 #### Building
 Build with Makefile.nx directly or just run ```make```.
 
