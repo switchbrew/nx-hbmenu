@@ -59,11 +59,12 @@ static inline color_t MakeColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 
 #ifdef SWITCH
 extern uint8_t* g_framebuf;
+extern u32 g_framebuf_width;
 static inline void DrawPixel(uint32_t x, uint32_t y, color_t clr)
 {
     if (x >= 1280 || y >= 720)
         return;
-    u32 off = 4*gfxGetFramebufferDisplayOffset(x, y);
+    u32 off = (y * g_framebuf_width + x)*4;
     g_framebuf[off] = BlendColor(g_framebuf[off], clr.r, clr.a); off++;
     g_framebuf[off] = BlendColor(g_framebuf[off], clr.g, clr.a); off++;
     g_framebuf[off] = BlendColor(g_framebuf[off], clr.b, clr.a); off++;
@@ -73,7 +74,7 @@ static inline void DrawPixelRaw(uint32_t x, uint32_t y, color_t clr)
 {
     if (x >= 1280 || y >= 720)
         return;
-    u32 off = 4*gfxGetFramebufferDisplayOffset(x, y);
+    u32 off = (y * g_framebuf_width + x)*4;
     g_framebuf[off] = clr.r; off++;
     g_framebuf[off] = clr.g; off++;
     g_framebuf[off] = clr.b; off++;

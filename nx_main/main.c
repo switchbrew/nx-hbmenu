@@ -5,6 +5,7 @@
 #include "../common/common.h"
 
 uint8_t* g_framebuf;
+u32 g_framebuf_width;
 
 int main(int argc, char **argv)
 {
@@ -21,7 +22,7 @@ int main(int argc, char **argv)
         //Scan all the inputs. This should be done once for each frame
         hidScanInput();
 
-        g_framebuf = gfxGetFramebuffer(NULL, NULL);
+        g_framebuf = gfxGetFramebuffer(&g_framebuf_width, NULL);
         memset(g_framebuf, 237, gfxGetFramebufferSize());
         if (!uiUpdate()) break;
         menuLoop();
