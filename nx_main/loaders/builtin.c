@@ -17,7 +17,7 @@ static void launchFile(const char* path, argData_s* args)
     /*if (strncmp(path, "sdmc:/",6) == 0)
         path += 5;*/
     memcpy(argBuf, args->buf, sizeof(args->buf));
-    Result rc = envSetNextLoad(path, (char*)argBuf);
+    Result rc = envSetNextLoad(path, (char*)&argBuf[1]);
     if(R_FAILED(rc)) fatalSimple(rc);//TODO: How should failing be handled?
     uiExitLoop();
 }
