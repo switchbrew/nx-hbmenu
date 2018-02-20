@@ -37,6 +37,7 @@ typedef union {
 #include "launch.h"
 #include "nro.h"
 #include "nanojpeg.h"
+#include "math.h"
 
 void menuStartup();
 void menuLoop();
@@ -80,6 +81,11 @@ static inline void DrawPixelRaw(uint32_t x, uint32_t y, color_t clr)
     g_framebuf[off] = clr.b; off++;
     g_framebuf[off] = 0xff;
 }
+static inline color_t FetchPixelColor(uint32_t x, uint32_t y)
+{
+    u32 off = (y * g_framebuf_width + x)*4;
+    return MakeColor(g_framebuf[off], g_framebuf[++off], g_framebuf[++off], 255);
+}
 #else
 extern color_t pixels[720][1280];
 static inline void DrawPixel(uint32_t x, uint32_t y, color_t clr)
@@ -99,6 +105,10 @@ static inline void DrawPixelRaw(uint32_t x, uint32_t y, color_t clr)
     pixels[y][x].g = clr.g;
     pixels[y][x].b = clr.b;
     pixels[y][x].a = 0xff;
+}
+static inline color_t FetchPixelColor(uint32_t x, uint32_t y)
+{
+    return pixels[y][x];
 }
 #endif
 
