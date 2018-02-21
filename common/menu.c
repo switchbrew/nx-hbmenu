@@ -34,7 +34,7 @@ static void drawEntry(menuEntry_s* me, int n, int is_active) {
     int x, y;
     int start_y = 720 - 100 - 140;//*(n % 2);
     int end_y = start_y + 140 + 32;
-    int start_x = 64 + (140 + 40) * n;//(n / 2);
+    int start_x = 32 + (140 + 40) * n;//(n / 2);
     int end_x = start_x + 140;
     const uint8_t *smallimg = NULL;
     const uint8_t *largeimg = NULL;
@@ -240,10 +240,10 @@ void menuLoop() {
     {
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
-            if ((i < menu->curEntry && menu->curEntry-i < 4) || i>=menu->curEntry) {
+            if ((i < menu->curEntry && menu->curEntry-i < 7) || i>=menu->curEntry) {
                 drawEntry(me, cnt, i==menu->curEntry);
                 cnt++;
-                if (cnt==4) break;
+                if (cnt==7) break;
             }
         }
     }
