@@ -17,6 +17,11 @@ void menuEntryFree(menuEntry_s* me) {
         me->icon_gfx = NULL;
     }
 
+    if (me->icon_gfx_small) {
+        free(me->icon_gfx_small);
+        me->icon_gfx_small = NULL;
+    }
+
     if (me->nacp) {
         free(me->nacp);
         me->nacp = NULL;
@@ -301,6 +306,78 @@ void menuEntryParseIcon(menuEntry_s* me) {
     memcpy(me->icon_gfx, imageptr, imagesize);
 
     njDone();
+
+    me->icon_gfx_small = downscaleIcon(me->icon_gfx);
+}
+
+uint8_t *downscaleIcon(const uint8_t *image) {
+    uint8_t *out = (uint8_t*)malloc(140*140*3);
+
+    if (out == NULL) {
+        return NULL;
+    }
+
+    int tmpx, tmpy;
+    int pos;
+    float sourceX, sourceY;
+    int destWidth = 140, destHeight = 140;
+    float xScale = 256.0 / (float)destWidth;
+    float yScale = 256.0 / (float)destHeight;
+    int pixelX, pixelY;
+    uint8_t r1, r2, r3, r4;
+    uint8_t g1, g2, g3, g4;
+    uint8_t b1, b2, b3, b4;
+    float fx, fy, fx1, fy1;
+    int w1, w2, w3, w4;
+
+    for (tmpx=0; tmpx<destWidth; tmpx++) {
+        for (tmpy=0; tmpy<destHeight; tmpy++) {
+            sourceX = tmpx * xScale;
+            sourceY = tmpy * yScale;
+            pixelX = (int)sourceX;
+            pixelY = (int)sourceY;
+
+            // get colours from four surrounding pixels
+            pos = ((pixelY + 0) * 256 + pixelX + 0) * 3;
+            r1 = image[pos+0];
+            g1 = image[pos+1];
+            b1 = image[pos+2];
+
+            pos = ((pixelY + 0) * 256 + pixelX + 1) * 3;
+            r2 = image[pos+0];
+            g2 = image[pos+1];
+            b2 = image[pos+2];
+
+            pos = ((pixelY + 1) * 256 + pixelX + 0) * 3;
+            r3 = image[pos+0];
+            g3 = image[pos+1];
+            b3 = image[pos+2];
+
+            pos = ((pixelY + 1) * 256 + pixelX + 1) * 3;
+            r4 = image[pos+0];
+            g4 = image[pos+1];
+            b4 = image[pos+2];
+
+            // determine weights
+            fx = sourceX - pixelX;
+            fy = sourceY - pixelY;
+            fx1 = 1.0f - fx;
+            fy1 = 1.0f - fy;
+
+            w1 = (int)(fx1*fy1*256.0);
+            w2 = (int)(fx*fy1*256.0);
+            w3 = (int)(fx1*fy*256.0);
+            w4 = (int)(fx*fy*256.0);
+ 
+            // set output pixels
+            pos = ((tmpy*destWidth) + tmpx) * 3;
+            out[pos+0] = (uint8_t)((r1 * w1 + r2 * w2 + r3 * w3 + r4 * w4) >> 8);
+            out[pos+1] = (uint8_t)((g1 * w1 + g2 * w2 + g3 * w3 + g4 * w4) >> 8);
+            out[pos+2] = (uint8_t)((b1 * w1 + b2 * w2 + b3 * w3 + b4 * w4) >> 8);
+        }
+    }
+
+    return out;
 }
 
 void menuEntryParseNacp(menuEntry_s* me) {
