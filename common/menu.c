@@ -122,22 +122,22 @@ static void drawEntry(menuEntry_s* me, int n, int is_active) {
     }
 
     if (is_active && largeimg) {
-        drawImage(740, 100, 256, 256, largeimg);
+        drawImage(220, 100, 256, 256, largeimg);
     }
 
     DrawTextTruncate(tahoma12, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 256 - 32, "...");
 
     if (is_active) {
-        start_x = 200;
-        start_y = 155;
+        start_x = 220;
+        start_y = 135;
 
-        DrawText(tahoma24, start_x, start_y, MakeColor(255, 255, 255, 255), me->name);
+        DrawText(tahoma24, start_x + 256 + 64, start_y, MakeColor(255, 255, 255, 255), me->name);
         memset(tmpstr, 0, sizeof(tmpstr));
         snprintf(tmpstr, sizeof(tmpstr)-1, "Author: %s", me->author);
-        DrawText(tahoma12, start_x, start_y + 28 + 30, MakeColor(255, 255, 255, 255), tmpstr);
+        DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30, MakeColor(255, 255, 255, 255), tmpstr);
         memset(tmpstr, 0, sizeof(tmpstr));
         snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
-        DrawText(tahoma12, start_x, start_y + 28 + 30 + 18 + 6, MakeColor(255, 255, 255, 255), tmpstr);
+        DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, MakeColor(255, 255, 255, 255), tmpstr);
     }
 }
 
@@ -165,7 +165,8 @@ double timer;
 
 void drawWave(float timer, color_t color, float height, float phase, float speed) {
     int x, y;
-    double wave_top_y, alpha;
+    float wave_top_y, alpha;
+    float dark_mult, dark_sub = 75;
     color_t existing_color, new_color;
     
     height = 720 - height;
@@ -174,14 +175,15 @@ void drawWave(float timer, color_t color, float height, float phase, float speed
         wave_top_y = approxSin(x*speed/1280.0+timer+phase) * 10.0 + height;
 
         for (y=wave_top_y; y<720; y++) {
-            alpha = clamp(y-wave_top_y, 0.0, 1.0) * 0.3;
+            alpha = y-wave_top_y;
             existing_color = FetchPixelColor(x, y);
 
-            if (ENABLE_WAVE_BLENDING || alpha < 0.3) {
-                new_color = waveBlendAdd(existing_color, color, alpha);
+            if (ENABLE_WAVE_BLENDING || alpha < 1.0) {
+                new_color = waveBlendAdd(existing_color, color, clamp(alpha, 0.0, 1.0) * 0.3);
             }
             else {
-                new_color = color;
+                dark_mult = clamp((alpha - 50) / height, 0.0, 1.0);
+                new_color = MakeColor(color.r - dark_sub * dark_mult, color.g - dark_sub * dark_mult, color.b - dark_sub * dark_mult, 255);
             }
 
             DrawPixelRaw(x, y, new_color);
