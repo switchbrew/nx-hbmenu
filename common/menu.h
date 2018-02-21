@@ -45,6 +45,7 @@ struct menuEntry_s_tag
     uint8_t *icon;
     size_t icon_size;
     uint8_t *icon_gfx;
+    uint8_t *icon_gfx_small;
 
     NacpStruct *nacp;
 };
@@ -54,6 +55,7 @@ void menuEntryFree(menuEntry_s* me);
 bool fileExists(const char* path);
 bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut);
 void menuEntryParseIcon(menuEntry_s* me);
+uint8_t *downscaleIcon(const uint8_t *image);
 void menuEntryParseNacp(menuEntry_s* me);
 
 menu_s* menuGetCurrent(void);

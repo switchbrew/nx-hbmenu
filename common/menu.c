@@ -26,21 +26,23 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image)
     }
 }
 
+uint8_t *folder_icon_small;
+uint8_t *switchicon_questionmark_small;
+
 static void drawEntry(menuEntry_s* me, int n, int is_active) {
     int x, y;
-    int start_y = 96 + 108 - 32;//*(n % 2);
-    int end_y = start_y + 288;
-    int start_x = 64 + (256+16)*n;//(n / 2);
-    int end_x = /*1280 - 64*/start_x + 256;
-    uint8_t *imageptr = NULL;
+    int start_y = 720 - 100 - 140;//*(n % 2);
+    int end_y = start_y + 140 + 32;
+    int start_x = 64 + (140 + 40) * n;//(n / 2);
+    int end_x = start_x + 140;
+    const uint8_t *smallimg = NULL;
+    const uint8_t *largeimg = NULL;
     char tmpstr[1024];
 
-    color_t border_color0 = MakeColor(255, 255, 255, 255);
-    color_t border_color1 = MakeColor(255, 255, 255, 255);
+    color_t border_color = MakeColor(255, 255, 255, 255);
 
     if (is_active) {
-        border_color0 = MakeColor(171, 224, 245, 255);
-        border_color1 = MakeColor(189, 228, 242, 255);
+        border_color = MakeColor(73, 103, 169, 255);
     }
 
     //{
@@ -53,23 +55,21 @@ static void drawEntry(menuEntry_s* me, int n, int is_active) {
             }
 
             //DrawPixelRaw(x, start_y  , border_color0);
-            DrawPixelRaw(x, end_y    , border_color0);
-            DrawPixelRaw(x, start_y-1, border_color0);
-            DrawPixelRaw(x, end_y  +1, border_color0);
-            DrawPixelRaw(x, start_y-2, border_color0);
-            DrawPixelRaw(x, end_y  +2, border_color0);
+            DrawPixelRaw(x, end_y    , border_color);
+            DrawPixelRaw(x, start_y-1, border_color);
+            DrawPixelRaw(x, end_y  +1, border_color);
+            DrawPixelRaw(x, start_y-2, border_color);
+            DrawPixelRaw(x, end_y  +2, border_color);
+            DrawPixelRaw(x, start_y-3, border_color);
+            DrawPixelRaw(x, end_y  +3, border_color);
             
             if (is_active) {
-                DrawPixelRaw(x, start_y-3, border_color0);
-                DrawPixelRaw(x, end_y  +3, border_color0);
-                DrawPixelRaw(x, start_y-4, border_color0);
-                DrawPixelRaw(x, end_y  +4, border_color0);
-                DrawPixelRaw(x, start_y-5, border_color1);
-                DrawPixelRaw(x, end_y  +5, border_color1);
-            }
-            else {
-                DrawPixelRaw(x, start_y-3, border_color1);
-                DrawPixelRaw(x, end_y  +3, border_color1);
+                DrawPixelRaw(x, start_y-3, border_color);
+                DrawPixelRaw(x, end_y  +3, border_color);
+                DrawPixelRaw(x, start_y-4, border_color);
+                DrawPixelRaw(x, end_y  +4, border_color);
+                DrawPixelRaw(x, start_y-5, border_color);
+                DrawPixelRaw(x, end_y  +5, border_color);
             }
         }
 
@@ -81,23 +81,19 @@ static void drawEntry(menuEntry_s* me, int n, int is_active) {
                     break;
             }
             
-            DrawPixelRaw(start_x  , y, border_color0);
-            DrawPixelRaw(end_x    , y, border_color0);
-            DrawPixelRaw(start_x-1, y, border_color0);
-            DrawPixelRaw(end_x  +1, y, border_color0);
-            DrawPixelRaw(start_x-2, y, border_color0);
-            DrawPixelRaw(end_x  +2, y, border_color0);
+            DrawPixelRaw(start_x  , y, border_color);
+            DrawPixelRaw(end_x    , y, border_color);
+            DrawPixelRaw(start_x-1, y, border_color);
+            DrawPixelRaw(end_x  +1, y, border_color);
+            DrawPixelRaw(start_x-2, y, border_color);
+            DrawPixelRaw(end_x  +2, y, border_color);
+            DrawPixelRaw(start_x-3, y, border_color);
+            DrawPixelRaw(end_x  +3, y, border_color);
 
             if (is_active) {
-                DrawPixelRaw(start_x-3, y, border_color0);
-                DrawPixelRaw(end_x  +3, y, border_color0);
-                DrawPixelRaw(start_x-4, y, border_color0);
-                DrawPixelRaw(end_x  +4, y, border_color0);
-                DrawPixelRaw(start_x-5, y, border_color1);
-            }
-            else {
-                DrawPixelRaw(start_x-3, y, border_color1);
-                //DrawPixelRaw(end_x  +3, y, border_color1);
+                DrawPixelRaw(start_x-4, y, border_color);
+                DrawPixelRaw(end_x  +4, y, border_color);
+                DrawPixelRaw(start_x-5, y, border_color);
             }
         }
     //}
@@ -108,24 +104,40 @@ static void drawEntry(menuEntry_s* me, int n, int is_active) {
         }
     }
 
-    if (me->icon_gfx)
-        imageptr = me->icon_gfx;
-    else if (me->type == ENTRY_TYPE_FOLDER)
-        imageptr = (uint8_t*)folder_icon_bin;
-    else
-        imageptr = (uint8_t*)switchicon_questionmark_bin;
+    if (me->icon_gfx_small && me->icon_gfx) {
+        smallimg = me->icon_gfx_small;
+        largeimg = me->icon_gfx;
+    }
+    else if (me->type == ENTRY_TYPE_FOLDER) {
+        smallimg = folder_icon_small;
+        largeimg = folder_icon_bin;
+    }
+    else {
+        smallimg = switchicon_questionmark_small;
+        largeimg = switchicon_questionmark_bin;
+    }
 
-    if (imageptr) drawImage(start_x, start_y+32, 256, 256, imageptr);
+    if (smallimg) {
+        drawImage(start_x, start_y + 32, 140, 140, smallimg);
+    }
+
+    if (is_active && largeimg) {
+        drawImage(740, 100, 256, 256, largeimg);
+    }
 
     DrawTextTruncate(tahoma12, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 256 - 32, "...");
 
     if (is_active) {
-        start_x = 64;
-        start_y = 96 + 32 + 288 + 64;
+        start_x = 200;
+        start_y = 155;
 
+        DrawText(tahoma24, start_x, start_y, MakeColor(255, 255, 255, 255), me->name);
         memset(tmpstr, 0, sizeof(tmpstr));
-        snprintf(tmpstr, sizeof(tmpstr)-1, "Name: %s\nAuthor: %s\nVersion: %s", me->name, me->author, me->version);
-        DrawText(tahoma12, start_x, start_y, MakeColor(255, 255, 255, 255), tmpstr);
+        snprintf(tmpstr, sizeof(tmpstr)-1, "Author: %s", me->author);
+        DrawText(tahoma12, start_x, start_y + 28 + 30, MakeColor(255, 255, 255, 255), tmpstr);
+        memset(tmpstr, 0, sizeof(tmpstr));
+        snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
+        DrawText(tahoma12, start_x, start_y + 28 + 30 + 18 + 6, MakeColor(255, 255, 255, 255), tmpstr);
     }
 }
 
@@ -139,13 +151,16 @@ void menuStartup() {
     #endif
 
     menuScan(path);
+
+    folder_icon_small = downscaleIcon(folder_icon_bin);
+    switchicon_questionmark_small = downscaleIcon(switchicon_questionmark_bin);
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
     return MakeColor(a.r+(b.r*alpha), a.g+b.g*alpha, a.b + b.b*alpha, 255);
 }
 
-const int ENABLE_WAVE_BLENDING = 1;
+const int ENABLE_WAVE_BLENDING = 0;
 double timer;
 
 void drawWave(float timer, color_t color, float height, float phase, float speed) {
@@ -161,7 +176,13 @@ void drawWave(float timer, color_t color, float height, float phase, float speed
         for (y=wave_top_y; y<720; y++) {
             alpha = clamp(y-wave_top_y, 0.0, 1.0) * 0.3;
             existing_color = FetchPixelColor(x, y);
-            new_color = ENABLE_WAVE_BLENDING ? waveBlendAdd(existing_color, color, alpha) : color;
+
+            if (ENABLE_WAVE_BLENDING || alpha < 0.3) {
+                new_color = waveBlendAdd(existing_color, color, alpha);
+            }
+            else {
+                new_color = color;
+            }
 
             DrawPixelRaw(x, y, new_color);
         }
@@ -181,14 +202,14 @@ void menuLoop() {
         }
     }
 
-    DrawText(tahoma24, 64, 64, MakeColor(255, 255, 255, 255), "The Homebrew Launcher");
-    DrawText(tahoma12, 64 + 256 + 128 + 128, 64 + 16, MakeColor(255, 255, 255, 255), "v1.0.0");
-    DrawText(tahoma12, 64 + 256 + 128 + 128, 64 + 16 + 16, MakeColor(255, 255, 255, 255), menu->dirname);
+    drawWave(timer, MakeColor(73, 103, 169, 255), 320.0, 0.0, 3.0);
+    drawWave(timer, MakeColor(66, 154, 159, 255), 300.0, 2.0, 3.5);
+    drawWave(timer, MakeColor(96, 204, 204, 255), 280.0, 4.0, -2.5);
+    timer += 0.05;
 
-    drawWave(timer, MakeColor(73, 103, 169, 255), 160.0, 0.0, 3.0);
-    drawWave(timer, MakeColor(66, 154, 159, 255), 150.0, 2.0, 3.5);
-    drawWave(timer, MakeColor(96, 204, 204, 255), 140.0, 4.0, -2.5);
-    timer += 0.025;
+    DrawText(tahoma24, 40, 30, MakeColor(255, 255, 255, 255), "hbl");
+    DrawText(tahoma12, 40 + 46, 30 + 16, MakeColor(255, 255, 255, 255), "v1.0.0");
+    DrawText(tahoma12, 40, 720 - 32 - 16, MakeColor(255, 255, 255, 255), menu->dirname);
 
     if (menu->nEntries==0)
     {
