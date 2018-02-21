@@ -1,3 +1,4 @@
+#include <time.h>
 #include "common.h"
 
 #include "switchicon_questionmark_bin.h"
@@ -191,6 +192,23 @@ void drawWave(float timer, color_t color, float height, float phase, float speed
     }
 }
 
+void drawTime() {
+
+	char timeString[9];
+	
+	time_t unixTime = time(NULL);
+	struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+	
+	int hours = timeStruct->tm_hour;
+	int minutes = timeStruct->tm_min;
+	int seconds = timeStruct->tm_sec;
+	
+	sprintf(timeString, "%02d:%02d:%02d", hours, minutes, seconds);
+
+    DrawText(tahoma24, 1280 - (9 * 16) - 30, 30, MakeColor(255, 255, 255, 255), timeString);
+	
+}
+
 void menuLoop() {
     menuEntry_s* me;
     menu_s* menu = menuGetCurrent();
@@ -212,6 +230,8 @@ void menuLoop() {
     DrawText(tahoma24, 40, 30, MakeColor(255, 255, 255, 255), "hbl");
     DrawText(tahoma12, 40 + 46, 30 + 16, MakeColor(255, 255, 255, 255), "v1.0.0");
     DrawText(tahoma12, 40, 720 - 32 - 16, MakeColor(255, 255, 255, 255), menu->dirname);
+
+	drawTime();
 
     if (menu->nEntries==0)
     {
