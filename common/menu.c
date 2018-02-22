@@ -30,11 +30,11 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image)
 uint8_t *folder_icon_small;
 uint8_t *switchicon_questionmark_small;
 
-static void drawEntry(menuEntry_s* me, int n, int is_active) {
+static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int x, y;
     int start_y = 720 - 100 - 140;//*(n % 2);
     int end_y = start_y + 140 + 32;
-    int start_x = 32 + (140 + 40) * n;//(n / 2);
+    int start_x = off_x;//(n / 2);
     int end_x = start_x + 140;
     const uint8_t *smallimg = NULL;
     const uint8_t *largeimg = NULL;
@@ -239,15 +239,27 @@ void menuLoop() {
     if (menu->nEntries==0)
     {
         DrawText(tahoma12, 64, 96 + 32, MakeColor(255, 255, 255, 255), textGetString(StrId_NoAppsFound_Msg));
-    } else
+    }
+    else
     {
+        static int x = 0;
+        static int v = 0;
+
+        int wanted_x = clamp(-menu->curEntry * (140 + 40), -(menu->nEntries - 7) * (140 + 40), 0);
+        x += v;
+        v += (wanted_x - x) / 3;
+        v /= 2;
+
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
-            if ((i < menu->curEntry && menu->curEntry-i < 7) || i>=menu->curEntry) {
-                drawEntry(me, cnt, i==menu->curEntry);
-                cnt++;
-                if (cnt==7) break;
-            }
+            int entry_start_x = 32 + i * (140 + 40);
+            int entry_end_x = entry_start_x + 140;
+
+            int screen_width = 1280;
+            if (entry_start_x >= (screen_width - x))
+                break;
+
+            drawEntry(me, entry_start_x + x, i==menu->curEntry);
         }
     }
 }
