@@ -36,25 +36,37 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int end_y = start_y + 140 + 32;
     int start_x = off_x;//(n / 2);
     int end_x = start_x + 140;
+
     const uint8_t *smallimg = NULL;
     const uint8_t *largeimg = NULL;
     char tmpstr[1024];
 
+    int border_start_x, border_end_x;
+    int border_start_y, border_end_y;
     color_t border_color = MakeColor(255, 255, 255, 255);
+    
+    int shadow_start_y, shadow_y;
+    int shadow_inset;
+    color_t shadow_color;
+    uint8_t shadow_alpha_base = 80;
+    int shadow_size = 4;
 
     if (is_active) {
         border_color = themeCurrent.highlightColor;
+        border_start_x = start_x-5;
+        border_end_x = end_x+5;
+        border_start_y = start_y-5;
+        border_end_y = end_y+5;
+    }
+    else {
+        border_start_x = start_x-3;
+        border_end_x = end_x+3;
+        border_start_y = start_y-3;
+        border_end_y = end_y+3;
     }
 
     //{
-        for (x=(start_x-5); x<(end_x+5); x++) {
-            if (!is_active) {
-                if (x < start_x-3)
-                    continue;
-                else if (x >= end_x+3)
-                    break;
-            }
-
+        for (x=border_start_x; x<border_end_x; x++) {
             //DrawPixelRaw(x, start_y  , border_color0);
             DrawPixelRaw(x, end_y    , border_color);
             DrawPixelRaw(x, start_y-1, border_color);
@@ -71,17 +83,23 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
                 DrawPixelRaw(x, end_y  +4, border_color);
                 DrawPixelRaw(x, start_y-5, border_color);
                 DrawPixelRaw(x, end_y  +5, border_color);
+                shadow_start_y = 6;
+            }
+            else {
+                shadow_start_y = 4;
+            }
+
+            for (shadow_y=shadow_start_y; shadow_y <shadow_start_y+shadow_size; shadow_y++) {
+                shadow_color = MakeColor(0, 0, 0, shadow_alpha_base * (1.0 - (float)(shadow_y - shadow_start_y) / ((float)shadow_size)));
+                shadow_inset =(shadow_y-shadow_start_y);
+
+                if (x >= border_start_x + shadow_inset && x <= border_end_x - shadow_inset) {
+                    DrawPixel(x, end_y  +shadow_y, shadow_color);
+                }
             }
         }
 
-        for (y=(start_y-5); y<(end_y+5); y++) {
-            if (!is_active) {
-                if (y < start_y-3)
-                    continue;
-                else if (y >= end_y+3)
-                    break;
-            }
-            
+        for (y=border_start_y; y<border_end_y; y++) {
             DrawPixelRaw(start_x  , y, border_color);
             DrawPixelRaw(end_x    , y, border_color);
             DrawPixelRaw(start_x-1, y, border_color);
@@ -95,6 +113,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
                 DrawPixelRaw(start_x-4, y, border_color);
                 DrawPixelRaw(end_x  +4, y, border_color);
                 DrawPixelRaw(start_x-5, y, border_color);
+                DrawPixelRaw(end_x  +5, y, border_color);
             }
         }
     //}
@@ -124,6 +143,21 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     if (is_active && largeimg) {
         drawImage(220, 100, 256, 256, largeimg);
+
+        shadow_start_y = 100+256;
+        border_start_x = 220;
+        border_end_x = 220+256;
+
+        for (x=border_start_x; x<border_end_x; x++) {
+            for (shadow_y=shadow_start_y; shadow_y <shadow_start_y+shadow_size; shadow_y++) {
+                shadow_color = MakeColor(0, 0, 0, shadow_alpha_base * (1.0 - (float)(shadow_y - shadow_start_y) / ((float)shadow_size)));
+                shadow_inset =(shadow_y-shadow_start_y);
+
+                if (x >= border_start_x + shadow_inset && x <= border_end_x - shadow_inset) {
+                    DrawPixel(x, shadow_y, shadow_color);
+                }
+            }
+        }
     }
 
     DrawTextTruncate(tahoma12, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
