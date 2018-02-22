@@ -85,7 +85,10 @@ static inline void DrawPixelRaw(uint32_t x, uint32_t y, color_t clr)
 static inline color_t FetchPixelColor(uint32_t x, uint32_t y)
 {
     u32 off = (y * g_framebuf_width + x)*4;
-    return MakeColor(g_framebuf[off], g_framebuf[++off], g_framebuf[++off], 255);
+    u8 r = g_framebuf[off]; off++;
+    u8 g = g_framebuf[off]; off++;
+    u8 b = g_framebuf[off];
+    return MakeColor(r, g, b, 255);
 }
 #else
 extern color_t pixels[720][1280];
