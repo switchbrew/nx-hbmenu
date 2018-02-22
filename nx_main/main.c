@@ -81,8 +81,8 @@ bool menuUpdate(void) {
 
         if (down & KEY_LEFT) move--;
         if (down & KEY_RIGHT) move++;
-        if (down & KEY_DOWN) move-=4;
-        if (down & KEY_UP) move+=4;
+        if (down & KEY_DOWN) move-=7;
+        if (down & KEY_UP) move+=7;
 
         int newEntry = menu->curEntry + move;
         if (newEntry < 0) newEntry = 0;
