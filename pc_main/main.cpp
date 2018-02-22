@@ -52,5 +52,30 @@ int main()
 }
 
 extern "C" bool menuUpdate(void) {
+    //This is implemented here due to the hid code.
+    menu_s* menu = menuGetCurrent();
+
+    if (menu->nEntries > 0)
+    {
+        int move = 0;
+
+        static int left_state = 0;
+        int new_left_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+        if (!new_left_state && left_state)
+            move--;
+        left_state = new_left_state;
+
+        static int right_state = 0;
+        int new_right_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+        if (!new_right_state && right_state)
+            move++;
+        right_state = new_right_state;
+
+        int newEntry = menu->curEntry + move;
+        if (newEntry < 0) newEntry = 0;
+        if (newEntry >= menu->nEntries) newEntry = menu->nEntries-1;
+        menu->curEntry = newEntry;
+    }
+
     return 0;
 }
