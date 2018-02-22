@@ -9,7 +9,7 @@ void themeStartup(ThemePreset preset) {
                 middleWaveColor: MakeColor(66, 154, 159, 255),
                 backWaveColor: MakeColor(73, 103, 169, 255),
                 backgroundColor: MakeColor(45, 55, 66, 255),
-                highlightColor: MakeColor(73, 103, 169, 255),
+                highlightColor: MakeColor(129, 137, 236, 255),
                 enableWaveBlending: 0
             };
             break;
