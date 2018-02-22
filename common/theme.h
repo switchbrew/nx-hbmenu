@@ -15,8 +15,8 @@ typedef struct
 
 typedef enum
 {
-    THEME_PRESET_DARK,
     THEME_PRESET_LIGHT,
+    THEME_PRESET_DARK,
 } ThemePreset;
 
 void themeStartup(ThemePreset preset);

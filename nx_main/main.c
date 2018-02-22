@@ -14,6 +14,7 @@ int main(int argc, char **argv)
     appletSetScreenShotPermission(1);
 
     ColorSetId theme;
+    setsysInitialize();
     setsysGetColorSetId(&theme);
     themeStartup((ThemePreset)theme);
     menuStartup();
