@@ -38,6 +38,7 @@ typedef union {
 #include "nro.h"
 #include "nanojpeg.h"
 #include "math.h"
+#include "theme.h"
 
 void menuStartup();
 void menuLoop();
