@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <malloc.h>
+#include <math.h>
 #ifdef SWITCH
 #include <switch.h>
 #endif

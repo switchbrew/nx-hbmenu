@@ -219,7 +219,7 @@ void drawWave(float timer, color_t color, float height, float phase, float speed
                 new_color = waveBlendAdd(existing_color, color, clamp(alpha, 0.0, 1.0) * 0.3);
             }
             else if (alpha < 0.3) { // anti-aliasing
-                alpha = nxfabs(alpha);
+                alpha = fabs(alpha);
                 new_color = MakeColor(color.r * (1.0 - alpha) + existing_color.r * alpha, color.g * (1.0 - alpha) + existing_color.g * alpha, color.b * (1.0 - alpha) + existing_color.b * alpha, 255);
             }
             else { // darken closer to bottom of the waves
