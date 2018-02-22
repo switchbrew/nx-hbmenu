@@ -133,12 +133,15 @@ static void drawEntry(menuEntry_s* me, int n, int is_active) {
         start_y = 135;
 
         DrawText(tahoma24, start_x + 256 + 64, start_y, MakeColor(255, 255, 255, 255), me->name);
-        memset(tmpstr, 0, sizeof(tmpstr));
-        snprintf(tmpstr, sizeof(tmpstr)-1, "Author: %s", me->author);
-        DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30, MakeColor(255, 255, 255, 255), tmpstr);
-        memset(tmpstr, 0, sizeof(tmpstr));
-        snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
-        DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, MakeColor(255, 255, 255, 255), tmpstr);
+
+        if (me->type != ENTRY_TYPE_FOLDER) {
+            memset(tmpstr, 0, sizeof(tmpstr));
+            snprintf(tmpstr, sizeof(tmpstr)-1, "Author: %s", me->author);
+            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30, MakeColor(255, 255, 255, 255), tmpstr);
+            memset(tmpstr, 0, sizeof(tmpstr));
+            snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
+            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, MakeColor(255, 255, 255, 255), tmpstr);
+        }
     }
 }
 
