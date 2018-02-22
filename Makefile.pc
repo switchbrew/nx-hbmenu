@@ -10,7 +10,7 @@ endef
 test : pc_main/main.cpp pc_main/pc_launch.c \
 	common/menu.c common/font.c common/language.c common/launch.c \
 	common/menu-entry.c common/menu-list.c common/text.c \
-	common/nanojpeg.c common/ui.c common/math.c \
+	common/nanojpeg.c common/ui.c common/math.c common/theme.c \
 	build_pc/tahoma24.o build_pc/tahoma12.o build_pc/switchicon_questionmark.bin.o build_pc/folder_icon.bin.o
 	gcc -Wall -O2 -g0 $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -I. -Ibuild_pc -o $@
 

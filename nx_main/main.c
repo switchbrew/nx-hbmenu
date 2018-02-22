@@ -13,6 +13,7 @@ int main(int argc, char **argv)
 
     appletSetScreenShotPermission(1);
 
+    //themeStartup();
     menuStartup();
 
     launchInit();

@@ -15,6 +15,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Test");
     window.setFramerateLimit(60);
 
+    themeStartup(THEME_PRESET_LIGHT);
     menuStartup();
 
     while (window.isOpen())

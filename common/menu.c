@@ -43,7 +43,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     color_t border_color = MakeColor(255, 255, 255, 255);
 
     if (is_active) {
-        border_color = MakeColor(73, 103, 169, 255);
+        border_color = themeCurrent.highlightColor;
     }
 
     //{
@@ -132,15 +132,15 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         start_x = 220;
         start_y = 135;
 
-        DrawText(tahoma24, start_x + 256 + 64, start_y, MakeColor(255, 255, 255, 255), me->name);
+        DrawText(tahoma24, start_x + 256 + 64, start_y, themeCurrent.textColor, me->name);
 
         if (me->type != ENTRY_TYPE_FOLDER) {
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "Author: %s", me->author);
-            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30, MakeColor(255, 255, 255, 255), tmpstr);
+            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30, themeCurrent.textColor, tmpstr);
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
-            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, MakeColor(255, 255, 255, 255), tmpstr);
+            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);
         }
     }
 }
@@ -164,7 +164,6 @@ color_t waveBlendAdd(color_t a, color_t b, float alpha) {
     return MakeColor(a.r+(b.r*alpha), a.g+b.g*alpha, a.b + b.b*alpha, 255);
 }
 
-const int ENABLE_WAVE_BLENDING = 0;
 double timer;
 
 void drawWave(float timer, color_t color, float height, float phase, float speed) {
@@ -182,10 +181,14 @@ void drawWave(float timer, color_t color, float height, float phase, float speed
             alpha = y-wave_top_y;
             existing_color = FetchPixelColor(x, y);
 
-            if (ENABLE_WAVE_BLENDING || alpha < 1.0) {
+            if (themeCurrent.enableWaveBlending) {
                 new_color = waveBlendAdd(existing_color, color, clamp(alpha, 0.0, 1.0) * 0.3);
             }
-            else {
+            else if (alpha < 0.3) { // anti-aliasing
+                alpha = fabs(alpha);
+                new_color = MakeColor(color.r * (1.0 - alpha) + existing_color.r * alpha, color.g * (1.0 - alpha) + existing_color.g * alpha, color.b * (1.0 - alpha) + existing_color.b * alpha, 255);
+            }
+            else { // darken closer to bottom of the waves
                 dark_mult = clamp((alpha - 50) / height, 0.0, 1.0);
                 new_color = MakeColor(color.r - dark_sub * dark_mult, color.g - dark_sub * dark_mult, color.b - dark_sub * dark_mult, 255);
             }
@@ -221,24 +224,24 @@ void menuLoop() {
 
     for (x=0; x<1280; x++) {
         for (y=0; y<720; y++) {
-            DrawPixelRaw(x, y, MakeColor(45, 55, 66, 255));
+            DrawPixelRaw(x, y, themeCurrent.backgroundColor);
         }
     }
 
-    drawWave(timer, MakeColor(73, 103, 169, 255), 320.0, 0.0, 3.0);
-    drawWave(timer, MakeColor(66, 154, 159, 255), 300.0, 2.0, 3.5);
-    drawWave(timer, MakeColor(96, 204, 204, 255), 280.0, 4.0, -2.5);
+    drawWave(timer, themeCurrent.backWaveColor, 320.0, 0.0, 3.0);
+    drawWave(timer, themeCurrent.middleWaveColor, 300.0, 2.0, 3.5);
+    drawWave(timer, themeCurrent.frontWaveColor, 280.0, 4.0, -2.5);
     timer += 0.05;
 
-    DrawText(tahoma24, 40, 30, MakeColor(255, 255, 255, 255), "hbmenu");
-    DrawText(tahoma12, 40 + 120, 30 + 16, MakeColor(255, 255, 255, 255), "v2.0.0");
-    DrawText(tahoma12, 40, 720 - 32 - 16, MakeColor(255, 255, 255, 255), menu->dirname);
+    DrawText(tahoma24, 40, 30, themeCurrent.textColor, "hbmenu");
+    DrawText(tahoma12, 40 + 120, 30 + 16, themeCurrent.textColor, "v2.0.0");
+    DrawText(tahoma12, 40, 720 - 32 - 16, themeCurrent.textColor, menu->dirname);
 
     //drawTime();
 
     if (menu->nEntries==0)
     {
-        DrawText(tahoma12, 64, 96 + 32, MakeColor(255, 255, 255, 255), textGetString(StrId_NoAppsFound_Msg));
+        DrawText(tahoma12, 64, 96 + 32, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
     }
     else
     {
