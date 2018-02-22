@@ -37,6 +37,7 @@ int main(int argc, char **argv)
     }
 
     launchExit();
+    setsysExit();
 
     gfxExit();
     return 0;
