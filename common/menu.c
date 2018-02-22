@@ -261,7 +261,7 @@ void menuLoop() {
         }
     }
 
-    drawWave(timer, themeCurrent.backWaveColor, 300.0, 0.0, 3.0);
+    drawWave(timer, themeCurrent.backWaveColor, 295.0, 0.0, 3.0);
     drawWave(timer, themeCurrent.middleWaveColor, 290.0, 2.0, 3.5);
     drawWave(timer, themeCurrent.frontWaveColor, 280.0, 4.0, -2.5);
     timer += 0.05;
@@ -289,7 +289,7 @@ void menuLoop() {
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
             int entry_start_x = 29 + i * (140 + 30);
-            
+
             int screen_width = 1280;
             if (entry_start_x >= (screen_width - x))
                 break;
