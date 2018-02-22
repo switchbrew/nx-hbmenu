@@ -219,7 +219,7 @@ void drawWave(float timer, color_t color, float height, float phase, float speed
                 new_color = waveBlendAdd(existing_color, color, clamp(alpha, 0.0, 1.0) * 0.3);
             }
             else if (alpha < 0.3) { // anti-aliasing
-                alpha = fabs(alpha);
+                alpha = nxfabs(alpha);
                 new_color = MakeColor(color.r * (1.0 - alpha) + existing_color.r * alpha, color.g * (1.0 - alpha) + existing_color.g * alpha, color.b * (1.0 - alpha) + existing_color.b * alpha, 255);
             }
             else { // darken closer to bottom of the waves
@@ -253,7 +253,6 @@ void menuLoop() {
     menuEntry_s* me;
     menu_s* menu = menuGetCurrent();
     int i;
-    int cnt=0;
     int x, y;
 
     for (x=0; x<1280; x++) {
@@ -290,8 +289,7 @@ void menuLoop() {
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
             int entry_start_x = 29 + i * (140 + 30);
-            int entry_end_x = entry_start_x + 140;
-
+            
             int screen_width = 1280;
             if (entry_start_x >= (screen_width - x))
                 break;
