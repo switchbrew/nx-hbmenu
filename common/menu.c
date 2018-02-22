@@ -248,14 +248,14 @@ void menuLoop() {
         static int x = 0;
         static int v = 0;
 
-        int wanted_x = clamp(-menu->curEntry * (140 + 40), -(menu->nEntries - 7) * (140 + 40), 0);
+        int wanted_x = clamp(-menu->curEntry * (140 + 30), -(menu->nEntries - 7) * (140 + 30), 0);
         x += v;
         v += (wanted_x - x) / 3;
         v /= 2;
 
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
-            int entry_start_x = 32 + i * (140 + 40);
+            int entry_start_x = 29 + i * (140 + 30);
             int entry_end_x = entry_start_x + 140;
 
             int screen_width = 1280;
