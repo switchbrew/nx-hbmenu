@@ -227,8 +227,8 @@ void menuLoop() {
     drawWave(timer, MakeColor(96, 204, 204, 255), 280.0, 4.0, -2.5);
     timer += 0.05;
 
-    DrawText(tahoma24, 40, 30, MakeColor(255, 255, 255, 255), "hbl");
-    DrawText(tahoma12, 40 + 46, 30 + 16, MakeColor(255, 255, 255, 255), "v1.0.0");
+    DrawText(tahoma24, 40, 30, MakeColor(255, 255, 255, 255), "hbmenu");
+    DrawText(tahoma12, 40 + 120, 30 + 16, MakeColor(255, 255, 255, 255), "v2.0.0");
     DrawText(tahoma12, 40, 720 - 32 - 16, MakeColor(255, 255, 255, 255), menu->dirname);
 
     //drawTime();
