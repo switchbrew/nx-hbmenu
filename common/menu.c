@@ -126,7 +126,7 @@ static void drawEntry(menuEntry_s* me, int n, int is_active) {
         drawImage(220, 100, 256, 256, largeimg);
     }
 
-    DrawTextTruncate(tahoma12, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 256 - 32, "...");
+    DrawTextTruncate(tahoma12, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
 
     if (is_active) {
         start_x = 220;
