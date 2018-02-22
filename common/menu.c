@@ -228,8 +228,8 @@ void menuLoop() {
         }
     }
 
-    drawWave(timer, themeCurrent.backWaveColor, 320.0, 0.0, 3.0);
-    drawWave(timer, themeCurrent.middleWaveColor, 300.0, 2.0, 3.5);
+    drawWave(timer, themeCurrent.backWaveColor, 300.0, 0.0, 3.0);
+    drawWave(timer, themeCurrent.middleWaveColor, 290.0, 2.0, 3.5);
     drawWave(timer, themeCurrent.frontWaveColor, 280.0, 4.0, -2.5);
     timer += 0.05;
 
