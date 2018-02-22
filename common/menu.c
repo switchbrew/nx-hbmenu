@@ -235,7 +235,7 @@ void menuLoop() {
 
     if (menu->nEntries==0)
     {
-        DrawText(tahoma12, 64, 96 + 32, MakeColor(64, 64, 64, 255), textGetString(StrId_NoAppsFound_Msg));
+        DrawText(tahoma12, 64, 96 + 32, MakeColor(255, 255, 255, 255), textGetString(StrId_NoAppsFound_Msg));
     } else
     {
         // Draw menu entries
