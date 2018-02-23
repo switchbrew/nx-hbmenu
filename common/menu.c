@@ -303,10 +303,12 @@ void menuLoop() {
         static int x = 0;
         static int v = 0;
 
-        int wanted_x = clamp(-menu->curEntry * (140 + 30), -(menu->nEntries - 7) * (140 + 30), 0);
-        x += v;
-        v += (wanted_x - x) / 3;
-        v /= 2;
+        if (menu->nEntries > 7) {
+            int wanted_x = clamp(-menu->curEntry * (140 + 30), -(menu->nEntries - 7) * (140 + 30), 0);
+            x += v;
+            v += (wanted_x - x) / 3;
+            v /= 2;
+        }
 
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
