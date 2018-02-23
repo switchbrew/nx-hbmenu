@@ -17,10 +17,10 @@ void launchMenuEntryTask(menuEntry_s* arg)
 typedef enum 
 {
     IMAGE_MODE_RGB24,
-    IMAGE_MODE_RGB32
+    IMAGE_MODE_RGBA32
 } ImageMode;
 
-//Draws an RGB888 or RGB8888 image.
+//Draws an RGB888 or RGBA8888 image.
 static void drawImage(int x, int y, int width, int height, const uint8_t *image, ImageMode mode) {
     int tmpx, tmpy;
     int pos;
@@ -34,10 +34,9 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
                     current_color = MakeColor(image[pos+0], image[pos+1], image[pos+2], 255);
                     break;
 
-                case IMAGE_MODE_RGB32:
+                case IMAGE_MODE_RGBA32:
                     pos = ((tmpy*width) + tmpx) * 4;
                     current_color = MakeColor(image[pos+0], image[pos+1], image[pos+2], image[pos+3]);
-                    //fprintf(stderr, "%d\n", image[pos+3]);
                     break;
             }
             
@@ -285,13 +284,13 @@ void menuLoop() {
     drawWave(timer, themeCurrent.frontWaveColor, 280.0, 4.0, -2.5);
     timer += 0.05;
 
-    drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGB32);
+    drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
     DrawText(tahoma12, 180, 47, themeCurrent.textColor, "v2.0.0");
     DrawText(tahoma12, 40, 720 - 48, themeCurrent.textColor, menu->dirname);
 
     //drawTime();
 
-    drawImage(1280 - 126, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGB32);
+    drawImage(1280 - 126, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
     DrawText(tahoma12, 1280 - 90, 720 - 44, themeCurrent.textColor, "Launch");
 
     if (menu->nEntries==0)
