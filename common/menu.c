@@ -285,18 +285,18 @@ void menuLoop() {
     drawWave(timer, themeCurrent.frontWaveColor, 280.0, 4.0, -2.5);
     timer += 0.05;
 
-    DrawText(tahoma24, 40, 30, themeCurrent.textColor, "hbmenu");
-    DrawText(tahoma12, 40 + 120, 30 + 16, themeCurrent.textColor, "v2.0.0");
-    DrawText(tahoma12, 40, 720 - 32 - 16, themeCurrent.textColor, menu->dirname);
+    drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGB32);
+    DrawText(tahoma12, 180, 47, themeCurrent.textColor, "v2.0.0");
+    DrawText(tahoma12, 40, 720 - 48, themeCurrent.textColor, menu->dirname);
 
     //drawTime();
 
-    drawImage(1280 - 190 + 64, 720 - 32 - 16, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGB32);
-    DrawText(tahoma12, 1280 - 190 + 32 + 68, 720 - 32 - 16 + 4, themeCurrent.textColor, "Launch");
+    drawImage(1280 - 126, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGB32);
+    DrawText(tahoma12, 1280 - 90, 720 - 44, themeCurrent.textColor, "Launch");
 
     if (menu->nEntries==0)
     {
-        DrawText(tahoma12, 64, 96 + 32, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
+        DrawText(tahoma12, 64, 128, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
     }
     else
     {
