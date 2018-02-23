@@ -192,7 +192,14 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30, themeCurrent.textColor, tmpstr);
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
-            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);
+            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);  
+                         
+            drawImage(1280 - 126, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+            DrawText(tahoma12, 1280 - 90, 720 - 44, themeCurrent.textColor, "Launch");
+        }
+        else {
+            drawImage(1280 - 126, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+            DrawText(tahoma12, 1280 - 90, 720 - 44, themeCurrent.textColor, "Open");
         }
     }
 }
@@ -289,9 +296,6 @@ void menuLoop() {
     DrawText(tahoma12, 40, 720 - 48, themeCurrent.textColor, menu->dirname);
 
     //drawTime();
-
-    drawImage(1280 - 126, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-    DrawText(tahoma12, 1280 - 90, 720 - 44, themeCurrent.textColor, "Launch");
 
     if (menu->nEntries==0)
     {
