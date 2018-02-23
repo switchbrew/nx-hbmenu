@@ -1,4 +1,6 @@
 #include "theme.h"
+#include "button_a_light_bin.h"
+#include "button_a_dark_bin.h"
 
 void themeStartup(ThemePreset preset) {
     switch (preset) {
@@ -10,7 +12,8 @@ void themeStartup(ThemePreset preset) {
                 backWaveColor: MakeColor(154, 171, 255, 255),
                 backgroundColor: MakeColor(233, 236, 241, 255),
                 highlightColor: MakeColor(129, 137, 236, 255),
-                enableWaveBlending: 0
+                enableWaveBlending: 0,
+                buttonAImage: button_a_light_bin
             };
             break;
 
@@ -22,7 +25,8 @@ void themeStartup(ThemePreset preset) {
                 backWaveColor: MakeColor(73, 103, 169, 255),
                 backgroundColor: MakeColor(45, 55, 66, 255),
                 highlightColor: MakeColor(129, 137, 236, 255),
-                enableWaveBlending: 0
+                enableWaveBlending: 0,
+                buttonAImage: button_a_dark_bin
             };
             break;
     }

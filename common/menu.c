@@ -14,15 +14,34 @@ void launchMenuEntryTask(menuEntry_s* arg)
         launchMenuEntry(me);
 }
 
-//Draws a RGB888 image.
-static void drawImage(int x, int y, int width, int height, const uint8_t *image) {
+typedef enum 
+{
+    IMAGE_MODE_RGB24,
+    IMAGE_MODE_RGB32
+} ImageMode;
+
+//Draws an RGB888 or RGB8888 image.
+static void drawImage(int x, int y, int width, int height, const uint8_t *image, ImageMode mode) {
     int tmpx, tmpy;
     int pos;
+    color_t current_color;
 
     for (tmpx=0; tmpx<width; tmpx++) {
         for (tmpy=0; tmpy<height; tmpy++) {
-            pos = ((tmpy*width) + tmpx) * 3;
-            DrawPixelRaw(x+tmpx, y+tmpy, MakeColor(image[pos+0], image[pos+1], image[pos+2], 255));
+            switch (mode) {
+                case IMAGE_MODE_RGB24:
+                    pos = ((tmpy*width) + tmpx) * 3;
+                    current_color = MakeColor(image[pos+0], image[pos+1], image[pos+2], 255);
+                    break;
+
+                case IMAGE_MODE_RGB32:
+                    pos = ((tmpy*width) + tmpx) * 4;
+                    current_color = MakeColor(image[pos+0], image[pos+1], image[pos+2], image[pos+3]);
+                    //fprintf(stderr, "%d\n", image[pos+3]);
+                    break;
+            }
+            
+            DrawPixel(x+tmpx, y+tmpy, current_color);
         }
     }
 }
@@ -138,11 +157,11 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
 
     if (smallimg) {
-        drawImage(start_x, start_y + 32, 140, 140, smallimg);
+        drawImage(start_x, start_y + 32, 140, 140, smallimg, IMAGE_MODE_RGB24);
     }
 
     if (is_active && largeimg) {
-        drawImage(220, 100, 256, 256, largeimg);
+        drawImage(220, 100, 256, 256, largeimg, IMAGE_MODE_RGB24);
 
         shadow_start_y = 100+256;
         border_start_x = 220;
@@ -271,6 +290,9 @@ void menuLoop() {
     DrawText(tahoma12, 40, 720 - 32 - 16, themeCurrent.textColor, menu->dirname);
 
     //drawTime();
+
+    drawImage(1280 - 190 + 64, 720 - 32 - 16, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGB32);
+    DrawText(tahoma12, 1280 - 190 + 32 + 68, 720 - 32 - 16 + 4, themeCurrent.textColor, "Launch");
 
     if (menu->nEntries==0)
     {
