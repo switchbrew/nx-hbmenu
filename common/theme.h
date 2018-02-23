@@ -11,6 +11,7 @@ typedef struct
     color_t backgroundColor;
     color_t highlightColor;
     bool enableWaveBlending;
+    const uint8_t *buttonAImage;
 } theme_t;
 
 typedef enum

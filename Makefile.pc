@@ -11,7 +11,8 @@ test : pc_main/main.cpp pc_main/pc_launch.c \
 	common/menu.c common/font.c common/language.c common/launch.c \
 	common/menu-entry.c common/menu-list.c common/text.c \
 	common/nanojpeg.c common/ui.c common/math.c common/theme.c \
-	build_pc/tahoma24.o build_pc/tahoma12.o build_pc/switchicon_questionmark.bin.o build_pc/folder_icon.bin.o
+	build_pc/tahoma24.o build_pc/tahoma12.o build_pc/switchicon_questionmark.bin.o build_pc/folder_icon.bin.o \
+	build_pc/button_a_light.bin.o build_pc/button_a_dark.bin.o
 	gcc -Wall -O2 -g0 $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -I. -Ibuild_pc -o $@
 
 build_pc/tahoma12.o	:	data/tahoma12.nxfnt
@@ -30,6 +31,16 @@ build_pc/switchicon_questionmark.bin.o	:	data/switchicon_questionmark.bin
 	@$(bin2o)
 
 build_pc/folder_icon.bin.o	:	data/folder_icon.bin
+	mkdir -p $(dir $@)
+	@echo $(notdir $<)
+	@$(bin2o)
+
+build_pc/button_a_light.bin.o	:	data/button_a_light.bin
+	mkdir -p $(dir $@)
+	@echo $(notdir $<)
+	@$(bin2o)
+
+build_pc/button_a_dark.bin.o	:	data/button_a_dark.bin
 	mkdir -p $(dir $@)
 	@echo $(notdir $<)
 	@$(bin2o)
