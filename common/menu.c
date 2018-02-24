@@ -188,7 +188,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         start_x = 1280 - 790;
         start_y = 135;
 
-        DrawText(interuimedium30, start_x, start_y, themeCurrent.textColor, me->name);
+        DrawTextTruncate(interuimedium30, start_x, start_y, themeCurrent.textColor, me->name, 1280 - start_x - 120 ,"...");
 
         if (me->type != ENTRY_TYPE_FOLDER) {
             memset(tmpstr, 0, sizeof(tmpstr));
@@ -285,7 +285,7 @@ void drawBackBtn(menu_s* menu, bool emptyDir) {
          x_text = 1280 - 90 - 30;
     }
     
-	#ifdef SWITCH
+    #ifdef SWITCH
     if (strcmp( menu->dirname, "sdmc:/") != 0)
     #else
     if (strcmp( menu->dirname, "/") != 0)
@@ -315,10 +315,9 @@ void menuLoop() {
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
     DrawText(interuiregular14, 180, 46, themeCurrent.textColor, "v2.0.0");
-    DrawText(interuiregular18, 40, 720 - 47, themeCurrent.textColor, menu->dirname);
+    DrawTextTruncate(interuiregular18, 40, 720 - 47, themeCurrent.textColor, menu->dirname, 918, "...");
 
     //drawTime();
-
 
     if (menu->nEntries==0)
     {
