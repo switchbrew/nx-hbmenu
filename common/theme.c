@@ -1,6 +1,8 @@
 #include "theme.h"
 #include "button_a_light_bin.h"
-#include "button_a_dark_bin.h"
+#include "button_a_dark_bin.h"    
+#include "button_b_light_bin.h"
+#include "button_b_dark_bin.h"
 #include "hbmenu_logo_light_bin.h"
 #include "hbmenu_logo_dark_bin.h"
 
@@ -15,7 +17,8 @@ void themeStartup(ThemePreset preset) {
                 backgroundColor: MakeColor(233, 236, 241, 255),
                 highlightColor: MakeColor(91, 237, 224, 255),
                 enableWaveBlending: 0,
-                buttonAImage: button_a_light_bin,
+                buttonAImage: button_a_light_bin,          
+                buttonBImage: button_b_light_bin,
                 hbmenuLogoImage: hbmenu_logo_light_bin
             };
             break;
@@ -30,6 +33,7 @@ void themeStartup(ThemePreset preset) {
                 highlightColor: MakeColor(91, 237, 224, 255),
                 enableWaveBlending: 0,
                 buttonAImage: button_a_dark_bin,
+                buttonBImage: button_b_dark_bin,
                 hbmenuLogoImage: hbmenu_logo_dark_bin
             };
             break;
