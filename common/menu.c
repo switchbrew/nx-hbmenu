@@ -178,28 +178,28 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         }
     }
 
-    DrawTextTruncate(tahoma12, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
+    DrawTextTruncate(interuiregular14, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
 
     if (is_active) {
         start_x = 220;
         start_y = 135;
 
-        DrawText(tahoma24, start_x + 256 + 64, start_y, themeCurrent.textColor, me->name);
+        DrawText(interuimedium30, start_x + 256 + 64, start_y, themeCurrent.textColor, me->name);
 
         if (me->type != ENTRY_TYPE_FOLDER) {
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "Author: %s", me->author);
-            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30, themeCurrent.textColor, tmpstr);
+            DrawText(interuiregular14, start_x + 256 + 64, start_y + 28 + 30, themeCurrent.textColor, tmpstr);
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
-            DrawText(tahoma12, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);  
+            DrawText(interuiregular14, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);  
                          
-            drawImage(1280 - 126, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-            DrawText(tahoma12, 1280 - 90, 720 - 44, themeCurrent.textColor, "Launch");
+            drawImage(1280 - 126 - 20, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+            DrawText(interuimedium20, 1280 - 90 - 20, 720 - 46, themeCurrent.textColor, "Launch");
         }
         else {
-            drawImage(1280 - 126, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-            DrawText(tahoma12, 1280 - 90, 720 - 44, themeCurrent.textColor, "Open");
+            drawImage(1280 - 126 - 20, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+            DrawText(interuimedium20, 1280 - 90 - 20, 720 - 47, themeCurrent.textColor, "Open");
         }
     }
 }
@@ -270,7 +270,7 @@ void drawTime() {
 	
     sprintf(timeString, "%02d:%02d:%02d", hours, minutes, seconds);
 
-    DrawText(tahoma24, 1280 - (9 * 16) - 30, 30, MakeColor(255, 255, 255, 255), timeString);
+    DrawText(interuimedium20, 1280 - (9 * 16) - 30, 30, MakeColor(255, 255, 255, 255), timeString);
 	
 }
 
@@ -292,14 +292,14 @@ void menuLoop() {
     timer += 0.05;
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
-    DrawText(tahoma12, 180, 47, themeCurrent.textColor, "v2.0.0");
-    DrawText(tahoma12, 40, 720 - 48, themeCurrent.textColor, menu->dirname);
+    DrawText(interuiregular14, 180, 46, themeCurrent.textColor, "v2.0.0");
+    DrawText(interuiregular18, 40, 720 - 48, themeCurrent.textColor, menu->dirname);
 
     //drawTime();
 
     if (menu->nEntries==0)
     {
-        DrawText(tahoma12, 64, 128, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
+        DrawText(interuiregular14, 64, 128, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
     }
     else
     {
