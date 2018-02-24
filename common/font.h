@@ -32,5 +32,13 @@ typedef struct {
 
 extern const ffnt_header_t tahoma24_nxfnt;
 extern const ffnt_header_t tahoma12_nxfnt;
+extern const ffnt_header_t interuimedium20_nxfnt;
+extern const ffnt_header_t interuimedium30_nxfnt;
+extern const ffnt_header_t interuiregular14_nxfnt;
+extern const ffnt_header_t interuiregular18_nxfnt;
 #define tahoma24 &tahoma24_nxfnt
 #define tahoma12 &tahoma12_nxfnt
+#define interuimedium20 &interuimedium20_nxfnt
+#define interuimedium30 &interuimedium30_nxfnt
+#define interuiregular14 &interuiregular14_nxfnt
+#define interuiregular18 &interuiregular18_nxfnt
