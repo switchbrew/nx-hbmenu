@@ -164,11 +164,11 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
 
     if (is_active && largeimg) {
-        drawImage(220, 100, 256, 256, largeimg, IMAGE_MODE_RGB24);
+        drawImage(117, 100, 256, 256, largeimg, IMAGE_MODE_RGB24);
 
         shadow_start_y = 100+256;
-        border_start_x = 220;
-        border_end_x = 220+256;
+        border_start_x = 117;
+        border_end_x = 117+256;
 
         for (x=border_start_x; x<border_end_x; x++) {
             for (shadow_y=shadow_start_y; shadow_y <shadow_start_y+shadow_size; shadow_y++) {
@@ -185,18 +185,18 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     DrawTextTruncate(interuiregular14, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
 
     if (is_active) {
-        start_x = 220;
+        start_x = 1280 - 790;
         start_y = 135;
 
-        DrawText(interuimedium30, start_x + 256 + 64, start_y, themeCurrent.textColor, me->name);
+        DrawText(interuimedium30, start_x, start_y, themeCurrent.textColor, me->name);
 
         if (me->type != ENTRY_TYPE_FOLDER) {
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "Author: %s", me->author);
-            DrawText(interuiregular14, start_x + 256 + 64, start_y + 28 + 30, themeCurrent.textColor, tmpstr);
+            DrawText(interuiregular14, start_x, start_y + 28 + 30, themeCurrent.textColor, tmpstr);
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
-            DrawText(interuiregular14, start_x + 256 + 64, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);  
+            DrawText(interuiregular14, start_x, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);  
                          
             drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
             DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, "Launch");
