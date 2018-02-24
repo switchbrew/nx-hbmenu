@@ -11,7 +11,8 @@ typedef struct
     color_t backgroundColor;
     color_t highlightColor;
     bool enableWaveBlending;
-    const uint8_t *buttonAImage;
+    const uint8_t *buttonAImage;      
+    const uint8_t *buttonBImage;
     const uint8_t *hbmenuLogoImage;
 } theme_t;
 

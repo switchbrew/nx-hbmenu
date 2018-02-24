@@ -276,6 +276,26 @@ void drawTime() {
 	
 }
 
+void drawBackBtn(menu_s* menu, bool emptyDir) {
+    int x_image = 1280 - 252 - 30;
+    int x_text = 1280 - 216 - 30;
+	
+    if(emptyDir) {
+        x_image = 1280 - 126 - 30;
+         x_text = 1280 - 90 - 30;
+    }
+    
+	#ifdef SWITCH
+    if (strcmp( menu->dirname, "sdmc:/") != 0)
+    #else
+    if (strcmp( menu->dirname, "/") != 0)
+    #endif
+    {
+        drawImage(x_image, 720 - 48, 32, 32, themeCurrent.buttonBImage, IMAGE_MODE_RGBA32);
+        DrawText(interuiregular18, x_text, 720 - 47, themeCurrent.textColor, "Back");
+    }
+}
+
 void menuLoop() {
     menuEntry_s* me;
     menu_s* menu = menuGetCurrent();
@@ -299,9 +319,11 @@ void menuLoop() {
 
     //drawTime();
 
+
     if (menu->nEntries==0)
     {
         DrawText(interuiregular14, 64, 128, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
+        drawBackBtn(menu, true);
     }
     else
     {
@@ -325,5 +347,7 @@ void menuLoop() {
 
             drawEntry(me, entry_start_x + x, i==menu->curEntry);
         }
+
+        drawBackBtn(menu, false);
     }
 }

@@ -14,7 +14,7 @@ test : pc_main/main.cpp pc_main/pc_launch.c \
 	build_pc/tahoma24.o build_pc/tahoma12.o build_pc/interuimedium20.o build_pc/interuimedium30.o \
 	build_pc/interuiregular14.o build_pc/interuiregular18.o \
 	build_pc/switchicon_questionmark.bin.o build_pc/folder_icon.bin.o \
-	build_pc/button_a_light.bin.o build_pc/button_a_dark.bin.o build_pc/hbmenu_logo_light.bin.o build_pc/hbmenu_logo_dark.bin.o
+	build_pc/button_a_light.bin.o build_pc/button_a_dark.bin.o build_pc/button_b_light.bin.o build_pc/button_b_dark.bin.o build_pc/hbmenu_logo_light.bin.o build_pc/hbmenu_logo_dark.bin.o
 	gcc -Wall -O2 -g0 $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -lm -I. -Ibuild_pc -o $@
 
 build_pc/tahoma12.o	:	data/tahoma12.nxfnt
@@ -63,6 +63,16 @@ build_pc/button_a_light.bin.o	:	data/button_a_light.bin
 	@$(bin2o)
 
 build_pc/button_a_dark.bin.o	:	data/button_a_dark.bin
+	mkdir -p $(dir $@)
+	@echo $(notdir $<)
+	@$(bin2o)
+  
+build_pc/button_b_light.bin.o	:	data/button_b_light.bin
+	mkdir -p $(dir $@)
+	@echo $(notdir $<)
+	@$(bin2o)
+
+build_pc/button_b_dark.bin.o	:	data/button_b_dark.bin
 	mkdir -p $(dir $@)
 	@echo $(notdir $<)
 	@$(bin2o)
