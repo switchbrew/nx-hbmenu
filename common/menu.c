@@ -47,6 +47,7 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
 
 uint8_t *folder_icon_small;
 uint8_t *switchicon_questionmark_small;
+double timer;
 
 static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int x, y;
@@ -67,10 +68,13 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int shadow_inset;
     color_t shadow_color;
     uint8_t shadow_alpha_base = 80;
+    float highlight_multiplier, highlight_mod;
     int shadow_size = 4;
 
     if (is_active) {
-        border_color = themeCurrent.highlightColor;
+        highlight_mod = timer - 1.0 * (int)(timer / 1.0);
+        highlight_multiplier = fmax(0.0, fabs(highlight_mod - 0.5) / 0.5);
+        border_color = MakeColor(themeCurrent.highlightColor.r + (255 - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (255 - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (255 - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
         border_start_x = start_x-5;
         border_end_x = end_x+5;
         border_start_y = start_y-5;
@@ -222,8 +226,6 @@ void menuStartup() {
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
     return MakeColor(a.r+(b.r*alpha), a.g+b.g*alpha, a.b + b.b*alpha, 255);
 }
-
-double timer;
 
 void drawWave(float timer, color_t color, float height, float phase, float speed) {
     int x, y;
