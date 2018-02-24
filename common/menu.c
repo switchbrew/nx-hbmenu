@@ -1,7 +1,7 @@
 #include <time.h>
 #include "common.h"
 
-#include "switchicon_questionmark_bin.h"
+#include "invalid_icon_bin.h"
 #include "folder_icon_bin.h"
 
 void launchMenuEntryTask(menuEntry_s* arg)
@@ -46,7 +46,7 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
 }
 
 uint8_t *folder_icon_small;
-uint8_t *switchicon_questionmark_small;
+uint8_t *invalid_icon_small;
 double timer;
 
 static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
@@ -155,8 +155,8 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         largeimg = folder_icon_bin;
     }
     else {
-        smallimg = switchicon_questionmark_small;
-        largeimg = switchicon_questionmark_bin;
+        smallimg = invalid_icon_small;
+        largeimg = invalid_icon_bin;
     }
 
     if (smallimg) {
@@ -220,7 +220,7 @@ void menuStartup() {
     menuScan(path);
 
     folder_icon_small = downscaleIcon(folder_icon_bin);
-    switchicon_questionmark_small = downscaleIcon(switchicon_questionmark_bin);
+    invalid_icon_small = downscaleIcon(invalid_icon_bin);
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
