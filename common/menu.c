@@ -182,7 +182,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         }
     }
 
-    DrawTextTruncate(interuiregular14, start_x + 8, start_y + 8, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
+    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
 
     if (is_active) {
         start_x = 1280 - 790;
