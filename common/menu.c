@@ -207,6 +207,28 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
 }
 
+color_t waveGradients[3][720];
+
+void precomputeWaveColors(int id, color_t baseColor, int height) {
+    int y;
+    int alpha;
+    float dark_mult, dark_sub = 75;
+    color_t color;
+
+    for (y=0; y<720; y++) {
+        alpha = y - (720 - height);
+
+        if (alpha < 0)
+            color = baseColor;
+        else {
+            dark_mult = clamp((float)(alpha - 50) / (float)height, 0.0, 1.0);
+            color = MakeColor(baseColor.r - dark_sub * dark_mult, baseColor.g - dark_sub * dark_mult, baseColor.b - dark_sub * dark_mult, 255);
+        }
+
+        waveGradients[id][y] = color;
+    }
+}
+
 void menuStartup() {
     const char *path;
 
@@ -220,16 +242,18 @@ void menuStartup() {
 
     folder_icon_small = downscaleIcon(folder_icon_bin);
     invalid_icon_small = downscaleIcon(invalid_icon_bin);
+    precomputeWaveColors(0, themeCurrent.backWaveColor, 295);
+    precomputeWaveColors(1, themeCurrent.middleWaveColor, 290);
+    precomputeWaveColors(2, themeCurrent.frontWaveColor, 280);
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
     return MakeColor(a.r+(b.r*alpha), a.g+b.g*alpha, a.b + b.b*alpha, 255);
 }
 
-void drawWave(float timer, color_t color, float height, float phase, float speed) {
+void drawWave(int id, float timer, color_t color, int height, float phase, float speed) {
     int x, y;
     float wave_top_y, alpha;
-    float dark_mult, dark_sub = 75;
     color_t existing_color, new_color;
     
     height = 720 - height;
@@ -249,8 +273,7 @@ void drawWave(float timer, color_t color, float height, float phase, float speed
                 new_color = MakeColor(color.r * (1.0 - alpha) + existing_color.r * alpha, color.g * (1.0 - alpha) + existing_color.g * alpha, color.b * (1.0 - alpha) + existing_color.b * alpha, 255);
             }
             else { // darken closer to bottom of the waves
-                dark_mult = clamp((alpha - 50) / height, 0.0, 1.0);
-                new_color = MakeColor(color.r - dark_sub * dark_mult, color.g - dark_sub * dark_mult, color.b - dark_sub * dark_mult, 255);
+                new_color = waveGradients[id][y];
             }
 
             DrawPixelRaw(x, y, new_color);
@@ -307,9 +330,9 @@ void menuLoop() {
         }
     }
 
-    drawWave(timer, themeCurrent.backWaveColor, 295.0, 0.0, 3.0);
-    drawWave(timer, themeCurrent.middleWaveColor, 290.0, 2.0, 3.5);
-    drawWave(timer, themeCurrent.frontWaveColor, 280.0, 4.0, -2.5);
+    drawWave(0, timer, themeCurrent.backWaveColor, 295, 0.0, 3.0);
+    drawWave(1, timer, themeCurrent.middleWaveColor, 290, 2.0, 3.5);
+    drawWave(2, timer, themeCurrent.frontWaveColor, 280, 4.0, -2.5);
     timer += 0.05;
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
