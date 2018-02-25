@@ -208,6 +208,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 }
 
 color_t waveGradients[3][720];
+color_t aaColors[3][256*256*256][10];
 
 void precomputeWaveColors(int id, color_t baseColor, int height) {
     int y;
@@ -255,6 +256,7 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
     int x, y;
     float wave_top_y, alpha;
     color_t existing_color, new_color;
+    color_t *aa_color_ptr;
     
     height = 720 - height;
 
@@ -263,14 +265,20 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
 
         for (y=wave_top_y; y<720; y++) {
             alpha = y-wave_top_y;
-            existing_color = FetchPixelColor(x, y);
 
             if (themeCurrent.enableWaveBlending) {
+                existing_color = FetchPixelColor(x, y);
                 new_color = waveBlendAdd(existing_color, color, clamp(alpha, 0.0, 1.0) * 0.3);
             }
             else if (alpha < 0.3) { // anti-aliasing
+                existing_color = FetchPixelColor(x, y);
                 alpha = fabs(alpha);
-                new_color = MakeColor(color.r * (1.0 - alpha) + existing_color.r * alpha, color.g * (1.0 - alpha) + existing_color.g * alpha, color.b * (1.0 - alpha) + existing_color.b * alpha, 255);
+                aa_color_ptr = &aaColors[id][existing_color.abgr & 0xFFFFFF][(int)(alpha * 10) - 1];
+                new_color = *aa_color_ptr;
+
+                if (new_color.abgr == 0) {
+                    new_color = *aa_color_ptr = MakeColor(color.r * (1.0 - alpha) + existing_color.r * alpha, color.g * (1.0 - alpha) + existing_color.g * alpha, color.b * (1.0 - alpha) + existing_color.b * alpha, 255);
+                }
             }
             else { // darken closer to bottom of the waves
                 new_color = waveGradients[id][y];
