@@ -64,8 +64,11 @@ bool menuUpdate(void) {
     }
     else if (down & KEY_B)
     {
-        //workerSchedule(changeDirTask, "..");
-        menuScan("..");
+        if (strcmp( menu->dirname, "sdmc:/") != 0)
+        {
+            //workerSchedule(changeDirTask, "..");
+            menuScan("..");
+        }
     }
     else if (down & KEY_PLUS)
     {
