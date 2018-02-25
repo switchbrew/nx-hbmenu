@@ -196,21 +196,14 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "%s: %s", textGetString(StrId_AppInfo_Version), me->version);
             DrawText(interuiregular14, start_x, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);  
-                         
-            drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
-        }
-        else {
-            drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Open));
         }
     }
 }
 
-color_t waveGradients[3][720];
+color_t frontWaveGradient[720];
 color_t aaColors[3][256*256*256][10];
 
-void precomputeWaveColors(int id, color_t baseColor, int height) {
+void computeFrontGradient(color_t baseColor, int height) {
     int y;
     int alpha;
     float dark_mult, dark_sub = 75;
@@ -226,7 +219,7 @@ void precomputeWaveColors(int id, color_t baseColor, int height) {
             color = MakeColor(baseColor.r - dark_sub * dark_mult, baseColor.g - dark_sub * dark_mult, baseColor.b - dark_sub * dark_mult, 255);
         }
 
-        waveGradients[id][y] = color;
+        frontWaveGradient[y] = color;
     }
 }
 
@@ -243,9 +236,7 @@ void menuStartup() {
 
     folder_icon_small = downscaleIcon(folder_icon_bin);
     invalid_icon_small = downscaleIcon(invalid_icon_bin);
-    precomputeWaveColors(0, themeCurrent.backWaveColor, 295);
-    precomputeWaveColors(1, themeCurrent.middleWaveColor, 290);
-    precomputeWaveColors(2, themeCurrent.frontWaveColor, 280);
+    computeFrontGradient(themeCurrent.frontWaveColor, 280);
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
@@ -264,6 +255,9 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
         wave_top_y = approxSin(x*speed/1280.0+timer+phase) * 10.0 + height;
 
         for (y=wave_top_y; y<720; y++) {
+            if (id != 2 && y > wave_top_y + 30) 
+                break;
+
             alpha = y-wave_top_y;
 
             if (themeCurrent.enableWaveBlending) {
@@ -280,8 +274,11 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
                     new_color = *aa_color_ptr = MakeColor(color.r * (1.0 - alpha) + existing_color.r * alpha, color.g * (1.0 - alpha) + existing_color.g * alpha, color.b * (1.0 - alpha) + existing_color.b * alpha, 255);
                 }
             }
-            else { // darken closer to bottom of the waves
-                new_color = waveGradients[id][y];
+            else if (id == 2) { // darken closer to bottom of the front wave
+                new_color = frontWaveGradient[y];
+            }
+            else {
+                new_color = color;
             }
 
             DrawPixelRaw(x, y, new_color);
@@ -333,7 +330,7 @@ void menuLoop() {
     int x, y;
 
     for (x=0; x<1280; x++) {
-        for (y=0; y<720; y++) {
+        for (y=0; y<450; y++) { // don't draw bottom pixels as they are covered by the waves
             DrawPixelRaw(x, y, themeCurrent.backgroundColor);
         }
     }
@@ -369,6 +366,8 @@ void menuLoop() {
             x = v = 0;
         }
 
+        menuEntry_s *active_entry = NULL;
+
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
             int entry_start_x = 29 + i * (140 + 30);
@@ -377,7 +376,21 @@ void menuLoop() {
             if (entry_start_x >= (screen_width - x))
                 break;
 
-            drawEntry(me, entry_start_x + x, i==menu->curEntry);
+            int is_active = i==menu->curEntry;
+
+            if (is_active)
+                active_entry = me;
+
+            drawEntry(me, entry_start_x + x, is_active);
+        }
+
+        if (active_entry->type != ENTRY_TYPE_FOLDER) {
+            drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
+        }
+        else {
+            drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Open));
         }
 
         drawBackBtn(menu, false);
