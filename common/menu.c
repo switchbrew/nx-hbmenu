@@ -384,13 +384,15 @@ void menuLoop() {
             drawEntry(me, entry_start_x + x, is_active);
         }
 
-        if (active_entry->type != ENTRY_TYPE_FOLDER) {
-            drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
-        }
-        else {
-            drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Open));
+        if(active_entry != NULL) {
+            if (active_entry->type != ENTRY_TYPE_FOLDER) {
+                drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+                DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
+            }
+            else {
+                drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+                DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Open));
+            }
         }
 
         drawBackBtn(menu, false);
