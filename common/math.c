@@ -5,12 +5,7 @@ float approxSin(float x) {
     float ret;
 
     // always wrap input angle to -PI..PI
-    while (x<-3.14159265 || x>3.14159265) {
-        if (x<-3.14159265)
-            x += 6.28318531;
-        else if (x >3.14159265)
-            x -= 6.28318531;
-    }
+    x = fmod(x, M_PI*2.0)-M_PI;
 
     // compute sine
     if (x<0)
