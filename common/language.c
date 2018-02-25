@@ -214,6 +214,70 @@ const char* const g_strings[StrId_Max][16] =
         ),
     },
 
+    [StrId_AppInfo_Author] =
+    {
+        STR_EN("Author"),
+        STR_ES("Autor"),
+        STR_DE("Autor"),
+        STR_FR("Auteur"),
+        STR_IT("Autore"),
+        STR_JP("著者"),
+        STR_PT("Autor"),
+        STR_NL("Auteur"),
+        STR_KO("저자"),
+        STR_RU("автор"),
+        STR_ZH("作者"),
+        STR_TW("作者"),
+    },
+
+    [StrId_AppInfo_Version] =
+    {
+        STR_EN("Version"),
+        STR_ES("Versión"),
+        STR_DE("Ausführung"),
+        STR_FR("Version"),
+        STR_IT("Versione"),
+        STR_JP("バージョン"),
+        STR_PT("Versão"),
+        STR_NL("Versie"),
+        STR_KO("번역"),
+        STR_RU("Версия"),
+        STR_ZH("版"),
+        STR_TW("版"),
+    },
+
+    [StrId_Actions_Launch] =
+    {
+        STR_EN("Launch"),
+        STR_ES("Lanzamiento"),
+        STR_DE("Starten"),
+        STR_FR("Lancement"),
+        STR_IT("Lanciare"),
+        STR_JP("打ち上げ"),
+        STR_PT("Lançamento"),
+        STR_NL("Lancering"),
+        STR_KO("쏘다"),
+        STR_RU("запуск"),
+        STR_ZH("发射"),
+        STR_TW("发射"),
+    },
+
+    [StrId_Actions_Open] =
+    {
+        STR_EN("Open"),
+        STR_ES("Abierto"),
+        STR_DE("Öffnen"),
+        STR_FR("Ouvrir"),
+        STR_IT("Aperto"),
+        STR_JP("開いた"),
+        STR_PT("Aberto"),
+        STR_NL("Open"),
+        STR_KO("열다"),
+        STR_RU("открыто"),
+        STR_ZH("打开"),
+        STR_TW("打开"),
+    },
+
     /*[StrId_Reboot] =
     {
         STR_EN(

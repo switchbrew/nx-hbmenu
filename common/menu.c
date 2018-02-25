@@ -191,18 +191,18 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
         if (me->type != ENTRY_TYPE_FOLDER) {
             memset(tmpstr, 0, sizeof(tmpstr));
-            snprintf(tmpstr, sizeof(tmpstr)-1, "Author: %s", me->author);
+            snprintf(tmpstr, sizeof(tmpstr)-1, "%s: %s", textGetString(StrId_AppInfo_Author), me->author);
             DrawText(interuiregular14, start_x, start_y + 28 + 30, themeCurrent.textColor, tmpstr);
             memset(tmpstr, 0, sizeof(tmpstr));
-            snprintf(tmpstr, sizeof(tmpstr)-1, "Version: %s", me->version);
+            snprintf(tmpstr, sizeof(tmpstr)-1, "%s: %s", textGetString(StrId_AppInfo_Version), me->version);
             DrawText(interuiregular14, start_x, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);  
                          
             drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, "Launch");
+            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
         }
         else {
             drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, "Open");
+            DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Open));
         }
     }
 }

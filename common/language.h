@@ -12,6 +12,11 @@ typedef enum
     StrId_NoAppsFound_Title,
     StrId_NoAppsFound_Msg,
 
+    StrId_AppInfo_Author,
+    StrId_AppInfo_Version,
+    StrId_Actions_Launch,
+    StrId_Actions_Open,
+
     StrId_Reboot,
     StrId_ReturnToHome,
 
