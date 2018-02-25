@@ -335,6 +335,9 @@ void menuLoop() {
             v += (wanted_x - x) / 3;
             v /= 2;
         }
+        else {
+            x = v = 0;
+        }
 
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
