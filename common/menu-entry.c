@@ -35,7 +35,7 @@ bool fileExists(const char* path) {
 
 static bool menuEntryLoadEmbeddedIcon(menuEntry_s* me) {
     NroHeader header;
-    AssetHeader asset_header;
+    NroAssetHeader asset_header;
 
     FILE* f = fopen(me->path, "rb");
     if (!f) return false;
@@ -50,8 +50,8 @@ static bool menuEntryLoadEmbeddedIcon(menuEntry_s* me) {
     fseek(f, header.size, SEEK_SET);
 
     if (fread(&asset_header, sizeof(asset_header), 1, f) != 1
-        || asset_header.magic != ASSETHEADER_MAGICNUM
-        || asset_header.version > ASSETHEADER_VERSION
+        || asset_header.magic != NROASSETHEADER_MAGIC
+        || asset_header.version > NROASSETHEADER_VERSION
         || asset_header.icon.offset == 0
         || asset_header.icon.size == 0)
     {
@@ -75,7 +75,7 @@ static bool menuEntryLoadEmbeddedIcon(menuEntry_s* me) {
 
 static bool menuEntryLoadEmbeddedNacp(menuEntry_s* me) {
     NroHeader header;
-    AssetHeader asset_header;
+    NroAssetHeader asset_header;
 
     FILE* f = fopen(me->path, "rb");
     if (!f) return false;
@@ -90,8 +90,8 @@ static bool menuEntryLoadEmbeddedNacp(menuEntry_s* me) {
     fseek(f, header.size, SEEK_SET);
 
     if (fread(&asset_header, sizeof(asset_header), 1, f) != 1
-        || asset_header.magic != ASSETHEADER_MAGICNUM
-        || asset_header.version > ASSETHEADER_VERSION
+        || asset_header.magic != NROASSETHEADER_MAGIC
+        || asset_header.version > NROASSETHEADER_VERSION
         || asset_header.nacp.offset == 0
         || asset_header.nacp.size == 0)
     {

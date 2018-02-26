@@ -36,10 +36,14 @@ typedef union {
 #include "text.h"
 #include "ui.h"
 #include "launch.h"
-#include "nro.h"
 #include "nanojpeg.h"
 #include "math.h"
 #include "theme.h"
+
+// when building for pc we need to include nro.h separately
+#ifndef SWITCH
+#include "nro.h"
+#endif
 
 void menuStartup();
 void menuLoop();
