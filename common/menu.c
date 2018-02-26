@@ -340,6 +340,19 @@ void menuLoop() {
     DrawText(interuiregular14, 180, 46, themeCurrent.textColor, "v2.0.0");
     DrawTextTruncate(interuiregular18, 40, 720 - 47, themeCurrent.textColor, menu->dirname, 918, "...");
 
+    #ifdef PERF_LOG_DRAW//Seperate from the PERF_LOG define since this might affect perf.
+    extern u64 g_tickdiff_vsync;
+    extern u64 g_tickdiff_frame;
+
+    char tmpstr[64];
+
+    snprintf(tmpstr, sizeof(tmpstr)-1, "%lu", g_tickdiff_vsync);
+    DrawText(interuiregular14, 180 + 256, 46, themeCurrent.textColor, tmpstr);
+
+    snprintf(tmpstr, sizeof(tmpstr)-1, "%lu", g_tickdiff_frame);
+    DrawText(interuiregular14, 180 + 256, 46 + 16, themeCurrent.textColor, tmpstr);
+    #endif
+
     //drawTime();
 
     if (menu->nEntries==0)

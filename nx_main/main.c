@@ -7,8 +7,17 @@
 uint8_t* g_framebuf;
 u32 g_framebuf_width;
 
+#ifdef PERF_LOG
+u64 g_tickdiff_vsync=0;
+u64 g_tickdiff_frame=0;
+#endif
+
 int main(int argc, char **argv)
 {
+    #ifdef PERF_LOG
+    u64 start_tick=0;
+    #endif
+
     gfxInitDefault();
 
     appletSetScreenShotPermission(1);
@@ -21,8 +30,20 @@ int main(int argc, char **argv)
 
     launchInit();
 
+    #ifdef PERF_LOG
+    gfxWaitForVsync();
+
+    start_tick = svcGetSystemTick();
+    gfxWaitForVsync();
+    g_tickdiff_vsync = svcGetSystemTick() - start_tick;
+    #endif
+
     while (appletMainLoop())
     {
+        #ifdef PERF_LOG
+        start_tick = svcGetSystemTick();
+        #endif
+
         //Scan all the inputs. This should be done once for each frame
         hidScanInput();
 
@@ -32,6 +53,11 @@ int main(int argc, char **argv)
         menuLoop();
 
         gfxFlushBuffers();
+
+        #ifdef PERF_LOG
+        g_tickdiff_frame = svcGetSystemTick() - start_tick;
+        #endif
+
         gfxSwapBuffers();
         gfxWaitForVsync();
     }
