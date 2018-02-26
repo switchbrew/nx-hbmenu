@@ -1,7 +1,11 @@
-all:
-	make -f Makefile.nx
-	make -f Makefile.pc
+nx:
+	$(MAKE) -f Makefile.nx
+
+pc:
+	$(MAKE) -f Makefile.pc
+
+all: nx pc
 
 clean:
-	make -f Makefile.pc clean
-	make -f Makefile.nx clean
+	$(MAKE) -f Makefile.pc clean
+	$(MAKE) -f Makefile.nx clean
