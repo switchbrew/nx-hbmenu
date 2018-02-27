@@ -1,4 +1,4 @@
-#include "language.h"
+﻿#include "language.h"
 
 #ifdef SWITCH
 #define STR_JP(_str) [SetLanguage_JA] = _str
@@ -60,22 +60,6 @@ const char* const g_strings[StrId_Max][16] =
         STR_RU("каталог"),
         STR_ZH("目录"),
         STR_TW("資料夾"),
-    },
-
-    [StrId_DefaultVersion] =
-    {
-        STR_EN("1.0.0"),
-        STR_ES("1.0.0"),
-        STR_DE("1.0.0"),
-        STR_FR("1.0.0"),
-        STR_IT("1.0.0"),
-        STR_JP("1.0.0"),
-        STR_PT("1.0.0"),
-        STR_NL("1.0.0"),
-        STR_KO("1.0.0"),
-        STR_RU("1.0.0"),
-        STR_ZH("1.0.0"),
-        STR_TW("1.0.0"),
     },
 
     /*[StrId_DefaultLongTitle] =
