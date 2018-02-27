@@ -8,14 +8,16 @@ static int s_textLang = 1;
 
 void textInit(void) {
     #ifdef SWITCH
-    u64 LanguageCode=0;
-    s32 Language=0;
-    Result rc = setInitialize();
+    //u64 LanguageCode=0;
+    //s32 Language=0;
+
     s_textLang = SetLanguage_ENUS;
+    //TODO: Re-enable this once the font supports all used languages.
+    /*Result rc = setInitialize();
     if (R_SUCCEEDED(rc)) rc = setGetSystemLanguage(&LanguageCode);
     if (R_SUCCEEDED(rc)) rc = setMakeLanguage(LanguageCode, &Language);
     if (R_SUCCEEDED(rc) && Language < 16) s_textLang = Language;
-    setExit();
+    setExit();*/
     #else
     s_textLang = 1;
     #endif

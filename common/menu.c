@@ -301,12 +301,12 @@ void drawTime() {
 }
 
 void drawBackBtn(menu_s* menu, bool emptyDir) {
-    int x_image = 1280 - 252 - 30;
-    int x_text = 1280 - 216 - 30;
+    int x_image = 1280 - 252 - 30 - 32;
+    int x_text = 1280 - 216 - 30 - 32;
 	
     if(emptyDir) {
-        x_image = 1280 - 126 - 30;
-         x_text = 1280 - 90 - 30;
+        x_image = 1280 - 126 - 30 - 32;
+         x_text = 1280 - 90 - 30 - 32;
     }
     
     #ifdef SWITCH
@@ -396,12 +396,12 @@ void menuLoop() {
 
         if(active_entry != NULL) {
             if (active_entry->type != ENTRY_TYPE_FOLDER) {
-                drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-                DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
+                drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+                DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
             }
             else {
-                drawImage(1280 - 126 - 30, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
-                DrawText(interuiregular18, 1280 - 90 - 30, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Open));
+                drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+                DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Open));
             }
         }
 
