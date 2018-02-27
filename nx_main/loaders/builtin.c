@@ -1,6 +1,42 @@
 #include "../common/common.h"
 
-static u32 argBuf[ENTRY_ARGBUFSIZE/sizeof(u32)];
+static char argBuf[ENTRY_ARGBUFSIZE];
+
+static void init_args(char *dst, size_t dst_maxsize, u32 *in_args, size_t size)
+{
+    size_t tmplen;
+    u32 argi;
+    char *in_argdata = (char*)&in_args[1];
+
+    size-= sizeof(u32);
+
+    for (argi=0; argi<in_args[0]; argi++) {
+        if (size < 2) break;
+
+        tmplen = strnlen(in_argdata, size-1);
+
+        if (tmplen+3 > dst_maxsize) break;
+
+        if (dst_maxsize < 3) break;
+
+        *dst++ = '"';
+        dst_maxsize--;
+
+        strncpy(dst, in_argdata, tmplen);
+        in_argdata+= tmplen+1;
+        size-= tmplen+1;
+        dst+= tmplen;
+        dst_maxsize-= tmplen;
+
+        *dst++ = '"';
+        dst_maxsize--;
+
+        if (argi+1 < in_args[0]) {
+            *dst++ = ' ';
+            dst_maxsize--;
+        }
+    }
+}
 
 static bool init(void)
 {
@@ -16,8 +52,9 @@ static void launchFile(const char* path, argData_s* args)
 {
     /*if (strncmp(path, "sdmc:/",6) == 0)
         path += 5;*/
-    memcpy(argBuf, args->buf, sizeof(args->buf));
-    Result rc = envSetNextLoad(path, (char*)&argBuf[1]);
+    memset(argBuf, 0, sizeof(argBuf));
+    init_args(argBuf, sizeof(argBuf)-1, args->buf, sizeof(args->buf));
+    Result rc = envSetNextLoad(path, argBuf);
     if(R_FAILED(rc)) fatalSimple(rc);//TODO: How should failing be handled?
     uiExitLoop();
 }
