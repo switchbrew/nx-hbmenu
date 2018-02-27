@@ -26,8 +26,8 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
     int pos;
     color_t current_color;
 
-    for (tmpx=0; tmpx<width; tmpx++) {
-        for (tmpy=0; tmpy<height; tmpy++) {
+    for (tmpy=0; tmpy<height; tmpy++) {
+        for (tmpx=0; tmpx<width; tmpx++) {
             switch (mode) {
                 case IMAGE_MODE_RGB24:
                     pos = ((tmpy*width) + tmpx) * 3;
@@ -170,8 +170,8 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         border_start_x = 117;
         border_end_x = 117+256;
 
-        for (x=border_start_x; x<border_end_x; x++) {
-            for (shadow_y=shadow_start_y; shadow_y <shadow_start_y+shadow_size; shadow_y++) {
+        for (shadow_y=shadow_start_y; shadow_y <shadow_start_y+shadow_size; shadow_y++) {
+            for (x=border_start_x; x<border_end_x; x++) {
                 shadow_color = MakeColor(0, 0, 0, shadow_alpha_base * (1.0 - (float)(shadow_y - shadow_start_y) / ((float)shadow_size)));
                 shadow_inset =(shadow_y-shadow_start_y);
 
@@ -326,8 +326,8 @@ void menuLoop() {
     int i;
     int x, y;
 
-    for (x=0; x<1280; x++) {
-        for (y=0; y<450; y++) { // don't draw bottom pixels as they are covered by the waves
+    for (y=0; y<450; y++) {
+        for (x=0; x<1280; x++) {// don't draw bottom pixels as they are covered by the waves
             DrawPixelRaw(x, y, themeCurrent.backgroundColor);
         }
     }
