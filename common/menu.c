@@ -337,7 +337,7 @@ void menuLoop() {
     timer += 0.05;
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
-    DrawText(interuiregular14, 180, 46, themeCurrent.textColor, "v2.0.0");
+    DrawText(interuiregular14, 180, 46, themeCurrent.textColor, VERSION);
     DrawTextTruncate(interuiregular18, 40, 720 - 47, themeCurrent.textColor, menu->dirname, 918, "...");
 
     #ifdef PERF_LOG_DRAW//Seperate from the PERF_LOG define since this might affect perf.
