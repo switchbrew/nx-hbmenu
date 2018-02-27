@@ -7,7 +7,6 @@ typedef enum
 {
     StrId_Loading = 0,
     StrId_Directory,
-    StrId_DefaultVersion,
     StrId_DefaultPublisher,
     StrId_IOError,
     StrId_CouldNotOpenFile,

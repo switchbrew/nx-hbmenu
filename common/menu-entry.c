@@ -184,7 +184,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
     {
         strcpy(me->name, name);
         strcpy(me->author, textGetString(StrId_DefaultPublisher));
-        strcpy(me->version, textGetString(StrId_DefaultVersion));
+        strcpy(me->version, "1.0.0");
 
         //shortcut_s sc;
 
