@@ -74,14 +74,14 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     if (is_active) {
         highlight_multiplier = fmax(0.0, fabs(fmod(timer, 1.0) - 0.5) / 0.5);
         border_color = MakeColor(themeCurrent.highlightColor.r + (255 - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (255 - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (255 - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
-        border_start_x = start_x-5;
-        border_end_x = end_x+5;
+        border_start_x = start_x-6;
+        border_end_x = end_x+6;
         border_start_y = start_y-5;
         border_end_y = end_y+5;
     }
     else {
-        border_start_x = start_x-3;
-        border_end_x = end_x+3;
+        border_start_x = start_x-4;
+        border_end_x = end_x+4;
         border_start_y = start_y-3;
         border_end_y = end_y+3;
     }
@@ -110,11 +110,11 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
                 shadow_start_y = 4;
             }
 
-            for (shadow_y=shadow_start_y; shadow_y <shadow_start_y+shadow_size; shadow_y++) {
+            for (shadow_y=shadow_start_y; shadow_y < shadow_start_y+shadow_size; shadow_y++) {
                 shadow_color = MakeColor(0, 0, 0, shadow_alpha_base * (1.0 - (float)(shadow_y - shadow_start_y) / ((float)shadow_size)));
                 shadow_inset =(shadow_y-shadow_start_y);
 
-                if (x >= border_start_x + shadow_inset && x <= border_end_x - shadow_inset) {
+                if (x >= border_start_x + shadow_inset && x < border_end_x - shadow_inset) {
                     DrawPixel(x, end_y  +shadow_y, shadow_color);
                 }
             }
@@ -129,12 +129,13 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             DrawPixelRaw(end_x  +2, y, border_color);
             DrawPixelRaw(start_x-3, y, border_color);
             DrawPixelRaw(end_x  +3, y, border_color);
+            DrawPixelRaw(start_x-4, y, border_color);
 
             if (is_active) {
-                DrawPixelRaw(start_x-4, y, border_color);
                 DrawPixelRaw(end_x  +4, y, border_color);
                 DrawPixelRaw(start_x-5, y, border_color);
                 DrawPixelRaw(end_x  +5, y, border_color);
+                DrawPixelRaw(start_x-6, y, border_color);
             }
         }
     //}
