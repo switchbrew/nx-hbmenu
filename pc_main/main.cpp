@@ -16,6 +16,7 @@ int main()
     window.setFramerateLimit(60);
 
     themeStartup(THEME_PRESET_LIGHT);
+    textInit();
     menuStartup();
 
     while (window.isOpen())

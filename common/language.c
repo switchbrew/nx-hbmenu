@@ -1,19 +1,32 @@
 #include "language.h"
 
-//TODO: Update this once libnx supports settings get-language.
-
-#define STR_JP(_str) [/*CFG_LANGUAGE_JP*/0] = _str
-#define STR_EN(_str) [/*CFG_LANGUAGE_EN*/1] = _str
-#define STR_FR(_str) [/*CFG_LANGUAGE_FR*/2] = _str
-#define STR_DE(_str) [/*CFG_LANGUAGE_DE*/3] = _str
-#define STR_IT(_str) [/*CFG_LANGUAGE_IT*/4] = _str
-#define STR_ES(_str) [/*CFG_LANGUAGE_ES*/5] = _str
-#define STR_ZH(_str) [/*CFG_LANGUAGE_ZH*/6] = _str
-#define STR_KO(_str) [/*CFG_LANGUAGE_KO*/7] = _str
-#define STR_NL(_str) [/*CFG_LANGUAGE_NL*/8] = _str
-#define STR_PT(_str) [/*CFG_LANGUAGE_PT*/9] = _str
-#define STR_RU(_str) [/*CFG_LANGUAGE_RU*/10] = _str
-#define STR_TW(_str) [/*CFG_LANGUAGE_TW*/11] = _str
+#ifdef SWITCH
+#define STR_JP(_str) [SetLanguage_JA] = _str
+#define STR_EN(_str) [SetLanguage_ENUS] = _str, [SetLanguage_ENGB] = _str
+#define STR_FR(_str) [SetLanguage_FR] = _str, [SetLanguage_FRCA] = _str
+#define STR_DE(_str) [SetLanguage_DE] = _str
+#define STR_IT(_str) [SetLanguage_IT] = _str
+#define STR_ES(_str) [SetLanguage_ES] = _str, [SetLanguage_ES419] = _str
+#define STR_ZH(_str) [SetLanguage_ZHCN] = _str
+#define STR_KO(_str) [SetLanguage_KO] = _str
+#define STR_NL(_str) [SetLanguage_NL] = _str
+#define STR_PT(_str) [SetLanguage_PT] = _str
+#define STR_RU(_str) [SetLanguage_RU] = _str
+#define STR_TW(_str) [SetLanguage_ZHTW] = _str
+#else
+#define STR_JP(_str) [0] = _str
+#define STR_EN(_str) [1] = _str
+#define STR_FR(_str) [2] = _str
+#define STR_DE(_str) [3] = _str
+#define STR_IT(_str) [4] = _str
+#define STR_ES(_str) [5] = _str
+#define STR_ZH(_str) [6] = _str
+#define STR_KO(_str) [7] = _str
+#define STR_NL(_str) [8] = _str
+#define STR_PT(_str) [9] = _str
+#define STR_RU(_str) [10] = _str
+#define STR_TW(_str) [11] = _str
+#endif
 
 const char* const g_strings[StrId_Max][16] =
 {
@@ -234,7 +247,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("Version"),
         STR_ES("Versión"),
-        STR_DE("Ausführung"),
+        STR_DE("Version"),
         STR_FR("Version"),
         STR_IT("Versione"),
         STR_JP("バージョン"),
@@ -276,6 +289,12 @@ const char* const g_strings[StrId_Max][16] =
         STR_RU("открыто"),
         STR_ZH("打开"),
         STR_TW("打开"),
+    },
+    
+    [StrId_Actions_Back] =
+    {
+        STR_EN("Back"),
+        STR_DE("Zurück"),
     },
 
     /*[StrId_Reboot] =
