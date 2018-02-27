@@ -139,8 +139,37 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
     strcpy(me->name, name);
     if (me->type == ENTRY_TYPE_FOLDER)
     {
+        //Check for <dirpath>/<dirname>.nro
         snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s/%.*s.nro", (int)sizeof(tempbuf)/2, me->path, (int)sizeof(tempbuf)/2-7, name);
         bool found = fileExists(tempbuf);
+
+        //Use the first .nro found in the directory, if there's only 1 NRO in the directory. Only used for paths which start with "sdmc:/switch".
+        if (!found && strncmp(me->path, "sdmc:/switch", 12)==0) {
+            DIR* dir;
+            struct dirent* dp;
+            u32 nro_count=0;
+
+            dir = opendir(me->path);
+            if (dir) {
+                while ((dp = readdir(dir))) {
+                    if (dp->d_name[0]=='.')//Check this here so that it's consistent with menuScan().
+                        continue;
+
+                    const char* ext = getExtension(dp->d_name);
+                    if (strcasecmp(ext, ".nro")==0) {
+                        nro_count++;
+                        if (nro_count>1) {
+                            found = 0;
+                            break;
+                        }
+
+                        snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s/%.*s", (int)sizeof(tempbuf)/2, me->path, (int)sizeof(tempbuf)/2-7, dp->d_name);
+                        found = fileExists(tempbuf);
+                    }
+                }
+                closedir(dir);
+            }
+        }
 
         if (found)
         {
@@ -148,8 +177,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
             shortcut = false;
             me->type = ENTRY_TYPE_FILE;
             strcpy(me->path, tempbuf);
-        } /*else
-            strcpy(me->name, textGetString(StrId_Directory));*/
+        }
     }
 
     if (me->type == ENTRY_TYPE_FILE)
