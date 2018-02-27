@@ -55,6 +55,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int end_y = start_y + 140 + 32;
     int start_x = off_x;//(n / 2);
     int end_x = start_x + 140;
+    int j;
 
     const uint8_t *smallimg = NULL;
     const uint8_t *largeimg = NULL;
@@ -87,23 +88,22 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
 
     //{
-        for (x=border_start_x; x<border_end_x; x++) {
-            //DrawPixelRaw(x, start_y  , border_color0);
-            DrawPixelRaw(x, end_y    , border_color);
-            DrawPixelRaw(x, start_y-1, border_color);
-            DrawPixelRaw(x, end_y  +1, border_color);
-            DrawPixelRaw(x, start_y-2, border_color);
-            DrawPixelRaw(x, end_y  +2, border_color);
-            DrawPixelRaw(x, start_y-3, border_color);
-            DrawPixelRaw(x, end_y  +3, border_color);
+        for (x=border_start_x; x<border_end_x; x+=4) {
+            Draw4PixelsRaw(x, end_y    , border_color);
+            Draw4PixelsRaw(x, start_y-1, border_color);
+            Draw4PixelsRaw(x, end_y  +1, border_color);
+            Draw4PixelsRaw(x, start_y-2, border_color);
+            Draw4PixelsRaw(x, end_y  +2, border_color);
+            Draw4PixelsRaw(x, start_y-3, border_color);
+            Draw4PixelsRaw(x, end_y  +3, border_color);
             
             if (is_active) {
-                DrawPixelRaw(x, start_y-3, border_color);
-                DrawPixelRaw(x, end_y  +3, border_color);
-                DrawPixelRaw(x, start_y-4, border_color);
-                DrawPixelRaw(x, end_y  +4, border_color);
-                DrawPixelRaw(x, start_y-5, border_color);
-                DrawPixelRaw(x, end_y  +5, border_color);
+                Draw4PixelsRaw(x, start_y-3, border_color);
+                Draw4PixelsRaw(x, end_y  +3, border_color);
+                Draw4PixelsRaw(x, start_y-4, border_color);
+                Draw4PixelsRaw(x, end_y  +4, border_color);
+                Draw4PixelsRaw(x, start_y-5, border_color);
+                Draw4PixelsRaw(x, end_y  +5, border_color);
                 shadow_start_y = 6;
             }
             else {
@@ -115,7 +115,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
                 shadow_inset =(shadow_y-shadow_start_y);
 
                 if (x >= border_start_x + shadow_inset && x < border_end_x - shadow_inset) {
-                    DrawPixel(x, end_y  +shadow_y, shadow_color);
+                    for (j=0; j<4; j++) DrawPixel(x+j, end_y  +shadow_y, shadow_color);
                 }
             }
         }
@@ -140,9 +140,9 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         }
     //}
 
-    for (x=start_x; x<end_x; x++) {
-        for (y=start_y; y<end_y; y++) {
-            DrawPixelRaw(x, y, MakeColor(255, 255, 255, 255));
+    for (y=start_y; y<end_y; y++) {
+        for (x=start_x; x<end_x; x+=4) {
+            Draw4PixelsRaw(x, y, MakeColor(255, 255, 255, 255));
         }
     }
 
@@ -327,8 +327,8 @@ void menuLoop() {
     int x, y;
 
     for (y=0; y<450; y++) {
-        for (x=0; x<1280; x++) {// don't draw bottom pixels as they are covered by the waves
-            DrawPixelRaw(x, y, themeCurrent.backgroundColor);
+        for (x=0; x<1280; x+=4) {// don't draw bottom pixels as they are covered by the waves
+            Draw4PixelsRaw(x, y, themeCurrent.backgroundColor);
         }
     }
 
