@@ -10,4 +10,4 @@ Build with ```make nx``` or just run ```make```.
 #### Credits
 
 * This uses code based on 3DS [new-hbmenu](https://github.com/fincs/new-hbmenu).
-* [nanojpeg](https://svn.emphy.de/nanojpeg/trunk/nanojpeg/nanojpeg.c) is used for handling JPEG icons. Due to this some JPEGs are not [supported](#7).
+* [nanojpeg](https://svn.emphy.de/nanojpeg/trunk/nanojpeg/nanojpeg.c) is used for handling JPEG icons. Due to this some JPEGs are not [supported](https://github.com/switchbrew/nx-hbmenu/issues/7).
