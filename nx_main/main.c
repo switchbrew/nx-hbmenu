@@ -26,6 +26,7 @@ int main(int argc, char **argv)
     setsysInitialize();
     setsysGetColorSetId(&theme);
     themeStartup((ThemePreset)theme);
+    textInit();
     menuStartup();
 
     launchInit();

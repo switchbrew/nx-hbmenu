@@ -1,4 +1,7 @@
 #pragma once
+#ifdef SWITCH
+#include <switch.h>
+#endif
 
 typedef enum
 {
@@ -16,6 +19,7 @@ typedef enum
     StrId_AppInfo_Version,
     StrId_Actions_Launch,
     StrId_Actions_Open,
+    StrId_Actions_Back,
 
     StrId_Reboot,
     StrId_ReturnToHome,

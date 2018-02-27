@@ -316,7 +316,7 @@ void drawBackBtn(menu_s* menu, bool emptyDir) {
     #endif
     {
         drawImage(x_image, 720 - 48, 32, 32, themeCurrent.buttonBImage, IMAGE_MODE_RGBA32);
-        DrawText(interuiregular18, x_text, 720 - 47, themeCurrent.textColor, "Back");
+        DrawText(interuiregular18, x_text, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Back));
     }
 }
 
