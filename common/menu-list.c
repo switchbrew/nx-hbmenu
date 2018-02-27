@@ -98,8 +98,8 @@ int menuScan(const char* target) {
     {
         menuEntry_s* me = NULL;
         bool shortcut = false;
-        /*if (entry->attributes & FS_ATTRIBUTE_HIDDEN) 
-            continue;*/
+        if (dp->d_name[0]=='.')
+            continue;
 
         bool entrytype=0;
 
