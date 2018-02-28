@@ -143,8 +143,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s/%.*s.nro", (int)sizeof(tempbuf)/2, me->path, (int)sizeof(tempbuf)/2-7, name);
         bool found = fileExists(tempbuf);
 
-        //Use the first .nro found in the directory, if there's only 1 NRO in the directory. Only used for paths which start with "sdmc:/switch".
-        if (!found && strncmp(me->path, "sdmc:/switch", 12)==0) {
+        //Use the first .nro found in the directory, if there's only 1 NRO in the directory. Only used for paths starting with "sdmc:/switch/".
+        if (!found && strncmp(me->path, "sdmc:/switch/", 13)==0) {
             DIR* dir;
             struct dirent* dp;
             u32 nro_count=0;
