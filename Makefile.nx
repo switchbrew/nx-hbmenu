@@ -36,6 +36,8 @@ DATA		:=	data
 INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_src
 
+DIST_PATH	:=	$(TARGET)_$(APP_VERSION)
+
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
@@ -130,7 +132,7 @@ ifneq ($(APP_TITLEID),)
 	export NACPFLAGS += --titleid=$(APP_TITLEID)
 endif
 
-.PHONY: $(BUILD) clean all
+.PHONY: $(BUILD) clean all dist-bin
 
 #---------------------------------------------------------------------------------
 all: $(BUILD)
@@ -144,6 +146,11 @@ clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(TARGET).pfs0 $(TARGET).nso $(TARGET).nro $(TARGET).nacp $(TARGET).elf
 
+#---------------------------------------------------------------------------------
+dist-bin: all
+	@mkdir -p $(DIST_PATH)
+	@cp $(OUTPUT).nro $(DIST_PATH)/hbmenu.nro
+	@zip -rj $(DIST_PATH).zip $(DIST_PATH)
 
 #---------------------------------------------------------------------------------
 else
