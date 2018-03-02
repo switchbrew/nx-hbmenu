@@ -272,7 +272,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_EN("Open"),
         STR_ES("Abierto"),
         STR_DE("Öffnen"),
-        STR_FR("Ouvrir"),
+        STR_FR("Ouvrir"),   //if "Open" is used as an adjective here (just like Spanish), and not a verb, consider changing "Ouvrir" to "Ouvert", because "Ouvrir" is the verb "To open"
         STR_IT("Aperto"),
         STR_JP("開いた"),
         STR_PT("Aberto"),
@@ -286,7 +286,9 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_Actions_Back] =
     {
         STR_EN("Back"),
+        STR_ES("Volver"),
         STR_DE("Zurück"),
+        STR_FR("Retour"),
         STR_KO("뒤로 가기"),
         STR_TW("回去"),
     },
