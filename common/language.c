@@ -270,9 +270,9 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_Actions_Open] =
     {
         STR_EN("Open"),
-        STR_ES("Abierto"),
+        STR_ES("Abrir"),
         STR_DE("Öffnen"),
-        STR_FR("Ouvrir"),   //if "Open" is used as an adjective here (just like Spanish), and not a verb, consider changing "Ouvrir" to "Ouvert", because "Ouvrir" is the verb "To open"
+        STR_FR("Ouvrir"),
         STR_IT("Aperto"),
         STR_JP("開いた"),
         STR_PT("Aberto"),
