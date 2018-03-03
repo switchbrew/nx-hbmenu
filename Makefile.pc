@@ -1,7 +1,14 @@
+HOST_OS := $(shell uname -s)
+
+ifeq ($(strip $(HOST_OS)),Darwin)
+BIN2S_FLAGS := --apple-llvm
+endif
+
+
 # canned command sequence for binary data
 #---------------------------------------------------------------------------------
 define bin2o
-	bin2s $< | $(AS) -o $(@)
+	bin2s $(BIN2S_FLAGS) $< | $(AS) -o $(@)
 	echo "extern const u8" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(<F) | tr . _)`.h
 	echo "extern const u8" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(<F) | tr . _)`.h
 	echo "extern const u32" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(<F) | tr . _)`.h

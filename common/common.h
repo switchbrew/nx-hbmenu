@@ -10,7 +10,9 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#ifndef __APPLE__
 #include <malloc.h>
+#endif
 #include <math.h>
 #ifdef SWITCH
 #include <switch.h>
