@@ -335,11 +335,21 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     njDone();
 
-    me->icon_gfx_small = downscaleIcon(me->icon_gfx);
+    me->icon_gfx_small = downscaleImg(me->icon_gfx, 256, 256, 140, 140, IMAGE_MODE_RGB24);
 }
 
-uint8_t *downscaleIcon(const uint8_t *image) {
-    uint8_t *out = (uint8_t*)malloc(140*140*3);
+uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int destWidth, int destHeight, ImageMode mode) {
+    uint8_t *out;
+
+    switch (mode) {
+        case IMAGE_MODE_RGBA32:
+            out = (uint8_t*)malloc(destWidth*destHeight*4);
+            break;
+
+        default:
+            out = (uint8_t*)malloc(destWidth*destHeight*3);
+            break;
+    }
 
     if (out == NULL) {
         return NULL;
@@ -348,13 +358,13 @@ uint8_t *downscaleIcon(const uint8_t *image) {
     int tmpx, tmpy;
     int pos;
     float sourceX, sourceY;
-    int destWidth = 140, destHeight = 140;
-    float xScale = 256.0 / (float)destWidth;
-    float yScale = 256.0 / (float)destHeight;
+    float xScale = (float)srcWidth / (float)destWidth;
+    float yScale = (float)srcHeight / (float)destHeight;
     int pixelX, pixelY;
     uint8_t r1, r2, r3, r4;
     uint8_t g1, g2, g3, g4;
     uint8_t b1, b2, b3, b4;
+    uint8_t a1, a2, a3, a4;
     float fx, fy, fx1, fy1;
     int w1, w2, w3, w4;
 
@@ -366,25 +376,56 @@ uint8_t *downscaleIcon(const uint8_t *image) {
             pixelY = (int)sourceY;
 
             // get colours from four surrounding pixels
-            pos = ((pixelY + 0) * 256 + pixelX + 0) * 3;
+            if (mode == IMAGE_MODE_RGBA32) 
+                pos = ((pixelY + 0) * srcWidth + pixelX + 0) * 4;
+            else
+                pos = ((pixelY + 0) * srcWidth + pixelX + 0) * 3;
+
             r1 = image[pos+0];
             g1 = image[pos+1];
             b1 = image[pos+2];
+            
+            if (mode == IMAGE_MODE_RGBA32) 
+                a1 = image[pos+3];
 
-            pos = ((pixelY + 0) * 256 + pixelX + 1) * 3;
+
+            if (mode == IMAGE_MODE_RGBA32) 
+                pos = ((pixelY + 0) * srcWidth + pixelX + 1) * 4;
+            else
+                pos = ((pixelY + 0) * srcWidth + pixelX + 1) * 3;
+
             r2 = image[pos+0];
             g2 = image[pos+1];
             b2 = image[pos+2];
 
-            pos = ((pixelY + 1) * 256 + pixelX + 0) * 3;
+            if (mode == IMAGE_MODE_RGBA32) 
+                a2 = image[pos+3];
+
+
+            if (mode == IMAGE_MODE_RGBA32) 
+                pos = ((pixelY + 1) * srcWidth + pixelX + 0) * 4;
+            else
+                pos = ((pixelY + 1) * srcWidth + pixelX + 0) * 3;
+
             r3 = image[pos+0];
             g3 = image[pos+1];
             b3 = image[pos+2];
 
-            pos = ((pixelY + 1) * 256 + pixelX + 1) * 3;
+            if (mode == IMAGE_MODE_RGBA32) 
+                a3 = image[pos+3];
+
+
+            if (mode == IMAGE_MODE_RGBA32) 
+                pos = ((pixelY + 1) * srcWidth + pixelX + 1) * 4;
+            else
+                pos = ((pixelY + 1) * srcWidth + pixelX + 1) * 3;
+
             r4 = image[pos+0];
             g4 = image[pos+1];
             b4 = image[pos+2];
+
+            if (mode == IMAGE_MODE_RGBA32) 
+                a4 = image[pos+3];
 
             // determine weights
             fx = sourceX - pixelX;
@@ -398,10 +439,17 @@ uint8_t *downscaleIcon(const uint8_t *image) {
             w4 = (int)(fx*fy*256.0);
  
             // set output pixels
-            pos = ((tmpy*destWidth) + tmpx) * 3;
+            if (mode == IMAGE_MODE_RGBA32) 
+                pos = ((tmpy*destWidth) + tmpx) * 4;
+            else
+                pos = ((tmpy*destWidth) + tmpx) * 3;
+
             out[pos+0] = (uint8_t)((r1 * w1 + r2 * w2 + r3 * w3 + r4 * w4) >> 8);
             out[pos+1] = (uint8_t)((g1 * w1 + g2 * w2 + g3 * w3 + g4 * w4) >> 8);
             out[pos+2] = (uint8_t)((b1 * w1 + b2 * w2 + b3 * w3 + b4 * w4) >> 8);
+
+            if (mode == IMAGE_MODE_RGBA32) 
+                out[pos+3] = (uint8_t)((a1 * w1 + a2 * w2 + a3 * w3 + a4 * w4) >> 8);
         }
     }
 

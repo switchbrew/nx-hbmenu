@@ -70,7 +70,10 @@ extern "C" bool menuUpdate(void) {
     }
     else if (!new_return_state && return_state)
     {
-        if (menu->nEntries > 0)
+        if (menuIsMsgBoxOpen()) {
+            menuCloseMsgBox();
+        }
+        else if (menu->nEntries > 0)
         {
             int i;
             menuEntry_s* me;

@@ -10,6 +10,8 @@ typedef struct
     color_t backWaveColor;
     color_t backgroundColor;
     color_t highlightColor;
+    color_t seperatorColor;
+    color_t activeColor;
     bool enableWaveBlending;
     const uint8_t *buttonAImage;      
     const uint8_t *buttonBImage;

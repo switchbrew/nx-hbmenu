@@ -50,12 +50,25 @@ struct menuEntry_s_tag
     NacpStruct *nacp;
 };
 
+typedef enum 
+{
+    IMAGE_MODE_RGB24,
+    IMAGE_MODE_RGBA32
+} ImageMode;
+
+double menuTimer;
+
+void menuCreateMsgBox(int width, int height, const char *text);
+void menuCloseMsgBox();
+bool menuIsMsgBoxOpen();
+void menuDrawMsgBox(void);
+
 void menuEntryInit(menuEntry_s* me, MenuEntryType type);
 void menuEntryFree(menuEntry_s* me);
 bool fileExists(const char* path);
 bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut);
 void menuEntryParseIcon(menuEntry_s* me);
-uint8_t *downscaleIcon(const uint8_t *image);
+uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int destWidth, int destHeight, ImageMode mode);
 void menuEntryParseNacp(menuEntry_s* me);
 
 menu_s* menuGetCurrent(void);
