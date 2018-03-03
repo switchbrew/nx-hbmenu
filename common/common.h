@@ -137,3 +137,4 @@ static inline color_t FetchPixelColor(uint32_t x, uint32_t y)
 void DrawPixel(uint32_t x, uint32_t y, color_t clr);
 void DrawText(const ffnt_header_t* font, uint32_t x, uint32_t y, color_t clr, const char* text);
 void DrawTextTruncate(const ffnt_header_t* font, uint32_t x, uint32_t y, color_t clr, const char* text, uint32_t max_width, const char* end_text);
+void GetTextDimensions(const ffnt_header_t* font, const char* text, uint32_t* width_out, uint32_t* height_out);

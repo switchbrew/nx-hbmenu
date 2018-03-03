@@ -80,7 +80,10 @@ bool menuUpdate(void) {
 
     if (down & KEY_A)
     {
-        if (menu->nEntries > 0)
+        if (menuIsMsgBoxOpen()) {
+            menuCloseMsgBox();
+        }
+        else if (menu->nEntries > 0)
         {
             int i;
             menuEntry_s* me;

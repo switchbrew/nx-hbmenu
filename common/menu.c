@@ -14,11 +14,7 @@ void launchMenuEntryTask(menuEntry_s* arg)
         launchMenuEntry(me);
 }
 
-typedef enum 
-{
-    IMAGE_MODE_RGB24,
-    IMAGE_MODE_RGBA32
-} ImageMode;
+
 
 //Draws an RGB888 or RGBA8888 image.
 static void drawImage(int x, int y, int width, int height, const uint8_t *image, ImageMode mode) {
@@ -47,7 +43,6 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
 
 uint8_t *folder_icon_small;
 uint8_t *invalid_icon_small;
-double timer;
 
 static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int x, y;
@@ -73,7 +68,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int shadow_size = 4;
 
     if (is_active) {
-        highlight_multiplier = fmax(0.0, fabs(fmod(timer, 1.0) - 0.5) / 0.5);
+        highlight_multiplier = fmax(0.0, fabs(fmod(menuTimer, 1.0) - 0.5) / 0.5);
         border_color = MakeColor(themeCurrent.highlightColor.r + (255 - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (255 - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (255 - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
         border_start_x = start_x-6;
         border_end_x = end_x+6;
@@ -234,9 +229,10 @@ void menuStartup() {
 
     menuScan(path);
 
-    folder_icon_small = downscaleIcon(folder_icon_bin);
-    invalid_icon_small = downscaleIcon(invalid_icon_bin);
+    folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
+    //menuCreateMsgBox(780, 300, "This is a test");
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
@@ -316,7 +312,7 @@ void drawBackBtn(menu_s* menu, bool emptyDir) {
     #endif
     {
         drawImage(x_image, 720 - 48, 32, 32, themeCurrent.buttonBImage, IMAGE_MODE_RGBA32);
-        DrawText(interuiregular18, x_text, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Back));
+        DrawText(interuimedium20, x_text, 720 - 47, themeCurrent.textColor, textGetString(StrId_Actions_Back));
     }
 }
 
@@ -332,10 +328,10 @@ void menuLoop() {
         }
     }
 
-    drawWave(0, timer, themeCurrent.backWaveColor, 295, 0.0, 3.0);
-    drawWave(1, timer, themeCurrent.middleWaveColor, 290, 2.0, 3.5);
-    drawWave(2, timer, themeCurrent.frontWaveColor, 280, 4.0, -2.5);
-    timer += 0.05;
+    drawWave(0, menuTimer, themeCurrent.backWaveColor, 295, 0.0, 3.0);
+    drawWave(1, menuTimer, themeCurrent.middleWaveColor, 290, 2.0, 3.5);
+    drawWave(2, menuTimer, themeCurrent.frontWaveColor, 280, 4.0, -2.5);
+    menuTimer += 0.05;
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
     DrawText(interuiregular14, 180, 46, themeCurrent.textColor, VERSION);
@@ -407,4 +403,6 @@ void menuLoop() {
 
         drawBackBtn(menu, false);
     }
+
+    menuDrawMsgBox();
 }

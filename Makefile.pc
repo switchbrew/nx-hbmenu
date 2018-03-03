@@ -9,7 +9,7 @@ endef
 
 test : pc_main/main.cpp pc_main/pc_launch.c \
 	common/menu.c common/font.c common/language.c common/launch.c \
-	common/menu-entry.c common/menu-list.c common/text.c \
+	common/menu-entry.c common/menu-list.c common/message-box.c common/text.c \
 	common/nanojpeg.c common/ui.c common/math.c common/theme.c \
 	build_pc/tahoma24.o build_pc/tahoma12.o build_pc/interuimedium20.o build_pc/interuimedium30.o \
 	build_pc/interuiregular14.o build_pc/interuiregular18.o \

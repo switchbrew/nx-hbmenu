@@ -166,3 +166,35 @@ void DrawTextTruncate(const ffnt_header_t* font, uint32_t x, uint32_t y, color_t
 {
     DrawText_(font, x, y, clr, text, max_width, end_text);
 }
+
+void GetTextDimensions(const ffnt_header_t* font, const char* text, uint32_t* width_out, uint32_t* height_out)
+{
+    uint32_t x = 0;
+    uint32_t width = 0, height = 0;
+    while (*text)
+    {
+        glyph_t glyph;
+        uint32_t codepoint = DecodeUTF8(&text);
+
+        if (codepoint == '\n')
+        {
+            x = 0;
+            height += font->height;
+            continue;
+        }
+
+        if (!FontLoadGlyph(&glyph, font, codepoint))
+        {
+            if (!FontLoadGlyph(&glyph, font, '?'))
+                continue;
+        }
+
+        x += glyph.advance;
+
+        if (x > width)
+            width = x;
+    }
+
+    *width_out = width;
+    *height_out = height;
+}
