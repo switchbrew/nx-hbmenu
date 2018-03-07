@@ -289,7 +289,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_ES("Volver"),
         STR_DE("Zurück"),
         STR_FR("Retour"),
-        STR_IT("Ritorno"),
+        STR_IT("Ritornare"),
         STR_JP("戻る"),		//Not sure about this one nor the ones after STR_PT
         STR_PT("Regressar"),
         STR_NL("Teruggaan"),
