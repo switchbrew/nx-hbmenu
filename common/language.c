@@ -1,6 +1,6 @@
 ﻿#include "language.h"
 
-#ifdef SWITCH
+#ifdef __SWITCH__
 #define STR_JP(_str) [SetLanguage_JA] = _str
 #define STR_EN(_str) [SetLanguage_ENUS] = _str, [SetLanguage_ENGB] = _str
 #define STR_FR(_str) [SetLanguage_FR] = _str, [SetLanguage_FRCA] = _str
