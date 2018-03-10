@@ -14,7 +14,7 @@
 #include <malloc.h>
 #endif
 #include <math.h>
-#ifdef SWITCH
+#ifdef __SWITCH__
 #include <switch.h>
 #endif
 
@@ -43,7 +43,7 @@ typedef union {
 #include "theme.h"
 
 // when building for pc we need to include nro.h separately
-#ifndef SWITCH
+#ifndef __SWITCH__
 #include "nro.h"
 #endif
 
@@ -66,7 +66,7 @@ static inline color_t MakeColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     return clr;
 }
 
-#ifdef SWITCH
+#ifdef __SWITCH__
 extern uint8_t* g_framebuf;
 extern u32 g_framebuf_width;
 static inline void DrawPixel(uint32_t x, uint32_t y, color_t clr)

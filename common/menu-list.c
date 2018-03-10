@@ -106,7 +106,7 @@ int menuScan(const char* target) {
         memset(tmp_path, 0, sizeof(tmp_path));
         snprintf(tmp_path, sizeof(tmp_path)-1, "%s/%s", s_menu[!s_curMenu].dirname, dp->d_name);
 
-        #ifdef SWITCH
+        #ifdef __SWITCH__
         fsdev_dir_t* dirSt = (fsdev_dir_t*)dir->dirData->dirStruct;
         FsDirectoryEntry* entry = &dirSt->entry_data[dirSt->index];
 

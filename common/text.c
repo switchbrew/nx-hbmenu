@@ -1,13 +1,13 @@
 #include "text.h"
 
-#ifdef SWITCH
+#ifdef __SWITCH__
 static int s_textLang = SetLanguage_ENUS;
 #else
 static int s_textLang = 1;
 #endif
 
 void textInit(void) {
-    #ifdef SWITCH
+    #ifdef __SWITCH__
     //u64 LanguageCode=0;
     //s32 Language=0;
 
@@ -29,7 +29,7 @@ int textGetLang(void) {
 
 const char* textGetString(StrId id) {
     const char* str = g_strings[id][s_textLang];
-    #ifdef SWITCH
+    #ifdef __SWITCH__
     if (!str) str = g_strings[id][SetLanguage_ENUS];
     #else                              
     if (!str) str = g_strings[id][1];

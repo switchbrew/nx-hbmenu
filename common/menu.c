@@ -221,7 +221,7 @@ void computeFrontGradient(color_t baseColor, int height) {
 void menuStartup() {
     const char *path;
 
-    #ifdef SWITCH
+    #ifdef __SWITCH__
     path = "sdmc:/switch";
     #else
     path = "switch";
@@ -305,7 +305,7 @@ void drawBackBtn(menu_s* menu, bool emptyDir) {
          x_text = 1280 - 90 - 30 - 32;
     }
     
-    #ifdef SWITCH
+    #ifdef __SWITCH__
     if (strcmp( menu->dirname, "sdmc:/") != 0)
     #else
     if (strcmp( menu->dirname, "/") != 0)
