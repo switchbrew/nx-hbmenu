@@ -14,6 +14,9 @@ u64 g_tickdiff_frame=0;
 
 int main(int argc, char **argv)
 {
+    Result lastret=0;
+    char msg[256];
+
     #ifdef PERF_LOG
     u64 start_tick=0;
     #endif
@@ -30,6 +33,15 @@ int main(int argc, char **argv)
     menuStartup();
 
     launchInit();
+
+    lastret = envGetLastLoadResult();
+
+    if (R_FAILED(lastret)) {
+        memset(msg, 0, sizeof(msg));
+        snprintf(msg, sizeof(msg)-1, "%s\n0x%x", textGetString(StrId_LastLoadResult), lastret);
+
+        menuCreateMsgBox(780, 300, msg);
+    }
 
     #ifdef PERF_LOG
     gfxWaitForVsync();

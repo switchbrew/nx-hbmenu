@@ -211,6 +211,11 @@ const char* const g_strings[StrId_Max][16] =
         ),
     },
 
+    [StrId_LastLoadResult] =
+    {
+        STR_EN("The last application returned an error:"),
+    },
+
     [StrId_AppInfo_Author] =
     {
         STR_EN("Author"),
@@ -279,6 +284,11 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("Back"),
         STR_DE("Zurück"),
+    },
+
+    [StrId_MsgBox_OK] =
+    {
+        STR_EN("OK"),
     },
 
     /*[StrId_Reboot] =
