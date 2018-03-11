@@ -214,6 +214,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_LastLoadResult] =
     {
         STR_EN("The last application returned an error:"),
+        STR_ES("La última aplicación devolvió un error:"),
     },
 
     [StrId_AppInfo_Author] =
@@ -289,6 +290,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_MsgBox_OK] =
     {
         STR_EN("OK"),
+        STR_ES("Aceptar"),
     },
 
     /*[StrId_Reboot] =
