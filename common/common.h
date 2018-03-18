@@ -54,7 +54,7 @@ typedef union {
 
 // when building for pc we need to include nro.h separately
 #ifndef __SWITCH__
-#include "nro.h"
+#include <switch/nro.h>
 #endif
 
 void menuStartup();
