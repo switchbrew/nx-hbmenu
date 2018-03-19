@@ -82,15 +82,17 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void launchMenuEntryTask(menuEntry_s* arg);
-
 //This is implemented here due to the hid code.
 bool menuUpdate(void) {
     bool exitflag = 0;
     menu_s* menu = menuGetCurrent();
     u32 down = hidKeysDown(CONTROLLER_P1_AUTO);
 
-    if (down & KEY_A)
+    if (down & KEY_Y)
+    {
+        launchMenuNetloaderTask();
+    }
+    else if (down & KEY_A)
     {
         if (menuIsMsgBoxOpen()) {
             menuCloseMsgBox();
@@ -106,11 +108,7 @@ bool menuUpdate(void) {
     }
     else if (down & KEY_B)
     {
-        if (strcmp( menu->dirname, "sdmc:/") != 0)
-        {
-            //workerSchedule(changeDirTask, "..");
-            menuScan("..");
-        }
+        launchMenuBackTask();
     }
     else if (down & KEY_PLUS)
     {

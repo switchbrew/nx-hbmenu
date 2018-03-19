@@ -1,8 +1,10 @@
+#include <inttypes.h>
+
 #include "../common/common.h"
 
 static char argBuf[ENTRY_ARGBUFSIZE];
 
-static void init_args(char *dst, size_t dst_maxsize, u32 *in_args, size_t size)
+static char *init_args(char *dst, size_t dst_maxsize, u32 *in_args, size_t size)
 {
     size_t tmplen;
     u32 argi;
@@ -36,6 +38,7 @@ static void init_args(char *dst, size_t dst_maxsize, u32 *in_args, size_t size)
             dst_maxsize--;
         }
     }
+    return dst;
 }
 
 static bool init(void)
@@ -45,7 +48,7 @@ static bool init(void)
 
 static void deinit(void)
 {
-    
+
 }
 
 static void launchFile(const char* path, argData_s* args)
@@ -53,8 +56,19 @@ static void launchFile(const char* path, argData_s* args)
     /*if (strncmp(path, "sdmc:/",6) == 0)
         path += 5;*/
     memset(argBuf, 0, sizeof(argBuf));
+
+   uint32_t remote = args->nxlink_host.s_addr;
+
+   if (remote) {
+        char nxlinked[17];
+        sprintf(nxlinked,"%08" PRIx32 "_NXLINK_",remote);
+        launchAddArg(args, nxlinked);
+    }
+
     init_args(argBuf, sizeof(argBuf)-1, args->buf, sizeof(args->buf));
+
     Result rc = envSetNextLoad(path, argBuf);
+
     if(R_FAILED(rc)) fatalSimple(rc);//TODO: How should failing be handled?
     uiExitLoop();
 }

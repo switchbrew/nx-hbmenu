@@ -53,8 +53,6 @@ int main()
     return 0;
 }
 
-extern "C" void launchMenuEntryTask(menuEntry_s* arg);
-
 extern "C" bool menuUpdate(void) {
     //This is implemented here due to the hid code.
     menu_s* menu = menuGetCurrent();
@@ -63,10 +61,18 @@ extern "C" bool menuUpdate(void) {
     int new_esc_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
     static int return_state = 0;
     int new_return_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
+    static int y_state = 0;
+    int new_y_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Y);
+
+    if(!new_y_state && y_state)
+    {
+        launchMenuNetloaderTask();
+
+    }
 
     if (!new_esc_state && esc_state)
     {
-        menuScan("..");
+        launchMenuBackTask();
     }
     else if (!new_return_state && return_state)
     {
@@ -106,6 +112,7 @@ extern "C" bool menuUpdate(void) {
 
     esc_state = new_esc_state;
     return_state = new_return_state;
+    y_state = new_y_state;
 
     return 0;
 }

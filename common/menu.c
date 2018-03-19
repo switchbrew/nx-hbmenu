@@ -1,8 +1,15 @@
 #include <time.h>
 #include "common.h"
+#include "netloader.h"
 
 #include "invalid_icon_bin.h"
 #include "folder_icon_bin.h"
+
+char rootPath[PATH_MAX];
+
+char *menuGetRootPath() {
+    return rootPath;
+}
 
 void launchMenuEntryTask(menuEntry_s* arg)
 {
@@ -14,7 +21,29 @@ void launchMenuEntryTask(menuEntry_s* arg)
         launchMenuEntry(me);
 }
 
+static enum
+{
+    HBMENU_DEFAULT,
+    HBMENU_NETLOADER_ACTIVE,
+    HBMENU_NETLOADER_ERROR,
+    HBMENU_NETLOADER_SUCCESS,
+} hbmenu_state = HBMENU_DEFAULT;
 
+void launchMenuNetloaderTask() {
+    if(hbmenu_state == HBMENU_DEFAULT)
+        if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
+}
+
+void launchMenuBackTask()
+{
+    if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
+        netloader_deactivate();
+        hbmenu_state = HBMENU_DEFAULT;
+    } else {
+        menuScan("..");
+    }
+
+}
 
 //Draws an RGB888 or RGBA8888 image.
 static void drawImage(int x, int y, int width, int height, const uint8_t *image, ImageMode mode) {
@@ -35,7 +64,7 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
                     current_color = MakeColor(image[pos+0], image[pos+1], image[pos+2], image[pos+3]);
                     break;
             }
-            
+
             DrawPixel(x+tmpx, y+tmpy, current_color);
         }
     }
@@ -59,7 +88,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int border_start_x, border_end_x;
     int border_start_y, border_end_y;
     color_t border_color = MakeColor(255, 255, 255, 255);
-    
+
     int shadow_start_y, shadow_y;
     int shadow_inset;
     color_t shadow_color;
@@ -91,7 +120,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             Draw4PixelsRaw(x, end_y  +2, border_color);
             Draw4PixelsRaw(x, start_y-3, border_color);
             Draw4PixelsRaw(x, end_y  +3, border_color);
-            
+
             if (is_active) {
                 Draw4PixelsRaw(x, start_y-3, border_color);
                 Draw4PixelsRaw(x, end_y  +3, border_color);
@@ -191,7 +220,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             DrawText(interuiregular14, start_x, start_y + 28 + 30, themeCurrent.textColor, tmpstr);
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "%s: %s", textGetString(StrId_AppInfo_Version), me->version);
-            DrawText(interuiregular14, start_x, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);  
+            DrawText(interuiregular14, start_x, start_y + 28 + 30 + 18 + 6, themeCurrent.textColor, tmpstr);
         }
     }
 }
@@ -219,15 +248,16 @@ void computeFrontGradient(color_t baseColor, int height) {
 }
 
 void menuStartup() {
-    const char *path;
+
 
     #ifdef __SWITCH__
-    path = "sdmc:/switch";
+    strcpy(rootPath,"sdmc:");
     #else
-    path = "switch";
+    getcwd(rootPath, PATH_MAX);
     #endif
+    sprintf(rootPath,"%s%s%s" , rootPath, DIRECTORY_SEPARATOR, "switch" );
 
-    menuScan(path);
+    menuScan(rootPath);
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
@@ -243,14 +273,14 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
     int x, y;
     float wave_top_y, alpha, one_minus_alpha;
     color_t existing_color, new_color;
-    
+
     height = 720 - height;
 
     for (x=0; x<1280; x++) {
         wave_top_y = approxSin(x*speed/1280.0+timer+phase) * 10.0 + height;
 
         for (y=wave_top_y; y<720; y++) {
-            if (id != 2 && y > wave_top_y + 30) 
+            if (id != 2 && y > wave_top_y + 30)
                 break;
 
             alpha = y-wave_top_y;
@@ -258,11 +288,11 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
             if (themeCurrent.enableWaveBlending) {
                 existing_color = FetchPixelColor(x, y);
                 new_color = waveBlendAdd(existing_color, color, clamp(alpha, 0.0, 1.0) * 0.3);
-            }      
-            else if (alpha >= 0.3) { 
+            }
+            else if (alpha >= 0.3) {
                 if (id == 2) {
                     new_color = frontWaveGradient[y];
-                } 
+                }
                 else { // no anti-aliasing
                     new_color = color;
                 }
@@ -282,29 +312,29 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
 void drawTime() {
 
     char timeString[9];
-	
+
     time_t unixTime = time(NULL);
     struct tm* timeStruct = gmtime((const time_t *)&unixTime);
-	
+
     int hours = timeStruct->tm_hour;
     int minutes = timeStruct->tm_min;
     int seconds = timeStruct->tm_sec;
-	
+
     sprintf(timeString, "%02d:%02d:%02d", hours, minutes, seconds);
 
     DrawText(interuimedium20, 1280 - (9 * 16) - 30, 30, MakeColor(255, 255, 255, 255), timeString);
-	
+
 }
 
 void drawBackBtn(menu_s* menu, bool emptyDir) {
     int x_image = 1280 - 252 - 30 - 32;
     int x_text = 1280 - 216 - 30 - 32;
-	
+
     if(emptyDir) {
         x_image = 1280 - 126 - 30 - 32;
          x_text = 1280 - 90 - 30 - 32;
     }
-    
+
     #ifdef __SWITCH__
     if (strcmp( menu->dirname, "sdmc:/") != 0)
     #else
@@ -352,9 +382,23 @@ void menuLoop() {
 
     //drawTime();
 
-    if (menu->nEntries==0)
+    if (menu->nEntries==0 || hbmenu_state == HBMENU_NETLOADER_ACTIVE)
     {
-        DrawText(interuiregular14, 64, 128, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
+        if (hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
+            menuEntry_s me;
+            menuEntryInit(&me,ENTRY_TYPE_FILE);
+
+            int netloader_result = netloader_loop(&me);
+            if( netloader_result != 0) {
+                hbmenu_state = HBMENU_DEFAULT;
+                if (netloader_result == 1) {
+                    menuCreateMsgBox(240,240,  textGetString(StrId_Loading));
+                    launchMenuEntryTask(&me);
+                }
+            }
+        } else {
+            DrawText(interuiregular14, 64, 128, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
+        }
         drawBackBtn(menu, true);
     }
     else

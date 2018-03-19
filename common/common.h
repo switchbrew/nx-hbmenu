@@ -23,6 +23,16 @@ typedef uint8_t u8;
 typedef uint32_t u32;
 typedef uint64_t u64;
 
+
+#ifdef _WIN32
+#define DIRECTORY_SEPARATOR_CHAR '\\'
+static const char DIRECTORY_SEPARATOR[] = "\\";
+#else
+#define DIRECTORY_SEPARATOR_CHAR '/'
+static const char DIRECTORY_SEPARATOR[] = "/";
+#endif
+
+
 #define M_TAU (2*M_PI)
 
 typedef union {
@@ -44,7 +54,7 @@ typedef union {
 
 // when building for pc we need to include nro.h separately
 #ifndef __SWITCH__
-#include "nro.h"
+#include <switch/nro.h>
 #endif
 
 void menuStartup();
