@@ -32,6 +32,7 @@ typedef uint32_t in_addr_t;
 
 // having trouble with non blocking sockets & udp on switch currently
 #ifndef __SWITCH__
+#include "switch/runtime/nxlink.h"
 #define PING_ENABLED 1
 #else
 #define PING_ENABLED 0
