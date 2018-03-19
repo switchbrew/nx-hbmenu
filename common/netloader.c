@@ -331,7 +331,9 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
 
 	sanitisePath(filename);
 
-	sprintf(me->path, "%s%s%s", menuGetRootPath(), DIRECTORY_SEPARATOR,  filename);
+	snprintf(me->path, PATH_MAX, "%s%s%s", menuGetRootPath(), DIRECTORY_SEPARATOR,  filename);
+	// make sure it's terminated
+	me->path[PATH_MAX] = 0;
 
     argData_s* ad = &me->args;
     ad->dst = (char*)&ad->buf[1];
