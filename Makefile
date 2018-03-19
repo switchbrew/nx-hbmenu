@@ -1,4 +1,4 @@
-export APP_VERSION	:=	v2.0.0
+export APP_VERSION	:=	2.0.0
 
 .PHONY: clean all nx pc dist-bin
 

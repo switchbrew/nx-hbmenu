@@ -30,8 +30,6 @@ typedef uint32_t in_addr_t;
 #include "common.h"
 #include "netloader.h"
 
-#include <switch/runtime/nxlink.h>
-
 // having trouble with non blocking sockets & udp on switch currently
 #ifndef __SWITCH__
 #define PING_ENABLED 1
