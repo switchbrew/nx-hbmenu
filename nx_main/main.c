@@ -13,8 +13,8 @@ u64 g_tickdiff_frame=0;
 #endif
 
 #ifdef ENABLE_AUDIO
-void audio_initialize();
-void audio_exit();
+void audio_initialize(void);
+void audio_exit(void);
 #endif
 
 int main(int argc, char **argv)

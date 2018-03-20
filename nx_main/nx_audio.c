@@ -78,7 +78,7 @@ static void audio_playback_thread(void* arg)
     }
 }
 
-void audio_initialize()
+void audio_initialize(void)
 {
     Result rc=0;
 
@@ -145,7 +145,7 @@ void audio_initialize()
     if (R_SUCCEEDED(rc)) audio_thread_started = 1;
 }
 
-void audio_exit()
+void audio_exit(void)
 {
     if (audio_thread_started) {
         audio_thread_exitflag = 1;
