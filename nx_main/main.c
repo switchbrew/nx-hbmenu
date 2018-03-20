@@ -12,6 +12,11 @@ u64 g_tickdiff_vsync=0;
 u64 g_tickdiff_frame=0;
 #endif
 
+#ifdef ENABLE_AUDIO
+void audio_initialize();
+void audio_exit();
+#endif
+
 int main(int argc, char **argv)
 {
     Result lastret=0;
@@ -33,6 +38,10 @@ int main(int argc, char **argv)
     menuStartup();
 
     launchInit();
+
+    #ifdef ENABLE_AUDIO
+    audio_initialize();
+    #endif
 
     lastret = envGetLastLoadResult();
 
@@ -74,6 +83,10 @@ int main(int argc, char **argv)
         gfxSwapBuffers();
         gfxWaitForVsync();
     }
+
+    #ifdef ENABLE_AUDIO
+    audio_exit();
+    #endif
 
     launchExit();
     setsysExit();
