@@ -54,9 +54,9 @@ static void netloader_error(const char *func, int err) {
 //---------------------------------------------------------------------------------
     char errortext[1024];
 
-    sprintf(errortext, "%s: err=%d\n %s\n", func, err, strerror(errno));
+    snprintf(errortext, sizeof(errortext)-1, "%s: err=%d\n %s\n", func, err, strerror(errno));
 
-    menuCreateMsgBox(640,480, errortext);
+    menuCreateMsgBox(780,300, errortext);
 
     netloader_deactivate();
 }
