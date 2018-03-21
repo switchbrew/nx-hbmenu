@@ -5,7 +5,7 @@ typedef struct
     uint32_t width;
     uint32_t height;
     color_t *bg;
-    const char *text;
+    char *text;
 } MessageBox;
 
 MessageBox currMsgBox;
@@ -147,7 +147,11 @@ void menuCreateMsgBox(int width, int height, const char *text) {
     if (menuIsMsgBoxOpen())
         return;
 
-    currMsgBox = (MessageBox) { width, height, NULL, text };
+    char *new_text = strdup(text);
+    if (new_text==NULL)
+        return;
+
+    currMsgBox = (MessageBox) { width, height, NULL, new_text };
 
     currMsgBox.bg = malloc(currMsgBox.width*currMsgBox.height*4);
 
@@ -167,5 +171,9 @@ void menuCloseMsgBox() {
     }
 
     currMsgBox.width = currMsgBox.height = 0;
-    currMsgBox.text = NULL;
+
+    if (currMsgBox.text) {
+        free(currMsgBox.text);
+        currMsgBox.text = NULL;
+    }
 }
