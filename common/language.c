@@ -1,4 +1,4 @@
-﻿#include "language.h"
+    ﻿#include "language.h"
 
 #ifdef __SWITCH__
 #define STR_JP(_str) [SetLanguage_JA] = _str
@@ -91,7 +91,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_KO("작자미상"),
         STR_RU("неизвестный автор"),
         STR_ZH("未知作者"),
-        STR_TW("未知作者"),
+        STR_TW("作者不詳"),
     },
 
     [StrId_IOError] =
@@ -215,6 +215,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("The last application returned an error:"),
         STR_ES("La última aplicación devolvió un error:"),
+        STR_TW("程式執行時發生錯誤:"),
     },
 
     [StrId_AppInfo_Author] =
@@ -262,7 +263,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_KO("쏘다"),
         STR_RU("запуск"),
         STR_ZH("发射"),
-        STR_TW("发射"),
+        STR_TW("啟動"),
     },
 
     [StrId_Actions_Open] =
@@ -278,19 +279,21 @@ const char* const g_strings[StrId_Max][16] =
         STR_KO("열다"),
         STR_RU("открыто"),
         STR_ZH("打开"),
-        STR_TW("打开"),
+        STR_TW("開啟"),
     },
     
     [StrId_Actions_Back] =
     {
         STR_EN("Back"),
         STR_DE("Zurück"),
+        STR_TW("回去"),
     },
 
     [StrId_MsgBox_OK] =
     {
         STR_EN("OK"),
         STR_ES("Aceptar"),
+        STR_TW("確認"),
     },
 
     /*[StrId_Reboot] =
