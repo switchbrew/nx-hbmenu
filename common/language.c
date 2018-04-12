@@ -85,7 +85,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_DE("Unbekannter Autor"),
         STR_FR("Auteur inconnu"),
         STR_IT("Autore sconosciuto"),
-        STR_JP("未知の作者"),
+        STR_JP("作者不明"),
         STR_PT("Autor Desconhecido"),
         STR_NL("Auteur onbekend"),
         STR_KO("알 수 없는 개발자"),
@@ -174,7 +174,7 @@ const char* const g_strings[StrId_Max][16] =
         ),
         STR_JP(
             "SDカードにアプリケーションが見つかりませんでした。\n"
-            "SDカードのルートに「/switch」という名前のフォルダを\n"
+            "SDカードのルートに「switch」という名前のフォルダを\n"
             "作成してください。"
         ),
         STR_PT(
@@ -215,6 +215,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("The last application returned an error:"),
         STR_ES("La última aplicación devolvió un error:"),
+        STR_JP("直前に実行したアプリでエラーが発生しました:"),
         STR_KO("최근 애플리케이션에서 다음 오류가 발생했습니다:"),
         STR_TW("程式執行時發生錯誤:"),
     },
@@ -226,7 +227,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_DE("Autor"),
         STR_FR("Auteur"),
         STR_IT("Autore"),
-        STR_JP("著者"),
+        STR_JP("作者"),
         STR_PT("Autor"),
         STR_NL("Auteur"),
         STR_KO("개발자"),
@@ -258,7 +259,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_DE("Starten"),
         STR_FR("Lancement"),
         STR_IT("Lanciare"),
-        STR_JP("打ち上げ"),
+        STR_JP("起動"),
         STR_PT("Lançamento"),
         STR_NL("Lancering"),
         STR_KO("실행"),
@@ -274,7 +275,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_DE("Öffnen"),
         STR_FR("Ouvrir"),
         STR_IT("Aprire"),
-        STR_JP("開いた"),
+        STR_JP("開く"),
         STR_PT("Abrir"),
         STR_NL("Open"),
         STR_KO("열기"),
@@ -303,6 +304,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("OK"),
         STR_ES("Aceptar"),
+        STR_JP("了解"),
         STR_KO("확인"),
         STR_TW("確認"),
     },
@@ -341,8 +343,8 @@ const char* const g_strings[StrId_Max][16] =
             "  \xEE\x80\x81 Annulla"
         ),
         STR_JP(
-            "\xEE\x81\xB3HOMEに戻ることはできません。\n"
-            "コンソールが今すぐ再起動する。\n\n"
+            " \xEE\x81\xB3HOME に戻ることができませんでした。\n"
+            "今すぐ本体を再起動してください。\n\n"
             "  \xEE\x80\x80 再起動\n"
             "  \xEE\x80\x81 キャンセル"
         ),
@@ -417,8 +419,8 @@ const char* const g_strings[StrId_Max][16] =
             "  \xEE\x80\x82 Riavvia"
         ),
         STR_JP(
-            "あなたは今すぐ\xEE\x81\xB3HOMEに戻されます。\n\n"
-            "  \xEE\x80\x80 戻る\n"
+            " \xEE\x81\xB3HOME に戻ろうとしています。\n\n"
+            "  \xEE\x80\x80 了解\n"
             "  \xEE\x80\x81 キャンセル\n"
             "  \xEE\x80\x82 再起動"
         ),
@@ -603,7 +605,7 @@ const char* const g_strings[StrId_Max][16] =
             "Utilizza un exploit diverso."
         ),
         STR_JP(
-            "この自家製のエクスプロイトは、ターゲットタイトルの\n"
+            "この自作エクスプロイトでは、ターゲットタイトルの\n"
             "下でアプリを起動することができません。\n"
             "別のエクスプロイトを使用してください。"
         ),
@@ -663,7 +665,7 @@ const char* const g_strings[StrId_Max][16] =
         ),
         STR_JP(
             "このアプリを実行するために\n"
-            "適切なタイトルがインストールされていません。"
+            "必要なタイトルがインストールされていません。"
         ),
         STR_PT(
             "A aplicação que acabou de tentar executar requer\n"
@@ -714,7 +716,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_DE("Der Netzwerk-Loader ist zur Zeit nicht verfügbar."),
         STR_FR("Le chargeur de programme 3dslink est indisponible."),
         STR_IT("Il caricamento programmi 3dslink non è disponibile."),
-        STR_JP("3dslinkネットローダを利用できません。"),
+        STR_JP("3dslinkネットローダは現在利用できません。"),
         STR_PT("O carregador de programas está de momento indisponível."),
         STR_NL("De netwerk lader is niet beschikbaar."),
         STR_KO("현재 네트워크 로더는 사용이 불가합니다."),
@@ -743,6 +745,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("Offline, waiting for network…\n\n\n  \xEE\x80\x81 Cancel"),
         STR_IT("Disconnesso, in attesa della connessione…\n\n\n  \xEE\x80\x81 Annullare"),
+        STR_JP("オフラインです。ネットワーク接続を待っています…\n\n\n \xEE\x80\x81 キャンセル"),
         STR_KO("오프라인임, 네트워크 대기중…\n\n\n  \xEE\x80\x81 취소")
         STR_ZH("无法连接网络，等待网络连接…\n\n\n  \xEE\x80\x81 取消"),
         STR_TW("當前離線，等待網路連線…\n\n\n  \xEE\x80\x81 取消"),
@@ -776,7 +779,7 @@ const char* const g_strings[StrId_Max][16] =
             "  \xEE\x80\x81 Annullare"
         ),
         STR_JP(
-            "3dslinkが接続するのを待っている…\n"
+            "3dslinkが接続されるのを待っています…\n"
             "IPアドレス：%lu.%lu.%lu.%lu, ポート番号：%d\n\n"
             "  \xEE\x80\x81 キャンセル"
         ),
@@ -835,8 +838,8 @@ const char* const g_strings[StrId_Max][16] =
             "%zu di %zu KiB scritti"
         ),
         STR_JP(
-            "データが転送されます…\n"
-            "%zu / %zu KiB 書かれた"
+            "データを転送しています…\n"
+            "%zu / %zu KiB 転送済み"
         ),
         STR_PT(
             "A transferir…\n"
