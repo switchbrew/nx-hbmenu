@@ -43,7 +43,6 @@ typedef union {
 } color_t;
 
 #include "font.h"
-#include "nacp.h"
 #include "menu.h"
 #include "text.h"
 #include "ui.h"
@@ -52,9 +51,10 @@ typedef union {
 #include "math.h"
 #include "theme.h"
 
-// when building for pc we need to include nro.h separately
+// when building for pc we need to include these separately
 #ifndef __SWITCH__
 #include "switch/nro.h"
+#include "switch/nacp.h"
 #endif
 
 void menuStartup();
