@@ -457,13 +457,24 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
 }
 
 void menuEntryParseNacp(menuEntry_s* me) {
-    int lang = 0;//TODO: Update this once libnx supports settings get-language.
+    NacpLanguageEntry *langentry = NULL;
 
     if (me->nacp==NULL) return;
 
-    strncpy(me->name, me->nacp->lang[lang].name, sizeof(me->name)-1);
-    strncpy(me->author, me->nacp->lang[lang].author, sizeof(me->author)-1);
     strncpy(me->version, me->nacp->version, sizeof(me->version)-1);
+
+    #ifdef __SWITCH__
+    Result rc=0;
+    rc = nacpGetLanguageEntry(me->nacp, &langentry);
+
+    if (R_SUCCEEDED(rc) && langentry!=NULL) {
+    #else
+    langentry = &me->nacp->lang[0];
+    if (1) {
+    #endif
+        strncpy(me->name, langentry->name, sizeof(me->name)-1);
+        strncpy(me->author, langentry->author, sizeof(me->author)-1);
+    }
 
     free(me->nacp);
     me->nacp = NULL;

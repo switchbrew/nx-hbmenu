@@ -127,7 +127,7 @@ void menuDrawMsgBox() {
         DrawText(interuiregular18, start_x + (currMsgBox.width - text_width) / 2, start_y + (currMsgBox.height - text_height - 80) / 2, MakeColor(0, 0, 0, 255), currMsgBox.text);
     }
 
-    DrawText(interuimedium20, start_x + 365, start_y + 245, MakeColor(0, 0, 0, 255), textGetString(StrId_MsgBox_OK));
+    DrawText(interuimedium20, start_x + 365, start_y + 245 + 26, MakeColor(0, 0, 0, 255), textGetString(StrId_MsgBox_OK));
 
     shadow_start_y = start_y + currMsgBox.height;
 

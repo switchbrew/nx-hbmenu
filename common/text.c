@@ -1,5 +1,7 @@
 #include "text.h"
 
+static u64 s_textLanguageCode = 0;
+
 #ifdef __SWITCH__
 static int s_textLang = SetLanguage_ENUS;
 #else
@@ -8,16 +10,16 @@ static int s_textLang = 1;
 
 void textInit(void) {
     #ifdef __SWITCH__
-    //u64 LanguageCode=0;
-    //s32 Language=0;
+    s32 Language=0;
 
     s_textLang = SetLanguage_ENUS;
-    //TODO: Re-enable this once the font supports all used languages.
-    /*Result rc = setInitialize();
-    if (R_SUCCEEDED(rc)) rc = setGetSystemLanguage(&LanguageCode);
-    if (R_SUCCEEDED(rc)) rc = setMakeLanguage(LanguageCode, &Language);
-    if (R_SUCCEEDED(rc) && Language < 16) s_textLang = Language;
-    setExit();*/
+
+    Result rc = setInitialize();
+    if (R_SUCCEEDED(rc)) rc = setGetSystemLanguage(&s_textLanguageCode);
+    if (R_SUCCEEDED(rc)) rc = setMakeLanguage(s_textLanguageCode, &Language);
+    //if (R_SUCCEEDED(rc) && Language < 16) s_textLang = Language;//TODO: Re-enable this once language.c supports all used languages.
+    setExit();
+    if (R_FAILED(rc)) fatalSimple(-8);
     #else
     s_textLang = 1;
     #endif
@@ -35,4 +37,8 @@ const char* textGetString(StrId id) {
     if (!str) str = g_strings[id][1];
     #endif
     return str;
+}
+
+u64 textGetLanguageCode(void) {
+    return s_textLanguageCode;
 }

@@ -20,6 +20,7 @@ void audio_exit(void);
 int main(int argc, char **argv)
 {
     Result lastret=0;
+    Result rc=0;
     char msg[256];
 
     #ifdef PERF_LOG
@@ -31,13 +32,20 @@ int main(int argc, char **argv)
     appletSetScreenShotPermission(1);
 
     ColorSetId theme;
-    setsysInitialize();
+    rc = setsysInitialize();
+    if (R_FAILED(rc)) fatalSimple(-5);
+
     setsysGetColorSetId(&theme);
+
+    rc = plInitialize();
+    if (R_FAILED(rc)) fatalSimple(-6);
+
     themeStartup((ThemePreset)theme);
     textInit();
     menuStartup();
 
     launchInit();
+    if (!fontInitialize()) fatalSimple(-7);
 
     #ifdef ENABLE_AUDIO
     audio_initialize();
@@ -88,7 +96,9 @@ int main(int argc, char **argv)
     audio_exit();
     #endif
 
+    fontExit();
     launchExit();
+    plExit();
     setsysExit();
 
     gfxExit();

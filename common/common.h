@@ -22,6 +22,7 @@
 typedef uint8_t u8;
 typedef uint32_t u32;
 typedef uint64_t u64;
+typedef u32 Result;
 
 
 #ifdef _WIN32
@@ -42,6 +43,12 @@ typedef union {
     };
 } color_t;
 
+// when building for pc we need to include these separately
+#ifndef __SWITCH__
+#include "switch/nro.h"
+#include "switch/nacp.h"
+#endif
+
 #include "font.h"
 #include "menu.h"
 #include "text.h"
@@ -50,12 +57,6 @@ typedef union {
 #include "nanojpeg.h"
 #include "math.h"
 #include "theme.h"
-
-// when building for pc we need to include these separately
-#ifndef __SWITCH__
-#include "switch/nro.h"
-#include "switch/nacp.h"
-#endif
 
 void menuStartup();
 void menuLoop();
@@ -147,6 +148,9 @@ static inline color_t FetchPixelColor(uint32_t x, uint32_t y)
 #endif
 
 void DrawPixel(uint32_t x, uint32_t y, color_t clr);
-void DrawText(const ffnt_header_t* font, uint32_t x, uint32_t y, color_t clr, const char* text);
-void DrawTextTruncate(const ffnt_header_t* font, uint32_t x, uint32_t y, color_t clr, const char* text, uint32_t max_width, const char* end_text);
-void GetTextDimensions(const ffnt_header_t* font, const char* text, uint32_t* width_out, uint32_t* height_out);
+void DrawText(u32 font, uint32_t x, uint32_t y, color_t clr, const char* text);
+void DrawTextTruncate(u32 font, uint32_t x, uint32_t y, color_t clr, const char* text, uint32_t max_width, const char* end_text);
+void GetTextDimensions(u32 font, const char* text, uint32_t* width_out, uint32_t* height_out);
+
+bool fontInitialize(void);
+void fontExit();
