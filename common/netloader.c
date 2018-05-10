@@ -329,7 +329,8 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
 
     sanitisePath(filename);
 
-    snprintf(me->path, PATH_MAX, "%s%s%s", menuGetRootPath(), DIRECTORY_SEPARATOR,  filename);
+    snprintf(me->path, sizeof(me->path)-1, "%s%s%s", menuGetRootPath(), DIRECTORY_SEPARATOR,  filename);
+    me->path[PATH_MAX] = 0;
     // make sure it's terminated
     me->path[PATH_MAX] = 0;
 

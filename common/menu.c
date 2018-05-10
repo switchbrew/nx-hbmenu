@@ -5,7 +5,7 @@
 #include "invalid_icon_bin.h"
 #include "folder_icon_bin.h"
 
-char rootPath[PATH_MAX];
+char rootPath[PATH_MAX+8];
 
 char *menuGetRootPath() {
     return rootPath;
@@ -248,14 +248,14 @@ void computeFrontGradient(color_t baseColor, int height) {
 }
 
 void menuStartup() {
-
+    char tmp_path[PATH_MAX];
 
     #ifdef __SWITCH__
-    strcpy(rootPath,"sdmc:");
+    strcpy(tmp_path,"sdmc:");
     #else
-    getcwd(rootPath, PATH_MAX);
+    getcwd(tmp_path, PATH_MAX);
     #endif
-    sprintf(rootPath,"%s%s%s" , rootPath, DIRECTORY_SEPARATOR, "switch" );
+    snprintf(rootPath, sizeof(rootPath)-1, "%s%s%s", tmp_path, DIRECTORY_SEPARATOR, "switch");
 
     menuScan(rootPath);
 

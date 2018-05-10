@@ -133,6 +133,7 @@ int menuScan(const char* target) {
             continue;
 
         strncpy(me->path, tmp_path, sizeof(me->path)-1);
+        me->path[sizeof(me->path)-1] = 0;
         if (menuEntryLoad(me, dp->d_name, shortcut))
             menuAddEntry(me);
         else

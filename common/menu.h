@@ -46,7 +46,7 @@ struct menuEntry_s_tag
     menuEntry_s* next;
     MenuEntryType type;
 
-    char path[PATH_MAX+1];
+    char path[PATH_MAX+8];
     argData_s args;
 
     char name[ENTRY_NAMELENGTH+1];
