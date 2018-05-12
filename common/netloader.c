@@ -1,12 +1,9 @@
+#include "common.h"
+
 #include <errno.h>
 #include <fcntl.h>
-#include <malloc.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include <unistd.h>
 #include <zlib.h>
-#include <stdint.h>
 #include <sys/types.h>
 
 #ifndef __WIN32__
@@ -27,7 +24,6 @@ typedef uint32_t in_addr_t;
 #endif
 
 
-#include "common.h"
 #include "netloader.h"
 
 #define PING_ENABLED 1
