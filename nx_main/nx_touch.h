@@ -1,6 +1,7 @@
 #pragma once
 
 #include <switch.h>
+#include "../common/common.h"
 
 struct touchInfo_s {
     touchPosition* firstTouch;
@@ -9,3 +10,5 @@ struct touchInfo_s {
     int initMenuXPos;
     int initMenuIndex;
 };
+
+void handleTouch(menu_s* menu);

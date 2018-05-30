@@ -74,11 +74,6 @@ double menuTimer;
 extern "C" {
 #endif
 
-void menuCreateMsgBox(int width, int height, const char *text);
-void menuCloseMsgBox();
-bool menuIsMsgBoxOpen();
-void menuDrawMsgBox(void);
-
 void menuEntryInit(menuEntry_s* me, MenuEntryType type);
 void menuEntryFree(menuEntry_s* me);
 bool fileExists(const char* path);

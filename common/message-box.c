@@ -1,12 +1,5 @@
 #include "common.h"
-
-typedef struct
-{
-    uint32_t width;
-    uint32_t height;
-    color_t *bg;
-    char *text;
-} MessageBox;
+#include "message-box.h"
 
 MessageBox currMsgBox;
 
@@ -176,4 +169,8 @@ void menuCloseMsgBox() {
         free(currMsgBox.text);
         currMsgBox.text = NULL;
     }
+}
+
+MessageBox menuGetCurrentMsgBox() {
+    return currMsgBox;
 }

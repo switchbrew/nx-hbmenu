@@ -1,5 +1,4 @@
 #include "nx_touch.h"
-#include "../common/common.h"
 
 #define TAP_MOVEMENT_GAP 20
 #define LISTING_START_Y 475
@@ -73,7 +72,15 @@ void handleTouch(menu_s* menu) {
     // On touch end.
     else if (touchInfo.firstTouch != NULL) {
         if (menuIsMsgBoxOpen()) {
-            // Handle tapping ok.
+            MessageBox currMsgBox = menuGetCurrentMsgBox();
+            int start_x = 1280 / 2 - currMsgBox.width / 2;
+            int start_y = (720 / 2 - currMsgBox.height / 2) + (currMsgBox.height - 80);
+            int end_x = start_x + currMsgBox.width;
+            int end_y = start_y + 80;
+
+            if (touchInfo.firstTouch->px > start_x && touchInfo.firstTouch->px < end_x && touchInfo.firstTouch->py > start_y && touchInfo.firstTouch->py < end_y && touchInfo.isTap) {
+                menuCloseMsgBox();
+            }
         } else {
             if (touchInfo.firstTouch->py > LISTING_START_Y && touchInfo.firstTouch->py < LISTING_END_Y && touchInfo.isTap) {
                 handleTap(menu, touchInfo.prevTouch->px);
