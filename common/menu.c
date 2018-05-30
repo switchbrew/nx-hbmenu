@@ -257,6 +257,12 @@ void menuStartup() {
     #endif
     snprintf(rootPath, sizeof(rootPath)-1, "%s%s%s", tmp_path, DIRECTORY_SEPARATOR, "switch");
 
+    struct stat st = {0};
+
+    if (stat(rootPath, &st) == -1) {
+        mkdir(rootPath, 0755);
+    }
+
     menuScan(rootPath);
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
