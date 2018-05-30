@@ -7,8 +7,7 @@
 struct touchInfo_s touchInfo;
 
 void touchInit() {
-    touchInfo.firstTouch = NULL;
-    touchInfo.prevTouch = NULL;
+    touchInfo.gestureInProgress = false;
     touchInfo.isTap = true;
     touchInfo.initMenuXPos = 0;
     touchInfo.initMenuIndex = 0;
@@ -37,30 +36,28 @@ void handleTouch(menu_s* menu) {
     u32 touches = hidTouchCount();
 
     // On touch start.
-    if (touches == 1 && touchInfo.firstTouch == NULL) {
+    if (touches == 1 && !touchInfo.gestureInProgress) {
         hidTouchRead(&currentTouch, 0);
 
-        touchInfo.firstTouch = malloc(sizeof(touchPosition));
-        touchInfo.prevTouch = malloc(sizeof(touchPosition));
-        touchInfo.firstTouch->px = currentTouch.px;
-        touchInfo.firstTouch->py = currentTouch.py;
+        touchInfo.gestureInProgress = true;
+        touchInfo.firstTouch = currentTouch;
+        touchInfo.prevTouch = currentTouch;
         touchInfo.isTap = true;
         touchInfo.initMenuXPos = menu->xPos;
         touchInfo.initMenuIndex = menu->curEntry;
     }
     // On touch moving.
-    else if (touches >= 1 && touchInfo.firstTouch != NULL) {
+    else if (touches >= 1 && touchInfo.gestureInProgress) {
         hidTouchRead(&currentTouch, 0);
 
-        touchInfo.prevTouch->px = currentTouch.px;
-        touchInfo.prevTouch->py = currentTouch.py;
+        touchInfo.prevTouch = currentTouch;
 
-        if (touchInfo.isTap && (abs(touchInfo.firstTouch->px - currentTouch.px) > TAP_MOVEMENT_GAP || abs(touchInfo.firstTouch->py - currentTouch.py) > TAP_MOVEMENT_GAP)) {
+        if (touchInfo.isTap && (abs(touchInfo.firstTouch.px - currentTouch.px) > TAP_MOVEMENT_GAP || abs(touchInfo.firstTouch.py - currentTouch.py) > TAP_MOVEMENT_GAP)) {
             touchInfo.isTap = false;
         }
-        if (!menuIsMsgBoxOpen() && touchInfo.firstTouch->py > LISTING_START_Y && touchInfo.firstTouch->py < LISTING_END_Y && !touchInfo.isTap && menu->nEntries > 7) {
-            menu->xPos = touchInfo.initMenuXPos + (currentTouch.px - touchInfo.firstTouch->px);
-            menu->curEntry = touchInfo.initMenuIndex + ((int) (touchInfo.firstTouch->px - currentTouch.px) / 170);
+        if (!menuIsMsgBoxOpen() && touchInfo.firstTouch.py > LISTING_START_Y && touchInfo.firstTouch.py < LISTING_END_Y && !touchInfo.isTap && menu->nEntries > 7) {
+            menu->xPos = touchInfo.initMenuXPos + (currentTouch.px - touchInfo.firstTouch.px);
+            menu->curEntry = touchInfo.initMenuIndex + ((int) (touchInfo.firstTouch.px - currentTouch.px) / 170);
 
             if (menu->curEntry < 0)
                 menu->curEntry = 0;
@@ -70,7 +67,7 @@ void handleTouch(menu_s* menu) {
         }
     }
     // On touch end.
-    else if (touchInfo.firstTouch != NULL) {
+    else if (touchInfo.gestureInProgress) {
         if (menuIsMsgBoxOpen()) {
             MessageBox currMsgBox = menuGetCurrentMsgBox();
             int start_x = 1280 / 2 - currMsgBox.width / 2;
@@ -78,19 +75,15 @@ void handleTouch(menu_s* menu) {
             int end_x = start_x + currMsgBox.width;
             int end_y = start_y + 80;
 
-            if (touchInfo.firstTouch->px > start_x && touchInfo.firstTouch->px < end_x && touchInfo.firstTouch->py > start_y && touchInfo.firstTouch->py < end_y && touchInfo.isTap) {
+            if (touchInfo.firstTouch.px > start_x && touchInfo.firstTouch.px < end_x && touchInfo.firstTouch.py > start_y && touchInfo.firstTouch.py < end_y && touchInfo.isTap) {
                 menuCloseMsgBox();
             }
         } else {
-            if (touchInfo.firstTouch->py > LISTING_START_Y && touchInfo.firstTouch->py < LISTING_END_Y && touchInfo.isTap) {
-                handleTap(menu, touchInfo.prevTouch->px);
+            if (touchInfo.firstTouch.py > LISTING_START_Y && touchInfo.firstTouch.py < LISTING_END_Y && touchInfo.isTap) {
+                handleTap(menu, touchInfo.prevTouch.px);
             }
         }
 
-        free(touchInfo.firstTouch);
-        touchInfo.firstTouch = NULL;
-
-        free(touchInfo.prevTouch);
-        touchInfo.prevTouch = NULL;
+        touchInfo.gestureInProgress = false;
     }
 }

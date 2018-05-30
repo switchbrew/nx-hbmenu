@@ -4,8 +4,9 @@
 #include "../common/common.h"
 
 struct touchInfo_s {
-    touchPosition* firstTouch;
-    touchPosition* prevTouch;
+    bool gestureInProgress;
+    touchPosition firstTouch;
+    touchPosition prevTouch;
     bool isTap;
     int initMenuXPos;
     int initMenuIndex;
