@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "../common/common.h"
+#include "nx_touch.h"
 
 uint8_t* g_framebuf;
 u32 g_framebuf_width;
@@ -110,6 +111,7 @@ bool menuUpdate(void) {
     bool exitflag = 0;
     menu_s* menu = menuGetCurrent();
     u32 down = hidKeysDown(CONTROLLER_P1_AUTO);
+    handleTouch(menu);
 
     if (down & KEY_Y)
     {

@@ -29,6 +29,7 @@ struct menu_s_tag
     menuEntry_s *firstEntry, *lastEntry;
     int nEntries;
     int curEntry;
+    int xPos;
 
     char dirname[PATH_MAX+1];
 };

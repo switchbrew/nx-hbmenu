@@ -403,17 +403,16 @@ void menuLoop() {
     }
     else
     {
-        static int x = 0;
         static int v = 0;
 
         if (menu->nEntries > 7) {
             int wanted_x = clamp(-menu->curEntry * (140 + 30), -(menu->nEntries - 7) * (140 + 30), 0);
-            x += v;
-            v += (wanted_x - x) / 3;
+            menu->xPos += v;
+            v += (wanted_x - menu->xPos) / 3;
             v /= 2;
         }
         else {
-            x = v = 0;
+            menu->xPos = v = 0;
         }
 
         menuEntry_s *active_entry = NULL;
@@ -423,7 +422,7 @@ void menuLoop() {
             int entry_start_x = 29 + i * (140 + 30);
 
             int screen_width = 1280;
-            if (entry_start_x >= (screen_width - x))
+            if (entry_start_x >= (screen_width - menu->xPos))
                 break;
 
             int is_active = i==menu->curEntry;
@@ -431,7 +430,7 @@ void menuLoop() {
             if (is_active)
                 active_entry = me;
 
-            drawEntry(me, entry_start_x + x, is_active);
+            drawEntry(me, entry_start_x + menu->xPos, is_active);
         }
 
         if(active_entry != NULL) {
