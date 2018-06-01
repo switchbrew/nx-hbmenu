@@ -1,8 +1,18 @@
 #include "nx_touch.h"
 
 #define TAP_MOVEMENT_GAP 20
+#define VERTICAL_SWIPE_HORIZONTAL_PLAY 250
+#define VERTICAL_SWIPE_MINIMUM_DISTANCE 300
 #define LISTING_START_Y 475
 #define LISTING_END_Y 647
+#define BUTTON_START_Y 672
+#define BUTTON_END_Y 704
+#define BACK_BUTTON_START_X 966
+#define BACK_BUTTON_END_X 1048
+#define LAUNCH_BUTTON_START_X 1092
+#define LAUNCH_BUTTON_END_X 1200
+
+#define distance(x1, y1, x2, y2) (int) sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
 
 struct touchInfo_s touchInfo;
 
@@ -13,7 +23,7 @@ void touchInit() {
     touchInfo.initMenuIndex = 0;
 }
 
-void handleTap(menu_s* menu, int px) {
+void handleTappingOnApp(menu_s* menu, int px) {
     int i = 0;
     menuEntry_s *me = NULL;
 
@@ -28,6 +38,16 @@ void handleTap(menu_s* menu, int px) {
             launchMenuEntryTask(me);
             break;
         }
+    }
+}
+
+void handleTappingOnOpenLaunch(menu_s* menu) {
+    if (menu->nEntries > 0)
+    {
+        int i;
+        menuEntry_s* me;
+        for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
+        launchMenuEntryTask(me);
     }
 }
 
@@ -68,6 +88,11 @@ void handleTouch(menu_s* menu) {
     }
     // On touch end.
     else if (touchInfo.gestureInProgress) {
+        int x1 = touchInfo.firstTouch.px;
+        int y1 = touchInfo.firstTouch.py;
+        int x2 = touchInfo.prevTouch.px;
+        int y2 = touchInfo.prevTouch.py;
+
         if (menuIsMsgBoxOpen()) {
             MessageBox currMsgBox = menuGetCurrentMsgBox();
             int start_x = 1280 / 2 - currMsgBox.width / 2;
@@ -75,12 +100,39 @@ void handleTouch(menu_s* menu) {
             int end_x = start_x + currMsgBox.width;
             int end_y = start_y + 80;
 
-            if (touchInfo.firstTouch.px > start_x && touchInfo.firstTouch.px < end_x && touchInfo.firstTouch.py > start_y && touchInfo.firstTouch.py < end_y && touchInfo.isTap) {
+            if (x1 > start_x && x1 < end_x && y1 > start_y && y1 < end_y && touchInfo.isTap) {
                 menuCloseMsgBox();
             }
-        } else {
-            if (touchInfo.firstTouch.py > LISTING_START_Y && touchInfo.firstTouch.py < LISTING_END_Y && touchInfo.isTap) {
-                handleTap(menu, touchInfo.prevTouch.px);
+        } else if (touchInfo.isTap) {
+            // App Icons
+            if (y1 > LISTING_START_Y && y1 < LISTING_END_Y) {
+                handleTappingOnApp(menu, touchInfo.prevTouch.px);
+            }
+            // Bottom Buttons
+            else if (y1 > BUTTON_START_Y && y1 < BUTTON_END_Y) {
+                // Back Button for non-empty directory
+                if (menu->nEntries != 0 && x1 > BACK_BUTTON_START_X && x1 < BACK_BUTTON_END_X) {
+                    launchMenuBackTask();
+                }
+                // Open/Launch Button / Back Button for empty directories
+                else if (x1 > LAUNCH_BUTTON_START_X && x1 < LAUNCH_BUTTON_END_X) {
+                    if (menu->nEntries == 0) {
+                        launchMenuBackTask();
+                    } else {
+                        handleTappingOnOpenLaunch(menu);
+                    }
+                }
+            }
+        }
+        // Vertical Swipe
+        else if (abs(x1 - x2) < VERTICAL_SWIPE_HORIZONTAL_PLAY && distance(x1, y1, x2, y2) > VERTICAL_SWIPE_MINIMUM_DISTANCE) {
+            // Swipe up to go back
+            if (y1 - y2 > 0) {
+                launchMenuBackTask();
+            }
+            // Swipe down to go into netloader
+            else if (y1 - y2 < 0) {
+                launchMenuNetloaderTask();
             }
         }
 
