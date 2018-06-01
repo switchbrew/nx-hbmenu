@@ -4,7 +4,7 @@ See [Switchbrew](http://switchbrew.org/index.php?title=Homebrew_Applications) fo
 
 ##### Touch Controls
 
-![Swiping left and right to navigate through lists.](tresources/SwipeLeftAndRight.gif?raw=true)
+![Swiping left and right to navigate through lists.](resources/SwipeLeftAndRight.gif?raw=true)
 
 To navigate through the list of folders and applications you can swipe left and right on the bottom list. To open an item you can tap on it in the list or with it highlighted tap the `Open` or `Launch` button prompt in the bottom right.
 
