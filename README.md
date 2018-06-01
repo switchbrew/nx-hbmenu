@@ -4,7 +4,7 @@ See [Switchbrew](http://switchbrew.org/index.php?title=Homebrew_Applications) fo
 
 ##### Touch Controls
 
-To navigate through the list of folders and applications you can swipe left and right on the bottom list. To open an item you can tap on it in the list or with it highlighted tap the `Open` or `Launch` button prompt in the bottom right. To go back a folder you can swipe up or tap the `Back` button prompt in the bottom right. To launch the net loader you can swipe down on the screen.
+To navigate through the list of folders and applications you can swipe left and right on the bottom list. To open an item you can tap on it in the list or with it highlighted tap the `Open` or `Launch` button prompt in the bottom right. To go back a folder you can swipe up or tap the `Back` button prompt in the bottom right. To launch the netloader you can swipe down on the screen.
 
 #### Download
 
