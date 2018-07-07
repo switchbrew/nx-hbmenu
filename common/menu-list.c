@@ -103,8 +103,13 @@ int menuScan(const char* target) {
 
         bool entrytype=0;
 
-        memset(tmp_path, 0, sizeof(tmp_path));
-        snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s", s_menu[!s_curMenu].dirname, dp->d_name);
+        size_t pathLen = strlen(s_menu[!s_curMenu].dirname);
+        strncpy(tmp_path, s_menu[!s_curMenu].dirname, sizeof(tmp_path));
+        if (pathLen > 0 && tmp_path[pathLen-1] != '/') {
+            tmp_path[pathLen++] = '/';
+            tmp_path[pathLen] = 0;
+        }
+        strncpy(&tmp_path[pathLen], dp->d_name, sizeof(tmp_path)-pathLen-1);
 
         #ifdef __SWITCH__
         fsdev_dir_t* dirSt = (fsdev_dir_t*)dir->dirData->dirStruct;
