@@ -6,7 +6,7 @@
 #ifdef __SWITCH__
 #define FONT_FACES_MAX PlSharedFontType_Total
 #else
-#define FONT_FACES_MAX 1
+#define FONT_FACES_MAX 2
 #endif
 
 static FT_Error s_font_libret=1, s_font_facesret[FONT_FACES_MAX];
@@ -339,8 +339,24 @@ bool fontInitialize(void)
     }
     #endif
 
+    //These are loaded from "<original cwd>/fonts/<index>.ttf", these are user-supplied. Ideally these should be from plu SharedFont.
     #ifndef __SWITCH__
-    //TODO: How to handle this? Until this is impl'd no font will be displayed for pc-build.
+    char fontpath[PATH_MAX+1];
+
+    for (i=0; i<FONT_FACES_MAX; i++) {
+        memset(fontpath, 0, sizeof(fontpath));
+        snprintf(fontpath, sizeof(fontpath)-1, "fonts%s%u.ttf", DIRECTORY_SEPARATOR, i);
+
+        ret = FT_New_Face(        s_font_library,
+                                  fontpath,
+                                  0,
+                                  &s_font_faces[i]);
+
+        s_font_facesret[i] = ret;
+        if (ret) return false;
+
+        s_font_faces_total++;
+    }
     #endif
 
     return true;

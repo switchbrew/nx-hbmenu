@@ -17,6 +17,7 @@ int main()
 
     themeStartup(THEME_PRESET_LIGHT);
     textInit();
+    fontInitialize();//Must be called before menuStartup() due to cwd.
     menuStartup();
 
     while (window.isOpen())
@@ -49,6 +50,8 @@ int main()
         window.draw(sprite);
         window.display();
     }
+
+    fontExit();
 
     return 0;
 }
