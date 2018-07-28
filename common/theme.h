@@ -13,8 +13,10 @@ typedef struct
     color_t seperatorColor;
     color_t activeColor;
     bool enableWaveBlending;
-    const uint8_t *buttonAImage;      
-    const uint8_t *buttonBImage;
+    const char *buttonAText;
+    const char *buttonBText;
+    //const uint8_t *buttonAImage;
+    //const uint8_t *buttonBImage;
     const uint8_t *hbmenuLogoImage;
 } theme_t;
 

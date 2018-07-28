@@ -36,6 +36,10 @@ static bool FontSetType(u32 font)
             scale = 6;
         break;
 
+        case fontscale7:
+            scale = 7;
+        break;
+
         case interuimedium30:
             scale = 8;
         break;
