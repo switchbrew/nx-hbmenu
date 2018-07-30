@@ -30,6 +30,7 @@ static void menuAddEntry(menuEntry_s* me) {
         m->firstEntry = me;
         m->lastEntry = me;
     }
+    m->xPos = 0;
     m->nEntries ++;
 }
 

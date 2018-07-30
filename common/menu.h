@@ -29,6 +29,7 @@ struct menu_s_tag
     menuEntry_s *firstEntry, *lastEntry;
     int nEntries;
     int curEntry;
+    int xPos;
 
     char dirname[PATH_MAX+1];
 };
@@ -72,11 +73,6 @@ double menuTimer;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-void menuCreateMsgBox(int width, int height, const char *text);
-void menuCloseMsgBox();
-bool menuIsMsgBoxOpen();
-void menuDrawMsgBox(void);
 
 void menuEntryInit(menuEntry_s* me, MenuEntryType type);
 void menuEntryFree(menuEntry_s* me);

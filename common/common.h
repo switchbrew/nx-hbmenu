@@ -57,6 +57,7 @@ typedef union {
 #include "nanojpeg.h"
 #include "math.h"
 #include "theme.h"
+#include "message-box.h"
 
 void menuStartup();
 void menuLoop();
