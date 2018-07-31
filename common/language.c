@@ -270,12 +270,12 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_Actions_Open] =
     {
         STR_EN("Open"),
-        STR_ES("Abierto"),
+        STR_ES("Abrir"),
         STR_DE("Öffnen"),
         STR_FR("Ouvrir"),
-        STR_IT("Aperto"),
+        STR_IT("Aprire"),
         STR_JP("開いた"),
-        STR_PT("Aberto"),
+        STR_PT("Abrir"),
         STR_NL("Open"),
         STR_KO("열기"),
         STR_RU("открыто"),
@@ -286,8 +286,16 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_Actions_Back] =
     {
         STR_EN("Back"),
+        STR_ES("Volver"),
         STR_DE("Zurück"),
+        STR_FR("Retour"),
+        STR_IT("Indietro"),
+        STR_JP("戻る"),
+        STR_PT("Regressar"),
+        STR_NL("Terug"),
         STR_KO("뒤로 가기"),
+        STR_RU("возвращаться"),
+        STR_ZH("回去"),
         STR_TW("回去"),
     },
 
