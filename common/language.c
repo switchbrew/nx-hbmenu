@@ -290,9 +290,9 @@ const char* const g_strings[StrId_Max][16] =
         STR_DE("Zurück"),
         STR_FR("Retour"),
         STR_IT("Indietro"),
-        STR_JP("戻る"),		//Not sure about this one nor the ones after STR_PT
+        STR_JP("戻る"),
         STR_PT("Regressar"),
-        STR_NL("Teruggaan"),
+        STR_NL("Terug"),
         STR_KO("뒤로 가기"),
         STR_RU("возвращаться"),
         STR_ZH("回去"),
