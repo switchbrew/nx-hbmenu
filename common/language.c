@@ -1,4 +1,4 @@
-#include "language.h"
+﻿#include "language.h"
 
 #ifdef __SWITCH__
 #define STR_JP(_str) [SetLanguage_JA] = _str
