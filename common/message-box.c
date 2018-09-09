@@ -58,7 +58,7 @@ void drawMsgBoxBgToBuff(color_t *buff, int width, int height) {
                 color = base_color;
 
             if (y == height - 80) {
-                color = themeCurrent.seperatorColor;
+                color = themeCurrent.separatorColor;
             }
 
             off = (y * width + x);
