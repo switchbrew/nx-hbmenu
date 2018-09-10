@@ -27,7 +27,7 @@ typedef enum
     THEME_PRESET_DARK,
 } ThemePreset;
 
-color_t colorFromSetting(config_setting_t *rgba);
+bool colorFromSetting(config_setting_t *rgba, color_t *col);
 
 void themeStartup(ThemePreset preset);
 
