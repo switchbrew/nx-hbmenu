@@ -71,6 +71,12 @@ void themeStartup(ThemePreset preset) {
                         highlight = themeLight.highlightColor;
                     if (!colorFromSetting(config_lookup(cfg, "lightTheme.separatorColor"), &separator))
                         separator = themeLight.separatorColor;
+                    if (!config_setting_lookup_int(theme, "enableWaveBlending", &waveBlending))
+                        waveBlending = themeLight.enableWaveBlending;
+                    if (!config_setting_lookup_string(theme, "buttonAText", &AText))
+                        AText = themeLight.buttonAText;
+                    if (!config_setting_lookup_string(theme, "buttonBText", &BText))
+                        BText = themeLight.buttonBText;
                 } else {
                     themeCurrent=themeLight;
                 }
@@ -97,6 +103,12 @@ void themeStartup(ThemePreset preset) {
                         highlight = themeDark.highlightColor;
                     if (!colorFromSetting(config_lookup(cfg, "darkTheme.separatorColor"), &separator))
                         separator = themeDark.separatorColor;
+                    if (!config_setting_lookup_int(theme, "enableWaveBlending", &waveBlending))
+                        waveBlending = themeDark.enableWaveBlending;
+                    if (!config_setting_lookup_string(theme, "buttonAText", &AText))
+                        AText = themeDark.buttonAText;
+                    if (!config_setting_lookup_string(theme, "buttonBText", &BText))
+                        BText = themeDark.buttonBText;
                 } else {
                     themeCurrent=themeDark;
                 }
@@ -105,13 +117,7 @@ void themeStartup(ThemePreset preset) {
             }
             break;
     }
-    if (good_cfg){
-        if (!config_setting_lookup_int(theme, "enableWaveBlending", &waveBlending))
-            waveBlending = themeLight.enableWaveBlending;
-        if (!config_setting_lookup_string(theme, "buttonAText", &AText))
-            AText = themeLight.buttonAText;
-        if (!config_setting_lookup_string(theme, "buttonBText", &BText))
-            BText = themeDark.buttonBText;
+    if (good_cfg)
         themeCurrent = (theme_t) { 
             .textColor = text,
             .frontWaveColor = frontWave,
@@ -127,5 +133,4 @@ void themeStartup(ThemePreset preset) {
             //.buttonBImage = button_b_dark_bin,
             .hbmenuLogoImage = hbmenu_logo_dark_bin
         };
-    }
 }
