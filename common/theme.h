@@ -28,6 +28,7 @@ typedef enum
 } ThemePreset;
 
 color_t colorFromSetting(config_setting_t *rgba);
+
 void themeStartup(ThemePreset preset);
 
 theme_t themeCurrent;
