@@ -58,6 +58,7 @@ void themeStartup(ThemePreset preset) {
     
     switch (preset) {
         case THEME_PRESET_LIGHT:
+        default:
             themeDefault = &themeLight;
             if (good_cfg)
                 theme = config_lookup(cfg, "lightTheme");
@@ -68,13 +69,9 @@ void themeStartup(ThemePreset preset) {
             if (good_cfg)
                 theme = config_lookup(cfg, "darkTheme");
             break;
-        default:
-            themeDefault = &themeDark;
-            if (good_cfg)
-                theme = config_lookup(cfg, "darkTheme");
     }
     
-    if (good_cfg){
+    if (good_cfg) {
         if (theme != NULL) {
             if (!colorFromSetting(config_setting_lookup(theme, "textColor"), &text))
                 text = themeDefault->textColor;
