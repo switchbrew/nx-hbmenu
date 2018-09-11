@@ -47,27 +47,26 @@ void themeStartup(ThemePreset preset) {
     };
     
     theme_t *themeDefault;
-    config_t *cfg = NULL;
-    cfg = (config_t *) malloc(sizeof(config_t));
-    config_init(cfg);
+    config_t cfg = {0};
+    config_init(&cfg);
     config_setting_t *theme;
     color_t text, frontWave, middleWave, backWave, background, highlight, separator;
     int waveBlending;
     const char *AText, *BText;
-    bool good_cfg=config_read_file(cfg, "/hbtheme.cfg");
+    bool good_cfg=config_read_file(&cfg, "/hbtheme.cfg");
     
     switch (preset) {
         case THEME_PRESET_LIGHT:
         default:
             themeDefault = &themeLight;
             if (good_cfg)
-                theme = config_lookup(cfg, "lightTheme");
+                theme = config_lookup(&cfg, "lightTheme");
             break;
 
         case THEME_PRESET_DARK:
             themeDefault = &themeDark;
             if (good_cfg)
-                theme = config_lookup(cfg, "darkTheme");
+                theme = config_lookup(&cfg, "darkTheme");
             break;
     }
     
@@ -114,4 +113,5 @@ void themeStartup(ThemePreset preset) {
     } else {
         themeCurrent = *themeDefault;
     }
+    config_destroy(&cfg);
 }
