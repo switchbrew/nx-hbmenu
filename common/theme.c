@@ -29,6 +29,7 @@ void themeStartup(ThemePreset preset) {
         //.buttonBImage = button_b_light_bin,
         .hbmenuLogoImage = hbmenu_logo_light_bin
     };
+    
     theme_t themeDark = (theme_t) { 
         .textColor = MakeColor(255, 255, 255, 255),
         .frontWaveColor = MakeColor(96, 204, 204, 255),
@@ -44,6 +45,7 @@ void themeStartup(ThemePreset preset) {
         //.buttonBImage = button_b_dark_bin,
         .hbmenuLogoImage = hbmenu_logo_dark_bin
     };
+    
     theme_t *themeDefault;
     config_t *cfg = NULL;
     cfg = (config_t *) malloc(sizeof(config_t));
@@ -53,6 +55,7 @@ void themeStartup(ThemePreset preset) {
     int waveBlending;
     const char *AText, *BText;
     bool good_cfg=config_read_file(cfg, "/hbtheme.cfg");
+    
     switch (preset) {
         case THEME_PRESET_LIGHT:
             themeDefault = &themeLight;
@@ -65,9 +68,14 @@ void themeStartup(ThemePreset preset) {
             if (good_cfg)
                 theme = config_lookup(cfg, "darkTheme");
             break;
+        default:
+            themeDefault = &themeDark;
+            if (good_cfg)
+                theme = config_lookup(cfg, "darkTheme");
     }
+    
     if (good_cfg){
-        if (theme !=NULL){
+        if (theme != NULL) {
             if (!colorFromSetting(config_setting_lookup(theme, "textColor"), &text))
                 text = themeDefault->textColor;
             if (!colorFromSetting(config_setting_lookup(theme, "frontWaveColor"), &frontWave))
