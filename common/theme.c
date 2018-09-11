@@ -53,7 +53,7 @@ void themeStartup(ThemePreset preset) {
     color_t text, frontWave, middleWave, backWave, background, highlight, separator;
     int waveBlending;
     const char *AText, *BText;
-    bool good_cfg=config_read_file(&cfg, "/hbtheme.cfg");
+    bool good_cfg = config_read_file(&cfg, "/hbtheme.cfg");
     
     switch (preset) {
         case THEME_PRESET_LIGHT:
