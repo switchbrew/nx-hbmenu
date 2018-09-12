@@ -215,6 +215,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("The last application returned an error:"),
         STR_ES("La última aplicación devolvió un error:"),
+        STR_FR("La dernière application a retourné une erreur:"),
         STR_JP("直前に実行したアプリでエラーが発生しました:"),
         STR_KO("최근 애플리케이션에서 다음 오류가 발생했습니다:"),
         STR_TW("程式執行時發生錯誤:"),
@@ -744,6 +745,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_NetLoaderOffline] =
     {
         STR_EN("Offline, waiting for network…\n\n\n  \xEE\x80\x81 Cancel"),
+        STR_FR("Hors-ligne, en attente d'une connection...\n\n\n \xEE\x80\x81 Annuler"),
         STR_IT("Disconnesso, in attesa della connessione…\n\n\n  \xEE\x80\x81 Annullare"),
         STR_JP("オフラインです。ネットワーク接続を待っています…\n\n\n \xEE\x80\x81 キャンセル"),
         STR_KO("오프라인임, 네트워크 대기중…\n\n\n  \xEE\x80\x81 취소")
