@@ -46,6 +46,14 @@ void themeStartup(ThemePreset preset) {
         .hbmenuLogoImage = hbmenu_logo_dark_bin
     };
     
+    char tmp_path[PATH_MAX] = {0};
+
+    #ifdef __SWITCH__
+    tmp_path[0] = '/';
+    #endif
+
+    strncat(tmp_path, "config/nx-hbmenu/themes/theme.cfg", sizeof(tmp_path)-2);
+    
     theme_t *themeDefault;
     config_t cfg = {0};
     config_init(&cfg);
@@ -53,7 +61,7 @@ void themeStartup(ThemePreset preset) {
     color_t text, frontWave, middleWave, backWave, background, highlight, separator;
     int waveBlending;
     const char *AText, *BText;
-    bool good_cfg = config_read_file(&cfg, "/hbtheme.cfg");
+    bool good_cfg = config_read_file(&cfg, tmp_path);
     
     switch (preset) {
         case THEME_PRESET_LIGHT:
