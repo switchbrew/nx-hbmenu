@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.h"
+#include <libconfig.h>
 
 typedef struct
 {
@@ -10,7 +11,7 @@ typedef struct
     color_t backWaveColor;
     color_t backgroundColor;
     color_t highlightColor;
-    color_t seperatorColor;
+    color_t separatorColor;
     color_t activeColor;
     bool enableWaveBlending;
     const char *buttonAText;
@@ -25,6 +26,8 @@ typedef enum
     THEME_PRESET_LIGHT,
     THEME_PRESET_DARK,
 } ThemePreset;
+
+bool colorFromSetting(config_setting_t *rgba, color_t *col);
 
 void themeStartup(ThemePreset preset);
 
