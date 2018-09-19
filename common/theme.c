@@ -76,37 +76,20 @@ void themeStartup(ThemePreset preset) {
     int waveBlending;
     const char *AText, *BText;
     bool good_cfg = config_read_file(&cfg, tmp_path);
-    if(!good_cfg){//config file is messed up
-        config_t tmp = {0};
-        cfg = tmp;//clear the config
-        config_init(&cfg);/*reinitize so that we can create the theme.cfg with the default theme (TODO:NightlyFox)*/
-    }
     switch (preset) {
         case THEME_PRESET_LIGHT:
         default:
             themeDefault = &themeLight;
             if (good_cfg)
                 theme = config_lookup(&cfg, "lightTheme");
-            else{
-                /*(TODO:NightlyFox) 
-                theme.cfg file does not exist or is corrupted/misconfigured! 
-                setup config here with default themes*/ 
-            }
             break;
 
         case THEME_PRESET_DARK:
             themeDefault = &themeDark;
             if (good_cfg)
-                theme = config_lookup(&cfg, "darkTheme");
-            else{
-                /*(TODO:NightlyFox) theme.cfg 
-                file does not exist or is corrupted/misconfigured! 
-                setup config here with default themes*/
-            }       
+                theme = config_lookup(&cfg, "darkTheme");    
             break;
     }
-    /*(TODO:NightlyFox) write the config here 
-    so you only have to do it once*/
     if (good_cfg) {
         if (theme != NULL) {
             if (!colorFromSetting(config_setting_lookup(theme, "textColor"), &text))
