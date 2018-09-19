@@ -72,7 +72,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_JP("自作アプリ"),
         STR_PT("Aplicação Homebrew"),
         STR_NL("Homebrew toepassing"),
-        STR_KO("Homebrew 애플리케이션"),
+        STR_KO("홈브류 애플리케이션"),
         STR_RU("приложение хомебреw"),
         STR_ZH("自制应用程序"),
         STR_TW("自製程式"),
@@ -104,7 +104,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_JP("入出力エラー"),
         STR_PT("Erro de E/S"),
         STR_NL("I/O Fout"),
-        STR_KO("읽기/쓰기 오류"),
+        STR_KO("입출력 오류"),
         STR_RU("I/O-ошибка"),
         STR_ZH("读写出错"),
         STR_TW("讀寫錯誤"),
@@ -120,7 +120,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_JP("ファイルを開くことができませんでした：\n%s"),
         STR_PT("Não foi possível abrir o ficheiro:\n%s"),
         STR_NL("Kan bestand niet openen:\n%s"),
-        STR_KO("다음 파일을 열지 못했습니다:\n%s"),
+        STR_KO("파일을 열 수 없습니다:\n%s"),
         STR_RU("Не могу открыть файл:\n%s"),
         STR_ZH("无法打开文件:\n%s"),
         STR_TW("開啓檔案失敗:\n%s"),
@@ -190,8 +190,8 @@ const char* const g_strings[StrId_Max][16] =
             "en de toepassingen bevat."
         ),
         STR_KO(
-            "SD 카드에 애플리케이션이 없습니다.\n"
-            "SD 카드의 루트에 /switch 폴더가 있고\n"
+            "SD 카드에서 애플리케이션을 찾을 수 없습니다.\n"
+            "SD 카드 최상위에 /switch 폴더가 있고\n"
             "애플리케이션을 포함하는지 확인해 주십시오."
         ),
         STR_RU(
@@ -215,8 +215,9 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("The last application returned an error:"),
         STR_ES("La última aplicación devolvió un error:"),
+        STR_FR("La dernière application a retourné une erreur:"),
         STR_JP("直前に実行したアプリでエラーが発生しました:"),
-        STR_KO("최근 애플리케이션에서 다음 오류가 발생했습니다:"),
+        STR_KO("최근 애플리케이션에서 오류가 발생했습니다:"),
         STR_TW("程式執行時發生錯誤:"),
     },
 
@@ -308,6 +309,14 @@ const char* const g_strings[StrId_Max][16] =
         STR_KO("확인"),
         STR_TW("確認"),
     },
+    [StrId_Actions_Apply] =
+    {
+        STR_EN("Apply"),
+        STR_ES("Aplicar"),
+        STR_JP("適用"),
+        STR_KO("대다"),
+        STR_TW("應用"),
+    },
 
     /*[StrId_Reboot] =
     {
@@ -361,7 +370,7 @@ const char* const g_strings[StrId_Max][16] =
             "  \xEE\x80\x81 Annuleren"
         ),
         STR_KO(
-            "\xEE\x81\xB3홈 으로 돌아갈 수 없습니다.\n"
+            "\xEE\x81\xB3HOME 으로 돌아갈 수 없습니다.\n"
             "콘솔을 재부팅할 것 입니다.\n\n"
             "  \xEE\x80\x80 재부팅\n"
             "  \xEE\x80\x81 취소"
@@ -472,7 +481,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_JP("タイトルセレクタ"),
         STR_PT("Selector de Títulos"),
         STR_NL("Titel selector"),
-        STR_KO("제목 선택기"),
+        STR_KO("타이틀 선택기"),
         STR_RU("Селектор заголовков"),
         STR_ZH("应用启动器"),
         STR_TW("自製程式啓動器"),
@@ -491,7 +500,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_JP("タイトルメタデータを読み取ることができませんでした。\n%08lX%08lX@%d"),
         STR_PT("Erro a ler os metadados do título.\n%08lX%08lX@%d"),
         STR_NL("Fout bij het lezen van titel metadata.\n%08lX%08lX@%d"),
-        STR_KO("제목 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
+        STR_KO("타이틀 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
         STR_RU("Ошибка чтения метаданных заголовка\n.%08lX%08lX@%d"),
         STR_ZH("读取软件相关信息时发生错误：\n%08lX%08lX@%d"),
         STR_TW("讀取軟體相關數據時發生錯誤：\n%08lX%08lX@%d"),
@@ -507,7 +516,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_JP("タイトルが見つかりませんでした。"),
         STR_PT("Nenhum título foi encontrado."),
         STR_NL("Geen titels gevonden."),
-        STR_KO("제목을 감지하지 못하였습니다."),
+        STR_KO("타이틀을 찾을 수 없습니다."),
         STR_RU("Заголовки не обнаружены"),
         STR_ZH("主机内找不到任何软件。"),
         STR_TW("主機内找不到任何軟體。"),
@@ -556,7 +565,7 @@ const char* const g_strings[StrId_Max][16] =
             "  \xEE\x80\x81 Annuleren"
         ),
         STR_KO(
-            "대상 제목을 선택해 주십시오.\n\n"
+            "대상 타이틀을 선택해 주십시오.\n\n"
             "  \xEE\x80\x80 선택\n"
             "  \xEE\x80\x81 취소"
         ),
@@ -620,7 +629,7 @@ const char* const g_strings[StrId_Max][16] =
             "Gebruik een andere exploit."
         ),
         STR_KO(
-            "이 Homebrew 익스플로잇은 해당 제목에서 애플리케이션을\n"
+            "이 홈브류 익스플로잇은 해당 타이틀에서 애플리케이션을\n"
             "실행하는 것을 지원하지 않습니다.\n"
             "다른 익스플로잇을 사용해 주십시오."
         ),
@@ -677,7 +686,7 @@ const char* const g_strings[StrId_Max][16] =
         ),
         STR_KO(
             "해당 애플리케이션은 시스템에 설치되지 않은\n"
-            "제목을 요구합니다."
+            "타이틀을 요구합니다."
         ),
         STR_RU(
             "Для приложения требуется зависимость,\n"
@@ -735,7 +744,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_JP("エラーが発生しました。\n技術的な詳細：[%s:%d]"),
         STR_PT("Ocorreu um erro.\nDetalhes técnicos: [%s:%d]"),
         STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
-        STR_KO("오류가 발생했습니다.\n기술적 상세: [%s:%d]"),
+        STR_KO("오류가 발생했습니다.\n기술적인 세부사항: [%s:%d]"),
         STR_RU("Произошла ошибка.\nТехнические подробности: [%s:%d]"),
         STR_ZH("发生错误。\n详细错误信息：[%s:%d]"),
         STR_TW("發生錯誤。\n詳細錯誤資訊：[%s:%d]"),
@@ -744,9 +753,10 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_NetLoaderOffline] =
     {
         STR_EN("Offline, waiting for network…\n\n\n  \xEE\x80\x81 Cancel"),
+        STR_FR("Hors-ligne, en attente d'une connection...\n\n\n \xEE\x80\x81 Annuler"),
         STR_IT("Disconnesso, in attesa della connessione…\n\n\n  \xEE\x80\x81 Annullare"),
         STR_JP("オフラインです。ネットワーク接続を待っています…\n\n\n \xEE\x80\x81 キャンセル"),
-        STR_KO("오프라인임, 네트워크 대기중…\n\n\n  \xEE\x80\x81 취소")
+        STR_KO("연결 끊김, 네트워크 기다리는 중…\n\n\n  \xEE\x80\x81 취소")
         STR_ZH("无法连接网络，等待网络连接…\n\n\n  \xEE\x80\x81 取消"),
         STR_TW("當前離線，等待網路連線…\n\n\n  \xEE\x80\x81 取消"),
     },

@@ -14,6 +14,20 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col) {
 }
 
 void themeStartup(ThemePreset preset) {
+    globalPreset = preset;
+    char* buttonAText = calloc(7,sizeof(char));
+    char* buttonBText = calloc(7,sizeof(char));
+    switch (preset) {
+        case THEME_PRESET_LIGHT:
+        default:
+            strcpy(buttonAText, "\uE0E0");
+            strcpy(buttonBText, "\uE0E1");
+            break;
+        case THEME_PRESET_DARK:
+            strcpy(buttonAText, "\uE0A0");
+            strcpy(buttonBText, "\uE0A1");
+            break;
+    }
     theme_t themeLight = (theme_t) { 
         .textColor = MakeColor(0, 0, 0, 255),
         .frontWaveColor = MakeColor(100, 212, 250, 255),
@@ -23,8 +37,8 @@ void themeStartup(ThemePreset preset) {
         .highlightColor = MakeColor(91, 237, 224, 255),
         .separatorColor = MakeColor(219, 218, 219, 255),
         .enableWaveBlending = 0,
-        .buttonAText = "\uE0E0",
-        .buttonBText = "\uE0E1",
+        .buttonAText = buttonAText,
+        .buttonBText = buttonBText,
         //.buttonAImage = button_a_light_bin,
         //.buttonBImage = button_b_light_bin,
         .hbmenuLogoImage = hbmenu_logo_light_bin
@@ -39,8 +53,8 @@ void themeStartup(ThemePreset preset) {
         .highlightColor = MakeColor(91, 237, 224, 255),
         .separatorColor = MakeColor(219, 218, 219, 255),
         .enableWaveBlending = 0,
-        .buttonAText = "\uE0A0",
-        .buttonBText = "\uE0A1",
+        .buttonAText = buttonAText,
+        .buttonBText = buttonBText,
         //.buttonAImage = button_a_dark_bin,
         //.buttonBImage = button_b_dark_bin,
         .hbmenuLogoImage = hbmenu_logo_dark_bin
@@ -62,19 +76,31 @@ void themeStartup(ThemePreset preset) {
     int waveBlending;
     const char *AText, *BText;
     bool good_cfg = config_read_file(&cfg, tmp_path);
-    
+    struct stat buffer;
+    if(!good_cfg){
+        config_t tmp = {0};
+        cfg = tmp;//clear the config
+    }
     switch (preset) {
         case THEME_PRESET_LIGHT:
         default:
             themeDefault = &themeLight;
             if (good_cfg)
                 theme = config_lookup(&cfg, "lightTheme");
+            else{
+                if(stat(tmp_path,&buffer)==0);
+                    //TODO: theme.cfg file does not exist or is corrupted/misconfigured! overwrite with default theme.
+            }
             break;
 
         case THEME_PRESET_DARK:
             themeDefault = &themeDark;
             if (good_cfg)
                 theme = config_lookup(&cfg, "darkTheme");
+            else{
+                if(stat(tmp_path,&buffer)==0);
+                    //TODO: theme.cfg file does not exist or is corrupted/misconfigured! overwrite with default theme.
+            }       
             break;
     }
     

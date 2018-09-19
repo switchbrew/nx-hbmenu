@@ -4,6 +4,8 @@
 
 #include "invalid_icon_bin.h"
 #include "folder_icon_bin.h"
+#include "theme_icon_dark_bin.h"
+#include "theme_icon_light_bin.h"
 
 char rootPath[PATH_MAX+8];
 
@@ -17,6 +19,8 @@ void launchMenuEntryTask(menuEntry_s* arg)
     if (me->type == ENTRY_TYPE_FOLDER)
         menuScan(me->path);
         //changeDirTask(me->path);
+    else if(me->type == ENTRY_TYPE_THEME)
+        launchApplyThemeTask(me);
     else
         launchMenuEntry(me);
 }
@@ -27,6 +31,7 @@ static enum
     HBMENU_NETLOADER_ACTIVE,
     HBMENU_NETLOADER_ERROR,
     HBMENU_NETLOADER_SUCCESS,
+    HBMENU_THEME_MENU,
 } hbmenu_state = HBMENU_DEFAULT;
 
 void launchMenuNetloaderTask() {
@@ -39,10 +44,39 @@ void launchMenuBackTask()
     if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
         netloader_deactivate();
         hbmenu_state = HBMENU_DEFAULT;
-    } else {
+    }else if(hbmenu_state == HBMENU_THEME_MENU){
+        hbmenu_state = HBMENU_DEFAULT;
+        menuScan(rootPath);
+    }
+     else {
         menuScan("..");
     }
 
+}
+bool appliedTheme=false;
+void launchApplyThemeTask(menuEntry_s* arg){
+    if(appliedTheme){
+        menuCreateMsgBox(780, 300, "A new theme was already applied...\nYou must restart hbmenu before applying a different one");
+        return;
+    }
+    config_t cfg = {0};
+    config_init(&cfg);
+    if(!config_read_file(&cfg, arg->path)){
+        menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be loaded!");
+        return;
+    }
+     char tmp_path[PATH_MAX] = {0};
+    #ifdef __SWITCH__
+    tmp_path[0] = '/';
+    #endif
+
+    strncat(tmp_path, "config/nx-hbmenu/themes/theme.cfg", sizeof(tmp_path)-2);
+    if(!config_write_file(&cfg, tmp_path)){
+        menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
+        return;
+    }
+    appliedTheme=true;
+    menuCreateMsgBox(780, 300, "Theme Applied! Restart hbmenu to see the changes");   
 }
 
 //Draws an RGB888 or RGBA8888 image.
@@ -72,6 +106,7 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
 
 uint8_t *folder_icon_small;
 uint8_t *invalid_icon_small;
+uint8_t *theme_icon_small;
 
 static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int x, y;
@@ -178,6 +213,12 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         smallimg = folder_icon_small;
         largeimg = folder_icon_bin;
     }
+    else if (me->type == ENTRY_TYPE_THEME){
+        smallimg = theme_icon_small;
+        if(globalPreset == THEME_PRESET_DARK)
+            largeimg = theme_icon_dark_bin;
+        else largeimg = theme_icon_light_bin;
+    }
     else {
         smallimg = invalid_icon_small;
         largeimg = invalid_icon_bin;
@@ -267,6 +308,23 @@ void menuStartup() {
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    computeFrontGradient(themeCurrent.frontWaveColor, 280);
+    //menuCreateMsgBox(780, 300, "This is a test");
+}
+
+void themeMenuStartup() {
+    if(hbmenu_state==HBMENU_THEME_MENU) return;
+    hbmenu_state = HBMENU_THEME_MENU;
+    char tmp_path[PATH_MAX];
+
+    snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s%s%s%s",DIRECTORY_SEPARATOR, "config", DIRECTORY_SEPARATOR, "nx-hbmenu" , DIRECTORY_SEPARATOR, "themes");
+
+    themeMenuScan(tmp_path);
+    if(globalPreset == THEME_PRESET_DARK)
+        theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    else
+        theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
 }
@@ -441,12 +499,18 @@ void menuLoop() {
         }
 
         if(active_entry != NULL) {
-            if (active_entry->type != ENTRY_TYPE_FOLDER) {
+            if(active_entry->type == ENTRY_TYPE_THEME){
+                DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
+                DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Apply));
+            }
+            else if (active_entry->type != ENTRY_TYPE_FOLDER) {
+                //TODO: add minus button
                 //drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);//Display the 'A' button from SharedFont.
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
             }
-            else {
+            else{
+                //TODO: add minus button
                 //drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Open));

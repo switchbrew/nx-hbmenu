@@ -150,3 +150,52 @@ int menuScan(const char* target) {
     return 0;
 }
 
+
+int themeMenuScan(const char* target) {
+    menuClear();
+    if (chdir(target) < 0) return 1;
+    if (getcwd(s_menu[!s_curMenu].dirname, PATH_MAX+1) == NULL)
+        return 1;
+    DIR* dir;
+    struct dirent* dp;
+    char tmp_path[PATH_MAX+1];
+    dir = opendir(s_menu[!s_curMenu].dirname);
+    if (!dir) return 2;
+
+    while ((dp = readdir(dir)))
+    {
+        menuEntry_s* me = NULL;
+
+        bool shortcut = false;
+        if (dp->d_name[0]=='.')
+            continue;
+
+        memset(tmp_path, 0, sizeof(tmp_path));
+        snprintf(tmp_path, sizeof(tmp_path)-1, "%s/%s", s_menu[!s_curMenu].dirname, dp->d_name);
+
+        const char* ext = getExtension(dp->d_name);
+        char* name = removeExtension(dp->d_name);
+        replaceCharacter(name,'_',' ');
+        if(strcmp(dp->d_name,"theme.cfg")==0)//This theme is already the currently applied theme, dont load it
+            continue;
+        if (strcasecmp(ext, ".cfg")==0)
+            me = menuCreateEntry(ENTRY_TYPE_THEME);
+
+        if (!me)
+            continue;
+
+        strncpy(me->path, tmp_path, sizeof(me->path)-5);//-(1 + 4 for the file extension size)
+        me->path[sizeof(me->path)-1] = 0;
+        if (menuEntryLoad(me,(const char*)name, shortcut))
+            menuAddEntry(me);
+        else
+            menuDeleteEntry(me);
+    }
+
+    closedir(dir);
+    menuSort();
+    // Swap the menu and clear the previous menu
+    s_curMenu = !s_curMenu;
+    menuClear();
+    return 0;
+}

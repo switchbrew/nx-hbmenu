@@ -19,6 +19,7 @@ typedef enum
 {
     ENTRY_TYPE_FILE,
     ENTRY_TYPE_FOLDER,
+    ENTRY_TYPE_THEME,
 } MenuEntryType;
 
 typedef struct menuEntry_s_tag menuEntry_s;
@@ -86,6 +87,7 @@ menu_s* menuGetCurrent(void);
 int menuScan(const char* target);
 
 void launchMenuEntryTask(menuEntry_s* arg);
+void launchApplyThemeTask(menuEntry_s* arg);
 void launchMenuBackTask();
 void launchMenuNetloaderTask();
 char *menuGetRootPath();
@@ -107,5 +109,21 @@ static inline char* getSlash(const char* str)
     const char* p;
     for (p = str+strlen(str); p >= str && *p != '/'; p--);
     return (char*)p;
+}
+
+static inline char* removeExtension(const char* str){
+     const char* p;
+     char* copy = calloc(strlen(str)+1,sizeof(char));
+     char *copyHead = copy;
+    for (p = str; p <= (str+strlen(str)) && *p != '.'; p++){
+        *copy = *p;
+        copy++;
+    }
+    return (char*)copyHead;
+}
+
+static inline void replaceCharacter(char* str, char orig, char repl){
+    char* p;
+    for (p = str; p <= (str+strlen(str)); p++) if(*p==orig) *p=repl;
 }
 

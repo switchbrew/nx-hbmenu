@@ -182,7 +182,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 
     if (me->type == ENTRY_TYPE_FILE)
     {
-        strcpy(me->name, name);
+        //strcpy(me->name, name);//This is already done before both if statements
         strcpy(me->author, textGetString(StrId_DefaultPublisher));
         strcpy(me->version, "1.0.0");
 
@@ -292,6 +292,13 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 
         /*if (shortcut)
             shortcutFree(&sc);*/
+    }
+    if (me->type == ENTRY_TYPE_THEME){
+        
+        //Todo load in the data about the theme?
+        //Add a theme name property to each one?
+        //Ability to load the theme as you hover over?
+
     }
 
     return true;

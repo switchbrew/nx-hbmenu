@@ -21,6 +21,7 @@ typedef enum
     StrId_Actions_Launch,
     StrId_Actions_Open,
     StrId_Actions_Back,
+    StrId_Actions_Apply,
 
     StrId_MsgBox_OK,
 
