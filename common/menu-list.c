@@ -184,7 +184,7 @@ int themeMenuScan(const char* target) {
         if (!me)
             continue;
 
-        strncpy(me->path, tmp_path, sizeof(me->path)-5);//-(1 + 4 for the file extension size)
+        strncpy(me->path, tmp_path, sizeof(me->path)-1);
         me->path[sizeof(me->path)-1] = 0;
         if (menuEntryLoad(me,(const char*)name, shortcut))
             menuAddEntry(me);
