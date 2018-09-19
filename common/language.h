@@ -43,6 +43,8 @@ typedef enum
     StrId_NetLoaderActive,
     StrId_NetLoaderTransferring,
 
+    StrId_Actions_Theme_Menu,
+
     StrId_Max,
 } StrId;
 

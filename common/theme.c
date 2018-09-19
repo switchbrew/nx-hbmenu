@@ -15,8 +15,8 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col) {
 
 void themeStartup(ThemePreset preset) {
     globalPreset = preset;
-    char* buttonAText = calloc(7,sizeof(char));
-    char* buttonBText = calloc(7,sizeof(char));
+    char* buttonAText = calloc(7,sizeof(char));/*Must initialize the character arrays on the heap*/
+    char* buttonBText = calloc(7,sizeof(char));/*so that they are not destroyed whenever themeStartup function ends*/
     switch (preset) {
         case THEME_PRESET_LIGHT:
         default:
@@ -37,8 +37,8 @@ void themeStartup(ThemePreset preset) {
         .highlightColor = MakeColor(91, 237, 224, 255),
         .separatorColor = MakeColor(219, 218, 219, 255),
         .enableWaveBlending = 0,
-        .buttonAText = buttonAText,
-        .buttonBText = buttonBText,
+        .buttonAText = buttonAText,/*setting the buttonAText = "\uE0E0" directly allocates the literal on the stack */
+        .buttonBText = buttonBText,/*and sets the buttonAText to point to the address of the literal which is why calloc is used above*/
         //.buttonAImage = button_a_light_bin,
         //.buttonBImage = button_b_light_bin,
         .hbmenuLogoImage = hbmenu_logo_light_bin
@@ -63,10 +63,10 @@ void themeStartup(ThemePreset preset) {
     char tmp_path[PATH_MAX] = {0};
 
     #ifdef __SWITCH__
-    tmp_path[0] = '/';
+    tmp_path[0] = '/';/*will this work on the windows version?*/
     #endif
 
-    strncat(tmp_path, "config/nx-hbmenu/themes/theme.cfg", sizeof(tmp_path)-2);
+    strncat(tmp_path, "config/nx-hbmenu/themes/theme.cfg", sizeof(tmp_path)-2);/*Same thing here? will it work on windows?*/
     
     theme_t *themeDefault;
     config_t cfg = {0};
@@ -76,10 +76,10 @@ void themeStartup(ThemePreset preset) {
     int waveBlending;
     const char *AText, *BText;
     bool good_cfg = config_read_file(&cfg, tmp_path);
-    struct stat buffer;
-    if(!good_cfg){
+    if(!good_cfg){//config file is messed up
         config_t tmp = {0};
         cfg = tmp;//clear the config
+        config_init(&cfg);/*reinitize so that we can create the theme.cfg with the default theme (TODO:NightlyFox)*/
     }
     switch (preset) {
         case THEME_PRESET_LIGHT:
@@ -88,8 +88,9 @@ void themeStartup(ThemePreset preset) {
             if (good_cfg)
                 theme = config_lookup(&cfg, "lightTheme");
             else{
-                if(stat(tmp_path,&buffer)==0);
-                    //TODO: theme.cfg file does not exist or is corrupted/misconfigured! overwrite with default theme.
+                /*(TODO:NightlyFox) 
+                theme.cfg file does not exist or is corrupted/misconfigured! 
+                setup config here with default themes*/ 
             }
             break;
 
@@ -98,12 +99,14 @@ void themeStartup(ThemePreset preset) {
             if (good_cfg)
                 theme = config_lookup(&cfg, "darkTheme");
             else{
-                if(stat(tmp_path,&buffer)==0);
-                    //TODO: theme.cfg file does not exist or is corrupted/misconfigured! overwrite with default theme.
+                /*(TODO:NightlyFox) theme.cfg 
+                file does not exist or is corrupted/misconfigured! 
+                setup config here with default themes*/
             }       
             break;
     }
-    
+    /*(TODO:NightlyFox) write the config here 
+    so you only have to do it once*/
     if (good_cfg) {
         if (theme != NULL) {
             if (!colorFromSetting(config_setting_lookup(theme, "textColor"), &text))
