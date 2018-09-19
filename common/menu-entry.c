@@ -137,6 +137,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 
     tempbuf[PATH_MAX] = 0;
     strcpy(me->name, name);
+    
     if (me->type == ENTRY_TYPE_FOLDER)
     {
         //Check for <dirpath>/<dirname>.nro
@@ -298,7 +299,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         //Todo load in the data about the theme?
         //Add a theme name property to each one?
         //Ability to load the theme as you hover over?
-
+        free((void*)name);//This was allocated by calloc and copied over by strcpy
     }
 
     return true;

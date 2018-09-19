@@ -34,3 +34,10 @@ void themeStartup(ThemePreset preset);
 theme_t themeCurrent;
 
 ThemePreset globalPreset;
+
+
+static inline void themeExit(){
+    free((void*)themeCurrent.buttonAText);
+    free((void*)themeCurrent.buttonBText);
+}
+    

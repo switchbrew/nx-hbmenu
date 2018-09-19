@@ -18,7 +18,6 @@ void audio_initialize(void);
 void audio_exit(void);
 #endif
 
-char* getSavedTheme();
 
 int main(int argc, char **argv)
 {
@@ -43,7 +42,6 @@ int main(int argc, char **argv)
 
     rc = plInitialize();
     if (R_FAILED(rc)) fatalSimple(-6);
-    //char* savedThemeName = getSavedTheme(); 
     themeStartup((ThemePreset)theme);
     textInit();
     menuStartup();
@@ -101,6 +99,7 @@ int main(int argc, char **argv)
     #endif
 
     fontExit();
+    themeExit();
     launchExit();
     plExit();
     setsysExit();
@@ -165,24 +164,4 @@ bool menuUpdate(void) {
     }
 
     return exitflag;
-}
-
-
-
-char* getSavedTheme(){
-    char tmp_path[PATH_MAX];
-    #ifdef __SWITCH__
-    strcpy(tmp_path,"sdmc:");
-    #else
-    getcwd(tmp_path, PATH_MAX);
-    #endif
-    snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s%s%s%s%s", DIRECTORY_SEPARATOR, "config", DIRECTORY_SEPARATOR, "nx-hbmenu" , DIRECTORY_SEPARATOR, "themes", DIRECTORY_SEPARATOR, "theme.saved");
-    FILE* f;
-    if((f= fopen(tmp_path, "rb"))==NULL) return NULL; //return null if FAILED TO OPEN FILE
-    char* buffer;
-    buffer = calloc(1, PATH_MAX+1) ;//calloc already contains zeros
-    if( 1!=fread(buffer,PATH_MAX, 1, f) ) return NULL;// return null if FAILED TO READ
-    fclose(f);
-    return buffer;
-
 }
