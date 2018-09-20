@@ -12,7 +12,8 @@ typedef struct
     color_t backgroundColor;
     color_t highlightColor;
     color_t separatorColor;
-    color_t activeColor;
+    color_t borderColor;
+    color_t borderTextColor;
     bool enableWaveBlending;
     const char *buttonAText;
     const char *buttonBText;

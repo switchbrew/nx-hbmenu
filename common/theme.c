@@ -36,6 +36,8 @@ void themeStartup(ThemePreset preset) {
         .backgroundColor = MakeColor(233, 236, 241, 255),
         .highlightColor = MakeColor(91, 237, 224, 255),
         .separatorColor = MakeColor(219, 218, 219, 255),
+        .borderColor = MakeColor(255,255,255,255),
+        .borderTextColor = MakeColor(64,64,64,255),
         .enableWaveBlending = 0,
         .buttonAText = buttonAText,/*setting the buttonAText = "\uE0E0" directly allocates the literal on the stack */
         .buttonBText = buttonBText,/*and sets the buttonAText to point to the address of the literal which is why calloc is used above*/
@@ -52,6 +54,8 @@ void themeStartup(ThemePreset preset) {
         .backgroundColor = MakeColor(45, 45, 50, 255),
         .highlightColor = MakeColor(91, 237, 224, 255),
         .separatorColor = MakeColor(219, 218, 219, 255),
+        .borderColor = MakeColor(255,255,255,255),
+        .borderTextColor = MakeColor(64,64,64,255),
         .enableWaveBlending = 0,
         .buttonAText = buttonAText,
         .buttonBText = buttonBText,
@@ -72,7 +76,7 @@ void themeStartup(ThemePreset preset) {
     config_t cfg = {0};
     config_init(&cfg);
     config_setting_t *theme;
-    color_t text, frontWave, middleWave, backWave, background, highlight, separator;
+    color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor;
     int waveBlending;
     const char *AText, *BText;
     bool good_cfg = config_read_file(&cfg, tmp_path);
@@ -106,6 +110,10 @@ void themeStartup(ThemePreset preset) {
                 highlight = themeDefault->highlightColor;
             if (!colorFromSetting(config_setting_lookup(theme, "separatorColor"), &separator))
                 separator = themeDefault->separatorColor;
+            if (!colorFromSetting(config_setting_lookup(theme, "borderColor"), &borderColor))
+                borderColor = themeDefault->borderColor;
+            if (!colorFromSetting(config_setting_lookup(theme, "borderTextColor"), &borderTextColor))
+                borderTextColor = themeDefault->borderTextColor;
             if (!config_setting_lookup_int(theme, "enableWaveBlending", &waveBlending))
                 waveBlending = themeDefault->enableWaveBlending;
             if (!config_setting_lookup_string(theme, "buttonAText", &AText))
@@ -120,6 +128,8 @@ void themeStartup(ThemePreset preset) {
                 .backgroundColor = background,
                 .highlightColor = highlight,
                 .separatorColor = separator,
+                .borderColor = borderColor,
+                .borderTextColor = borderTextColor,
                 .enableWaveBlending = waveBlending,
                 .buttonAText = AText,
                 .buttonBText = BText,

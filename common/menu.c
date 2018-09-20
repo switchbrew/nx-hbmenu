@@ -122,7 +122,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     int border_start_x, border_end_x;
     int border_start_y, border_end_y;
-    color_t border_color = MakeColor(255, 255, 255, 255);
+    color_t border_color = MakeColor(themeCurrent.borderColor.r, themeCurrent.borderColor.g, themeCurrent.borderColor.b, 255);
 
     int shadow_start_y, shadow_y;
     int shadow_inset;
@@ -132,7 +132,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int shadow_size = 4;
 
     if (is_active) {
-        highlight_multiplier = fmax(0.0, fabs(fmod(menuTimer, 1.0) - 0.5) / 0.5);
+        
         border_color = MakeColor(themeCurrent.highlightColor.r + (255 - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (255 - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (255 - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
         border_start_x = start_x-6;
         border_end_x = end_x+6;
@@ -201,7 +201,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     for (y=start_y; y<end_y; y++) {
         for (x=start_x; x<end_x; x+=4) {
-            Draw4PixelsRaw(x, y, MakeColor(255, 255, 255, 255));
+            Draw4PixelsRaw(x, y, MakeColor(themeCurrent.borderColor.r, themeCurrent.borderColor.g, themeCurrent.borderColor.b, 255));//add to theme
         }
     }
 
@@ -246,8 +246,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             }
         }
     }
-
-    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
+    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, MakeColor(themeCurrent.borderTextColor.r, themeCurrent.borderTextColor.g, themeCurrent.borderTextColor.b, 255), me->name, 140 - 32, "...");//Add to theme
 
     if (is_active) {
         start_x = 1280 - 790;
