@@ -91,7 +91,7 @@ void themeStartup(ThemePreset preset) {
         case THEME_PRESET_DARK:
             themeDefault = &themeDark;
             if (good_cfg)
-                theme = config_lookup(&cfg, "darkTheme");    
+                theme = config_lookup(&cfg, "darkTheme");
             break;
     }
     if (good_cfg) {
