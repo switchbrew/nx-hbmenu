@@ -2,7 +2,7 @@ export APP_VERSION	:=	2.0.0
 
 .PHONY: clean all nx pc dist-bin
 
-all: nx pc 
+all: nx pc
 
 dist-bin:
 	$(MAKE) -f Makefile.nx dist-bin
