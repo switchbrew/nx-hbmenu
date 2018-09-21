@@ -76,7 +76,8 @@ void launchApplyThemeTask(menuEntry_s* arg){
         return;
     }
     appliedTheme=true;
-    menuCreateMsgBox(780, 300, "Theme Applied! Restart hbmenu to see the changes");   
+    config_destroy(&cfg);
+    menuCreateMsgBox(780, 300, "Theme Applied! Restart hbmenu to see the changes");  
 }
 
 //Draws an RGB888 or RGBA8888 image.
