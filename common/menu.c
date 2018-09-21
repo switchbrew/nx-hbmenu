@@ -313,7 +313,7 @@ void menuStartup() {
 }
 
 void themeMenuStartup() {
-    if(hbmenu_state==HBMENU_THEME_MENU) return;
+    if(hbmenu_state != HBMENU_DEFAULT) return;
     hbmenu_state = HBMENU_THEME_MENU;
     char tmp_path[PATH_MAX];
 
