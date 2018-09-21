@@ -299,7 +299,6 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         //Todo load in the data about the theme?
         //Add a theme name property to each one?
         //Ability to load the theme as you hover over?
-        free((void*)name);//This was allocated by calloc and copied over by strcpy
     }
 
     return true;
