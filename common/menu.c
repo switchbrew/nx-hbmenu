@@ -132,7 +132,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int shadow_size = 4;
 
     if (is_active) {
-        
+        highlight_multiplier = fmax(0.0, fabs(fmod(menuTimer, 1.0) - 0.5) / 0.5);
         border_color = MakeColor(themeCurrent.highlightColor.r + (255 - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (255 - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (255 - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
         border_start_x = start_x-6;
         border_end_x = end_x+6;
