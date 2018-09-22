@@ -38,7 +38,6 @@ ThemePreset globalPreset;
 
 
 static inline void themeExit(){
-    free((void*)themeCurrent.buttonAText);
-    free((void*)themeCurrent.buttonBText);
+    free(themeCurrent.buttonAText);
+    free(themeCurrent.buttonBText);
 }
-    
