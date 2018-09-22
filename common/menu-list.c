@@ -190,7 +190,7 @@ int themeMenuScan(const char* target) {
             menuAddEntry(me);
         else
             menuDeleteEntry(me);
-        free((void*)name);//This was allocated by calloc and copied over by strcpy
+        free(name);//This was allocated by calloc and copied over by strcpy
     }
 
     closedir(dir);
