@@ -119,7 +119,7 @@ static inline char* removeExtension(const char* str){
         *copy = *p;
         copy++;
     }
-    return (char*)copyHead;
+    return copyHead;
 }
 
 static inline void replaceCharacter(char* str, char orig, char repl){

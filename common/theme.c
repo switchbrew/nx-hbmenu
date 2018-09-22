@@ -15,8 +15,8 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col) {
 
 void themeStartup(ThemePreset preset) {
     globalPreset = preset;
-    char* buttonAText = calloc(7,sizeof(char));/*Must initialize the character arrays on the heap*/
-    char* buttonBText = calloc(7,sizeof(char));/*so that they are not destroyed whenever themeStartup function ends*/
+    char* buttonAText = calloc(7,sizeof(char));
+    char* buttonBText = calloc(7,sizeof(char));
     switch (preset) {
         case THEME_PRESET_LIGHT:
         default:
@@ -39,8 +39,8 @@ void themeStartup(ThemePreset preset) {
         .borderColor = MakeColor(255,255,255,255),
         .borderTextColor = MakeColor(64,64,64,255),
         .enableWaveBlending = 0,
-        .buttonAText = buttonAText,/*setting the buttonAText = "\uE0E0" directly allocates the literal on the stack */
-        .buttonBText = buttonBText,/*and sets the buttonAText to point to the address of the literal which is why calloc is used above*/
+        .buttonAText = buttonAText,
+        .buttonBText = buttonBText,
         //.buttonAImage = button_a_light_bin,
         //.buttonBImage = button_b_light_bin,
         .hbmenuLogoImage = hbmenu_logo_light_bin
@@ -67,10 +67,10 @@ void themeStartup(ThemePreset preset) {
     char tmp_path[PATH_MAX] = {0};
 
     #ifdef __SWITCH__
-    tmp_path[0] = '/';/*will this work on the windows version?*/
+    tmp_path[0] = '/';
     #endif
 
-    strncat(tmp_path, "config/nx-hbmenu/themes/theme.cfg", sizeof(tmp_path)-2);/*Same thing here? will it work on windows?*/
+    strncat(tmp_path, "config/nx-hbmenu/themes/theme.cfg", sizeof(tmp_path)-2);
     
     theme_t *themeDefault;
     config_t cfg = {0};
