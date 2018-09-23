@@ -295,10 +295,31 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
             shortcutFree(&sc);*/
     }
     if (me->type == ENTRY_TYPE_THEME) {
-        
-        //Todo load in the data about the theme?
-        //Add a theme name property to each one?
-        //Ability to load the theme as you hover over?
+       config_t cfg = {0};
+        config_init(&cfg);
+        config_setting_t *themeInfo;
+        char author[ENTRY_AUTHORLENGTH]={0}, themeVersion[ENTRY_VERLENGTH]={0}, name[ENTRY_NAMELENGTH]={0};
+        bool noName = true, noAuthor = true, noVersion = true;
+        if(config_read_file(&cfg, me->path)) {
+            themeInfo = config_lookup(&cfg, "themeInfo");
+            if (themeInfo != NULL) {
+                strncpy(name, config_setting_get_string(config_setting_lookup(themeInfo, "name")), sizeof(name)-1);
+                if(name[0]!='\0') noName = false;
+                strncpy(author, config_setting_get_string(config_setting_lookup(themeInfo, "author")), sizeof(author)-1);
+                if(author[0]!='\0') noAuthor = false;
+                /*strncpy(themeVersion, config_setting_get_string(config_setting_lookup(themeInfo, "version")), sizeof(themeVersion)-1);
+                if(themeVersion[0]!='\0') noVersion = false;*/
+            }
+        }
+        if(noAuthor)
+            strncpy(author,"unknown", sizeof(author)-1);
+        if(noVersion) 
+            strncpy(themeVersion,"1.0.0", sizeof(themeVersion)-1);
+        strncpy(me->author, author, sizeof(me->author)-1);
+        strncpy(me->version, themeVersion, sizeof(me->version)-1);
+        if(!noName)
+            strncpy(me->name, name, sizeof(me->name)-1);
+        config_destroy(&cfg);
     }
 
     return true;
