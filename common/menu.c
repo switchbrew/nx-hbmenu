@@ -8,6 +8,7 @@
 #include "theme_icon_light_bin.h"
 
 char rootPath[PATH_MAX+8];
+void computeFrontGradient(color_t baseColor, int height);
 
 char *menuGetRootPath() {
     return rootPath;

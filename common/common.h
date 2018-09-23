@@ -60,6 +60,7 @@ typedef union {
 #include "message-box.h"
 
 void menuStartup();
+void themeMenuStartup();
 void menuLoop();
 
 static inline uint8_t BlendColor(uint32_t src, uint32_t dst, uint8_t alpha)

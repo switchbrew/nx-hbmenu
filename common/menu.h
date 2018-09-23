@@ -85,6 +85,7 @@ void menuEntryParseNacp(menuEntry_s* me);
 
 menu_s* menuGetCurrent(void);
 int menuScan(const char* target);
+int themeMenuScan(const char* target);
 
 void launchMenuEntryTask(menuEntry_s* arg);
 void launchApplyThemeTask(menuEntry_s* arg);
