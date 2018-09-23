@@ -294,7 +294,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         /*if (shortcut)
             shortcutFree(&sc);*/
     }
-    if (me->type == ENTRY_TYPE_THEME){
+    if (me->type == ENTRY_TYPE_THEME) {
         
         //Todo load in the data about the theme?
         //Add a theme name property to each one?
