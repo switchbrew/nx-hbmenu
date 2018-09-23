@@ -14,8 +14,7 @@ char *menuGetRootPath() {
     return rootPath;
 }
 
-void launchMenuEntryTask(menuEntry_s* arg)
-{
+void launchMenuEntryTask(menuEntry_s* arg) {
     menuEntry_s* me = arg;
     if (me->type == ENTRY_TYPE_FOLDER)
         menuScan(me->path);
@@ -40,24 +39,24 @@ void launchMenuNetloaderTask() {
         if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 }
 
-void launchMenuBackTask()
-{
+void launchMenuBackTask() {
     if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
         netloader_deactivate();
         hbmenu_state = HBMENU_DEFAULT;
-    }else if(hbmenu_state == HBMENU_THEME_MENU){
+    }
+    else if(hbmenu_state == HBMENU_THEME_MENU) {
         hbmenu_state = HBMENU_DEFAULT;
         menuScan(rootPath);
     }
-     else {
+    else {
         menuScan("..");
     }
 
 }
-void launchApplyThemeTask(menuEntry_s* arg){
+void launchApplyThemeTask(menuEntry_s* arg) {
     config_t cfg = {0};
     config_init(&cfg);
-    if(!config_read_file(&cfg, arg->path)){
+    if(!config_read_file(&cfg, arg->path)) {
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be loaded!");
         return;
     }
@@ -67,7 +66,7 @@ void launchApplyThemeTask(menuEntry_s* arg){
     #endif
 
     strncat(tmp_path, "config/nx-hbmenu/theme.cfg", sizeof(tmp_path)-2);
-    if(!config_write_file(&cfg, tmp_path)){
+    if(!config_write_file(&cfg, tmp_path)) {
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
         return;
     }
