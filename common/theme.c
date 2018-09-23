@@ -15,19 +15,6 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col) {
 
 void themeStartup(ThemePreset preset) {
     globalPreset = preset;
-    char* buttonAText = calloc(7,sizeof(char));
-    char* buttonBText = calloc(7,sizeof(char));
-    switch (preset) {
-        case THEME_PRESET_LIGHT:
-        default:
-            strcpy(buttonAText, "\uE0E0");
-            strcpy(buttonBText, "\uE0E1");
-            break;
-        case THEME_PRESET_DARK:
-            strcpy(buttonAText, "\uE0A0");
-            strcpy(buttonBText, "\uE0A1");
-            break;
-    }
     theme_t themeLight = (theme_t) { 
         .textColor = MakeColor(0, 0, 0, 255),
         .frontWaveColor = MakeColor(100, 212, 250, 255),
@@ -39,8 +26,8 @@ void themeStartup(ThemePreset preset) {
         .borderColor = MakeColor(255,255,255,255),
         .borderTextColor = MakeColor(64,64,64,255),
         .enableWaveBlending = 0,
-        .buttonAText = buttonAText,
-        .buttonBText = buttonBText,
+        .buttonAText = "\uE0E0",
+        .buttonBText = "\uE0E1",
         //.buttonAImage = button_a_light_bin,
         //.buttonBImage = button_b_light_bin,
         .hbmenuLogoImage = hbmenu_logo_light_bin
@@ -57,8 +44,8 @@ void themeStartup(ThemePreset preset) {
         .borderColor = MakeColor(255,255,255,255),
         .borderTextColor = MakeColor(64,64,64,255),
         .enableWaveBlending = 0,
-        .buttonAText = buttonAText,
-        .buttonBText = buttonBText,
+        .buttonAText = "\uE0A0",
+        .buttonBText = "\uE0A1",
         //.buttonAImage = button_a_dark_bin,
         //.buttonBImage = button_b_dark_bin,
         .hbmenuLogoImage = hbmenu_logo_dark_bin
@@ -70,7 +57,7 @@ void themeStartup(ThemePreset preset) {
     tmp_path[0] = '/';
     #endif
 
-    strncat(tmp_path, "config/nx-hbmenu/themes/theme.cfg", sizeof(tmp_path)-2);
+    strncat(tmp_path, "config/nx-hbmenu/settings.cfg", sizeof(tmp_path)-2);
     
     theme_t *themeDefault;
     config_t cfg = {0};
@@ -131,12 +118,12 @@ void themeStartup(ThemePreset preset) {
                 .borderColor = borderColor,
                 .borderTextColor = borderTextColor,
                 .enableWaveBlending = waveBlending,
-                .buttonAText = AText,
-                .buttonBText = BText,
                 //.buttonAImage = button_a_dark_bin,
                 //.buttonBImage = button_b_dark_bin,
                 .hbmenuLogoImage = hbmenu_logo_dark_bin
             };
+            strncpy(themeCurrent.buttonAText, AText, sizeof(themeCurrent.buttonAText)-1);
+            strncpy(themeCurrent.buttonBText, BText, sizeof(themeCurrent.buttonBText)-1);
         } else {
             themeCurrent = *themeDefault;
         }

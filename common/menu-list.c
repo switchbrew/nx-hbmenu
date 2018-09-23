@@ -174,10 +174,6 @@ int themeMenuScan(const char* target) {
         snprintf(tmp_path, sizeof(tmp_path)-1, "%s/%s", s_menu[!s_curMenu].dirname, dp->d_name);
 
         const char* ext = getExtension(dp->d_name);
-        char* name = removeExtension(dp->d_name);
-        replaceCharacter(name,'_',' ');
-        if(strcmp(dp->d_name,"theme.cfg")==0)//This theme is already the currently applied theme, dont load it
-            continue;
         if (strcasecmp(ext, ".cfg")==0)
             me = menuCreateEntry(ENTRY_TYPE_THEME);
 
@@ -186,11 +182,10 @@ int themeMenuScan(const char* target) {
 
         strncpy(me->path, tmp_path, sizeof(me->path)-1);
         me->path[sizeof(me->path)-1] = 0;
-        if (menuEntryLoad(me,(const char*)name, shortcut))
+        if (menuEntryLoad(me,dp->d_name, shortcut))
             menuAddEntry(me);
         else
             menuDeleteEntry(me);
-        free(name);//This was allocated by calloc and copied over by strcpy
     }
 
     closedir(dir);

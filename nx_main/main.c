@@ -18,7 +18,6 @@ void audio_initialize(void);
 void audio_exit(void);
 #endif
 
-
 int main(int argc, char **argv)
 {
     Result lastret=0;
@@ -33,8 +32,7 @@ int main(int argc, char **argv)
 
     appletSetScreenShotPermission(1);
 
-    ColorSetId theme;
-    
+    ColorSetId theme; 
     rc = setsysInitialize();
     if (R_FAILED(rc)) fatalSimple(-5);
 
@@ -99,7 +97,6 @@ int main(int argc, char **argv)
     #endif
 
     fontExit();
-    themeExit();
     launchExit();
     plExit();
     setsysExit();

@@ -52,7 +52,6 @@ int main()
     }
 
     fontExit();
-    themeExit();
 
     return 0;
 }

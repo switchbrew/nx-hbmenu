@@ -15,8 +15,8 @@ typedef struct
     color_t borderColor;
     color_t borderTextColor;
     bool enableWaveBlending;
-    const char *buttonAText;
-    const char *buttonBText;
+    char buttonAText[32];
+    char buttonBText[32];
     //const uint8_t *buttonAImage;
     //const uint8_t *buttonBImage;
     const uint8_t *hbmenuLogoImage;
@@ -35,9 +35,3 @@ void themeStartup(ThemePreset preset);
 theme_t themeCurrent;
 
 ThemePreset globalPreset;
-
-
-static inline void themeExit(){
-    free(themeCurrent.buttonAText);
-    free(themeCurrent.buttonBText);
-}

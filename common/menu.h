@@ -110,20 +110,3 @@ static inline char* getSlash(const char* str)
     for (p = str+strlen(str); p >= str && *p != '/'; p--);
     return (char*)p;
 }
-
-static inline char* removeExtension(const char* str){
-    const char* p;
-    char* copy = calloc(strlen(str)+1,sizeof(char));
-    char *copyHead = copy;/*Get copy of the head of the char* to return, otherwise it will return copy->null */
-    for (p = str; p <= (str+strlen(str)) && *p != '.'; p++){
-        *copy = *p;
-        copy++;
-    }
-    return copyHead;
-}
-
-static inline void replaceCharacter(char* str, char orig, char repl){
-    char* p;
-    for (p = str; p <= (str+strlen(str)); p++) if(*p==orig) *p=repl;
-}
-

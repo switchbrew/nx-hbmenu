@@ -70,7 +70,7 @@ void launchApplyThemeTask(menuEntry_s* arg){
     tmp_path[0] = '/';
     #endif
 
-    strncat(tmp_path, "config/nx-hbmenu/themes/theme.cfg", sizeof(tmp_path)-2);
+    strncat(tmp_path, "config/nx-hbmenu/settings.cfg", sizeof(tmp_path)-2);
     if(!config_write_file(&cfg, tmp_path)){
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
         return;
@@ -123,7 +123,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     int border_start_x, border_end_x;
     int border_start_y, border_end_y;
-    color_t border_color = MakeColor(themeCurrent.borderColor.r, themeCurrent.borderColor.g, themeCurrent.borderColor.b, 255);
+    color_t border_color = themeCurrent.borderColor;
 
     int shadow_start_y, shadow_y;
     int shadow_inset;
@@ -202,7 +202,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     for (y=start_y; y<end_y; y++) {
         for (x=start_x; x<end_x; x+=4) {
-            Draw4PixelsRaw(x, y, MakeColor(themeCurrent.borderColor.r, themeCurrent.borderColor.g, themeCurrent.borderColor.b, 255));//add to theme
+            Draw4PixelsRaw(x, y, themeCurrent.borderColor);
         }
     }
 
@@ -247,7 +247,8 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             }
         }
     }
-    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, MakeColor(themeCurrent.borderTextColor.r, themeCurrent.borderTextColor.g, themeCurrent.borderTextColor.b, 255), me->name, 140 - 32, "...");//Add to theme
+
+    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, themeCurrent.borderTextColor, me->name, 140 - 32, "...");
 
     if (is_active) {
         start_x = 1280 - 790;
@@ -499,20 +500,20 @@ void menuLoop() {
         }
 
         if(active_entry != NULL) {
-            if(active_entry->type == ENTRY_TYPE_THEME){
-                int getX = getXCoordinate(interuiregular18,1180,textGetString(StrId_Actions_Theme_Menu),'r');
-                DrawText(interuiregular18, getX , 0 + 47, themeCurrent.textColor, textGetString(StrId_Actions_Theme_Menu));
+            if (active_entry->type == ENTRY_TYPE_THEME){
+                int getX = getXCoordinate(interuiregular18, 1180, textGetString(StrId_Actions_Theme_Menu), 'r');
+                DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_Actions_Theme_Menu));
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Apply));
             }
             else if (active_entry->type != ENTRY_TYPE_FOLDER) {
-                //TODO: add minus button
+                //TODO: add minus button for theme menu
                 //drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);//Display the 'A' button from SharedFont.
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
             }
-            else{
-                //TODO: add minus button
+            else {
+                //TODO: add minus button for theme menu
                 //drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Open));
