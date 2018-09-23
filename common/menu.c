@@ -53,12 +53,7 @@ void launchMenuBackTask()
     }
 
 }
-bool appliedTheme=false;
 void launchApplyThemeTask(menuEntry_s* arg){
-    if(appliedTheme){
-        menuCreateMsgBox(780, 300, "A new theme was already applied...\nYou must restart hbmenu before applying a different one");
-        return;
-    }
     config_t cfg = {0};
     config_init(&cfg);
     if(!config_read_file(&cfg, arg->path)){
@@ -75,9 +70,9 @@ void launchApplyThemeTask(menuEntry_s* arg){
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
         return;
     }
-    appliedTheme=true;
     config_destroy(&cfg);
-    menuCreateMsgBox(780, 300, "Theme Applied! Restart hbmenu to see the changes");  
+    themeStartup(globalPreset);
+    computeFrontGradient(themeCurrent.frontWaveColor, 280); 
 }
 
 //Draws an RGB888 or RGBA8888 image.
