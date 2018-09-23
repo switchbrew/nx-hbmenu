@@ -57,7 +57,7 @@ void themeStartup(ThemePreset preset) {
     tmp_path[0] = '/';
     #endif
 
-    strncat(tmp_path, "config/nx-hbmenu/settings.cfg", sizeof(tmp_path)-2);
+    strncat(tmp_path, "config/nx-hbmenu/theme.cfg", sizeof(tmp_path)-2);
     
     theme_t *themeDefault;
     config_t cfg = {0};

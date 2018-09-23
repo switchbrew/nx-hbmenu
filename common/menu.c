@@ -65,7 +65,7 @@ void launchApplyThemeTask(menuEntry_s* arg){
     tmp_path[0] = '/';
     #endif
 
-    strncat(tmp_path, "config/nx-hbmenu/settings.cfg", sizeof(tmp_path)-2);
+    strncat(tmp_path, "config/nx-hbmenu/theme.cfg", sizeof(tmp_path)-2);
     if(!config_write_file(&cfg, tmp_path)){
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
         return;
