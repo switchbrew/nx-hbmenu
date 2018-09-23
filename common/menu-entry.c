@@ -298,35 +298,24 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         config_t cfg = {0};
         config_init(&cfg);
         config_setting_t *themeInfo;
-        const char *name, *author, *version;
-        bool noAuth = false, noVers = false;
+        const char *name,
+                   *author = textGetString(StrId_DefaultPublisher),
+                   *version = "1.0.0";
+                   
         if(config_read_file(&cfg, me->path)) {
             themeInfo = config_lookup(&cfg, "themeInfo");
             if (themeInfo != NULL) {
                 if(config_setting_lookup_string(themeInfo, "name", &name))
                     strncpy(me->name, name, sizeof(me->name)-1);
                 if(!config_setting_lookup_string(themeInfo, "author", &author))
-                    noAuth = true;
+                    author = textGetString(StrId_DefaultPublisher);
                 if(!config_setting_lookup_string(themeInfo, "version", &version))\
-                    noVers = true;
-            }
-            else {
-                noAuth = true;
-                noVers = true;
+                    version = "1.0.0";
             }
         }
-        else {
-            noAuth = true;
-            noVers = true;
-        }
-        if(noAuth)
-            strncpy(me->author, textGetString(StrId_DefaultPublisher), sizeof(me->author)-1);
-        else
-            strncpy(me->author, author, sizeof(me->author)-1);
-        if(noVers)
-            strncpy(me->version, "1.0.0", sizeof(me->version)-1);
-        else
-            strncpy(me->version, version, sizeof(me->version)-1);
+
+        strncpy(me->author, author, sizeof(me->author)-1);
+        strncpy(me->version, version, sizeof(me->version)-1);
         config_destroy(&cfg);
     }
 
