@@ -383,7 +383,7 @@ void fontExit()
  *'t' aligned, top of text aligns with rY, 
  *you get the rest....
  */
-uint32_t getTextYCoordinate(u32 font, uint32_t rY, const char* text, const char align){
+uint32_t GetTextYCoordinate(u32 font, uint32_t rY, const char* text, const char align) {
     uint32_t height_o,width;
     GetTextDimensions(font,text,&width,&height_o);
     uint32_t height = (uint32_t)height_o;
@@ -408,7 +408,7 @@ uint32_t getTextYCoordinate(u32 font, uint32_t rY, const char* text, const char 
  *align='r','l','c' translates to (right,left,center)
  *'r' aligned, rX location = end of string, you get the rest...
  */
-uint32_t getTextXCoordinate(u32 font, uint32_t rX, const char* text, const char align){
+uint32_t GetTextXCoordinate(u32 font, uint32_t rX, const char* text, const char align) {
     uint32_t height,width_o;
     GetTextDimensions(font,text,&width_o,&height);
     uint32_t fC = (rX-width_o);

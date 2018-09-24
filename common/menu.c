@@ -496,7 +496,7 @@ void menuLoop() {
 
         if(active_entry != NULL) {
             if (active_entry->type == ENTRY_TYPE_THEME) {
-                int getX = getTextXCoordinate(interuiregular18, 1180, textGetString(StrId_Actions_Theme_Menu), 'r');
+                int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_Actions_Theme_Menu), 'r');
                 DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_Actions_Theme_Menu));
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Apply));
