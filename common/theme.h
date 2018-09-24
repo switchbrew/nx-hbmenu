@@ -30,8 +30,8 @@ typedef enum
 
 bool colorFromSetting(config_setting_t *rgba, color_t *col);
 
-extern void themeStartup(ThemePreset preset);
+void themeStartup(ThemePreset preset);
 
 extern theme_t themeCurrent;
 
-ThemePreset themeGlobalPreset;
+extern ThemePreset themeGlobalPreset;
