@@ -7,6 +7,7 @@
 #include "hbmenu_logo_dark_bin.h"
 
 theme_t themeCurrent;
+ThemePreset themeGlobalPreset;
 
 bool colorFromSetting(config_setting_t *rgba, color_t *col) {
     if(rgba == NULL)
