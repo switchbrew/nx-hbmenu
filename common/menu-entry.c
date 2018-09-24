@@ -294,6 +294,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         /*if (shortcut)
             shortcutFree(&sc);*/
     }
+    
     if (me->type == ENTRY_TYPE_THEME) {
         config_t cfg = {0};
         config_init(&cfg);

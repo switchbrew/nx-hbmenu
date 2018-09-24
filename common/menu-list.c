@@ -181,7 +181,7 @@ int themeMenuScan(const char* target) {
 
         strncpy(me->path, tmp_path, sizeof(me->path)-1);
         me->path[sizeof(me->path)-1] = 0;
-        if (menuEntryLoad(me,dp->d_name, shortcut))
+        if (menuEntryLoad(me, dp->d_name, shortcut))
             menuAddEntry(me);
         else
             menuDeleteEntry(me);

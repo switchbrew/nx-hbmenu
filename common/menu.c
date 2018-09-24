@@ -74,7 +74,7 @@ void launchApplyThemeTask(menuEntry_s* arg) {
         return;
     }
     config_destroy(&cfg);
-    themeStartup(globalPreset);
+    themeStartup(themeGlobalPreset);
     computeFrontGradient(themeCurrent.frontWaveColor, 280); 
 }
 
@@ -214,7 +214,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
     else if (me->type == ENTRY_TYPE_THEME){
         smallimg = theme_icon_small;
-        if(globalPreset == THEME_PRESET_DARK)
+        if(themeGlobalPreset == THEME_PRESET_DARK)
             largeimg = theme_icon_dark_bin;
         else largeimg = theme_icon_light_bin;
     }
@@ -307,6 +307,10 @@ void menuStartup() {
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    if(themeGlobalPreset == THEME_PRESET_DARK)
+        theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    else
+        theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
 }
@@ -319,13 +323,6 @@ void themeMenuStartup() {
     snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s%s%s%s",DIRECTORY_SEPARATOR, "config", DIRECTORY_SEPARATOR, "nx-hbmenu" , DIRECTORY_SEPARATOR, "themes");
 
     themeMenuScan(tmp_path);
-    if(globalPreset == THEME_PRESET_DARK)
-        theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    else
-        theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    
-    computeFrontGradient(themeCurrent.frontWaveColor, 280);
-    //menuCreateMsgBox(780, 300, "This is a test");
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
@@ -499,7 +496,7 @@ void menuLoop() {
 
         if(active_entry != NULL) {
             if (active_entry->type == ENTRY_TYPE_THEME) {
-                int getX = getXCoordinate(interuiregular18, 1180, textGetString(StrId_Actions_Theme_Menu), 'r');
+                int getX = getTextXCoordinate(interuiregular18, 1180, textGetString(StrId_Actions_Theme_Menu), 'r');
                 DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_Actions_Theme_Menu));
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Apply));
