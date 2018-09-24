@@ -62,8 +62,8 @@ void launchApplyThemeTask(menuEntry_s* arg) {
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be loaded!");
         return;
     }
-    char tmp_path[PATH_MAX] = {0};
 
+    char tmp_path[PATH_MAX] = {0};
     #ifdef __SWITCH__
     tmp_path[0] = '/';
     #endif
