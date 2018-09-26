@@ -56,7 +56,10 @@ void themeStartup(ThemePreset preset) {
     #ifdef __SWITCH__
     tmp_path[0] = '/';
     #endif
-
+    const char* themePath = "";
+    config_t thmPthCfg = {0};
+    config_init(&thmPthCfg);
+    GetThemePathFromConfig(thmPthCfg, themePath);
     strncat(tmp_path, "config/nx-hbmenu/theme.cfg", sizeof(tmp_path)-2);
     
     theme_t *themeDefault;
@@ -131,4 +134,20 @@ void themeStartup(ThemePreset preset) {
         themeCurrent = *themeDefault;
     }
     config_destroy(&cfg);
+}
+
+
+void GetThemePathFromConfig(config_t cfg, const char* path){
+    char tmp_path[PATH_MAX] = {0};
+    config_setting_t *setting;
+
+    #ifdef __SWITCH__
+    tmp_path[0] = '/';
+    #endif
+    strncat(tmp_path, "config/nx-hbmenu/setting.cfg", sizeof(tmp_path)-2);
+    bool good_cfg = config_read_file(&cfg, tmp_path);
+    
+    if(good_cfg) {
+        config_setting_lookup_string(theme, "themePath", &path);
+    }  
 }
