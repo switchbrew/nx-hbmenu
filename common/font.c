@@ -422,3 +422,4 @@ uint32_t getXCoordinate(u32 font,uint32_t rX, const char* text ,const char align
             return rX;
     }
 }
+
