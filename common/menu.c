@@ -56,7 +56,7 @@ void launchMenuBackTask() {
 
 void launchApplyThemeTask(menuEntry_s* arg) {
     const char* themePath = removeDriveFromPath(arg->path);
-    //SetThemePathToConfig(themePath);
+    SetThemePathToConfig(themePath);
     themeStartup(themeGlobalPreset);
     computeFrontGradient(themeCurrent.frontWaveColor, 280); 
 }
@@ -479,8 +479,8 @@ void menuLoop() {
 
         if(active_entry != NULL) {
             if (active_entry->type == ENTRY_TYPE_THEME) {
-                int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_Actions_Theme_Menu), 'r');
-                DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_Actions_Theme_Menu));
+                int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
+                DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Apply));
             }

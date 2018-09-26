@@ -53,11 +53,12 @@ void themeStartup(ThemePreset preset) {
         //.buttonBImage = button_b_dark_bin,
         .hbmenuLogoImage = hbmenu_logo_dark_bin
     };
-    
-    
+
     const char* themePath = "";
-    GetThemePathFromConfig(themePath);
-    
+    config_t themeCfg = {0};
+    config_setting_t *setting;
+    config_init(&themeCfg);
+    GetThemePathFromConfig(themeCfg, setting, &themePath);
 
     theme_t *themeDefault;
     config_t cfg = {0};
@@ -67,6 +68,7 @@ void themeStartup(ThemePreset preset) {
     int waveBlending;
     const char *AText, *BText;
     bool good_cfg = config_read_file(&cfg, themePath);
+    config_destroy(&themeCfg);
 
     switch (preset) {
         case THEME_PRESET_LIGHT:
@@ -135,25 +137,22 @@ void themeStartup(ThemePreset preset) {
     config_destroy(&cfg);
 }
 
-void GetThemePathFromConfig(const char* themePath) {
-    config_t cfg = {0};
-    config_setting_t *setting;
-    config_init(&cfg);
-
+void GetThemePathFromConfig(config_t cfg, config_setting_t *setting, const char** themePath) {
     char tmp_path[PATH_MAX] = {0};
 
     #ifdef __SWITCH__
     tmp_path[0] = '/';
     #endif
 
-    strncat(tmp_path, "config/nx-hbmenu/setting.cfg", sizeof(tmp_path)-2);
+    strncat(tmp_path, "config/nx-hbmenu/settings.cfg", sizeof(tmp_path)-2);
     bool good_cfg = config_read_file(&cfg, tmp_path);
     
     if(good_cfg) {
-        setting = config_lookup(&cfg, "themePath");
-        config_setting_lookup_string(setting, "themePath", &themePath);
+        setting = config_lookup(&cfg, "hbmenuConfig");
+        if(setting != NULL){
+            config_setting_lookup_string(setting, "themePath", themePath);
+        }
     }
-    config_destroy(&cfg);
 }
 
 void SetThemePathToConfig(const char* themePath) {
@@ -167,7 +166,8 @@ void SetThemePathToConfig(const char* themePath) {
     settingPath[0] = '/';
     #endif
 
-    strncat(settingPath, "config/nx-hbmenu/setting.cfg", sizeof(settingPath)-2);
+    strncat(settingPath, "config/nx-hbmenu/settings.cfg", sizeof(settingPath)-2);
+
     root = config_root_setting(&cfg);
     group = config_setting_add(root, "hbmenuConfig", CONFIG_TYPE_GROUP);
     setting = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);

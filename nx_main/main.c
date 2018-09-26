@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
     rc = plInitialize();
     if (R_FAILED(rc)) fatalSimple(-6);
-    
+
     themeStartup((ThemePreset)theme);
     textInit();
     menuStartup();

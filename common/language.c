@@ -320,7 +320,7 @@ const char* const g_strings[StrId_Max][16] =
     },
 
     
-    [StrId_Actions_Theme_Menu] =
+    [StrId_ThemeMenu] =
     {
         STR_EN("Theme Menu"),
         STR_ES("Menú temático"),
@@ -887,4 +887,3 @@ const char* const g_strings[StrId_Max][16] =
         ),
     },*/
 };
-
