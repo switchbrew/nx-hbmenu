@@ -54,11 +54,9 @@ void themeStartup(ThemePreset preset) {
         .hbmenuLogoImage = hbmenu_logo_dark_bin
     };
     
-    config_t themeCfg = {0};
-    config_setting_t *setting;
-    config_init(&themeCfg);
+    
     const char* themePath = "";
-    //GetThemePathFromConfig(themeCfg, setting, themePath);
+    GetThemePathFromConfig(themePath);
     
 
     theme_t *themeDefault;
@@ -69,7 +67,6 @@ void themeStartup(ThemePreset preset) {
     int waveBlending;
     const char *AText, *BText;
     bool good_cfg = config_read_file(&cfg, themePath);
-    config_destroy(&themeCfg);
 
     switch (preset) {
         case THEME_PRESET_LIGHT:
@@ -138,7 +135,11 @@ void themeStartup(ThemePreset preset) {
     config_destroy(&cfg);
 }
 
-void GetThemePathFromConfig(config_t cfg, config_setting_t *setting,  const char* themePath) {
+void GetThemePathFromConfig(const char* themePath) {
+    config_t cfg = {0};
+    config_setting_t *setting;
+    config_init(&cfg);
+
     char tmp_path[PATH_MAX] = {0};
 
     #ifdef __SWITCH__
@@ -152,26 +153,27 @@ void GetThemePathFromConfig(config_t cfg, config_setting_t *setting,  const char
         setting = config_lookup(&cfg, "themePath");
         config_setting_lookup_string(setting, "themePath", &themePath);
     }
+    config_destroy(&cfg);
 }
 
 void SetThemePathToConfig(const char* themePath) {
     config_t cfg = {0};
     config_init(&cfg);
 
-    char tmp_path[PATH_MAX] = {0};
+    char settingPath[PATH_MAX] = {0};
     config_setting_t *root,*group, *setting;
 
     #ifdef __SWITCH__
-    tmp_path[0] = '/';
+    settingPath[0] = '/';
     #endif
 
-    strncat(tmp_path, "config/nx-hbmenu/setting.cfg", sizeof(tmp_path)-2);
+    strncat(settingPath, "config/nx-hbmenu/setting.cfg", sizeof(settingPath)-2);
     root = config_root_setting(&cfg);
     group = config_setting_add(root, "hbmenuConfig", CONFIG_TYPE_GROUP);
     setting = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
     config_setting_set_string(setting, themePath);
 
-    if(!config_write_file(&cfg, tmp_path)) {
+    if(!config_write_file(&cfg, settingPath)) {
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
     }
 

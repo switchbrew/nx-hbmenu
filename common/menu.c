@@ -55,7 +55,8 @@ void launchMenuBackTask() {
 }
 
 void launchApplyThemeTask(menuEntry_s* arg) {
-    //SetThemePathToConfig(arg->path);
+    const char* themePath = removeDriveFromPath(arg->path);
+    //SetThemePathToConfig(themePath);
     themeStartup(themeGlobalPreset);
     computeFrontGradient(themeCurrent.frontWaveColor, 280); 
 }
