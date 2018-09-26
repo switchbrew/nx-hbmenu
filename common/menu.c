@@ -14,8 +14,7 @@ char *menuGetRootPath() {
     return rootPath;
 }
 
-void launchMenuEntryTask(menuEntry_s* arg)
-{
+void launchMenuEntryTask(menuEntry_s* arg) {
     menuEntry_s* me = arg;
     if (me->type == ENTRY_TYPE_FOLDER)
         menuScan(me->path);
@@ -40,39 +39,42 @@ void launchMenuNetloaderTask() {
         if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 }
 
-void launchMenuBackTask()
-{
+void launchMenuBackTask() {
     if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
         netloader_deactivate();
         hbmenu_state = HBMENU_DEFAULT;
-    }else if(hbmenu_state == HBMENU_THEME_MENU){
+    }
+    else if(hbmenu_state == HBMENU_THEME_MENU) {
         hbmenu_state = HBMENU_DEFAULT;
         menuScan(rootPath);
     }
-     else {
+    else {
         menuScan("..");
     }
 
 }
-void launchApplyThemeTask(menuEntry_s* arg){
+
+void launchApplyThemeTask(menuEntry_s* arg) {
     config_t cfg = {0};
     config_init(&cfg);
-    if(!config_read_file(&cfg, arg->path)){
+    
+    if(!config_read_file(&cfg, arg->path)) {
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be loaded!");
         return;
     }
-     char tmp_path[PATH_MAX] = {0};
+
+    char tmp_path[PATH_MAX] = {0};
     #ifdef __SWITCH__
     tmp_path[0] = '/';
     #endif
 
     strncat(tmp_path, "config/nx-hbmenu/theme.cfg", sizeof(tmp_path)-2);
-    if(!config_write_file(&cfg, tmp_path)){
+    if(!config_write_file(&cfg, tmp_path)) {
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
         return;
     }
     config_destroy(&cfg);
-    themeStartup(globalPreset);
+    themeStartup(themeGlobalPreset);
     computeFrontGradient(themeCurrent.frontWaveColor, 280); 
 }
 
@@ -212,7 +214,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
     else if (me->type == ENTRY_TYPE_THEME){
         smallimg = theme_icon_small;
-        if(globalPreset == THEME_PRESET_DARK)
+        if(themeGlobalPreset == THEME_PRESET_DARK)
             largeimg = theme_icon_dark_bin;
         else largeimg = theme_icon_light_bin;
     }
@@ -305,6 +307,10 @@ void menuStartup() {
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    if(themeGlobalPreset == THEME_PRESET_DARK)
+        theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    else
+        theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
 }
@@ -317,13 +323,6 @@ void themeMenuStartup() {
     snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s%s%s%s",DIRECTORY_SEPARATOR, "config", DIRECTORY_SEPARATOR, "nx-hbmenu" , DIRECTORY_SEPARATOR, "themes");
 
     themeMenuScan(tmp_path);
-    if(globalPreset == THEME_PRESET_DARK)
-        theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    else
-        theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    
-    computeFrontGradient(themeCurrent.frontWaveColor, 280);
-    //menuCreateMsgBox(780, 300, "This is a test");
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
@@ -497,7 +496,7 @@ void menuLoop() {
 
         if(active_entry != NULL) {
             if (active_entry->type == ENTRY_TYPE_THEME) {
-                int getX = getXCoordinate(interuiregular18, 1180, textGetString(StrId_Actions_Theme_Menu), 'r');
+                int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_Actions_Theme_Menu), 'r');
                 DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_Actions_Theme_Menu));
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Apply));

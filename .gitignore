@@ -11,3 +11,6 @@ build
 *.pfs0
 *.nacp
 *.nro
+test.*
+*_bin.h
+switch

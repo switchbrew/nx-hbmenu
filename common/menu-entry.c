@@ -294,6 +294,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         /*if (shortcut)
             shortcutFree(&sc);*/
     }
+    
     if (me->type == ENTRY_TYPE_THEME) {
         config_t cfg = {0};
         config_init(&cfg);
@@ -307,10 +308,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
             if (themeInfo != NULL) {
                 if(config_setting_lookup_string(themeInfo, "name", &name))
                     strncpy(me->name, name, sizeof(me->name)-1);
-                if(!config_setting_lookup_string(themeInfo, "author", &author))
-                    author = textGetString(StrId_DefaultPublisher);
-                if(!config_setting_lookup_string(themeInfo, "version", &version))\
-                    version = "1.0.0";
+                config_setting_lookup_string(themeInfo, "author", &author);
+                config_setting_lookup_string(themeInfo, "version", &version);
             }
         }
 

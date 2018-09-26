@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 
     appletSetScreenShotPermission(1);
 
-    ColorSetId theme; 
+    ColorSetId theme;
     rc = setsysInitialize();
     if (R_FAILED(rc)) fatalSimple(-5);
 
@@ -40,6 +40,7 @@ int main(int argc, char **argv)
 
     rc = plInitialize();
     if (R_FAILED(rc)) fatalSimple(-6);
+    
     themeStartup((ThemePreset)theme);
     textInit();
     menuStartup();

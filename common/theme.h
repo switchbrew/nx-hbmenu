@@ -32,6 +32,6 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col);
 
 void themeStartup(ThemePreset preset);
 
-theme_t themeCurrent;
+extern theme_t themeCurrent;
 
-ThemePreset globalPreset;
+extern ThemePreset themeGlobalPreset;

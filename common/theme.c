@@ -6,6 +6,9 @@
 #include "hbmenu_logo_light_bin.h"
 #include "hbmenu_logo_dark_bin.h"
 
+theme_t themeCurrent;
+ThemePreset themeGlobalPreset;
+
 bool colorFromSetting(config_setting_t *rgba, color_t *col) {
     if(rgba == NULL)
         return false;
@@ -14,7 +17,7 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col) {
 }
 
 void themeStartup(ThemePreset preset) {
-    globalPreset = preset;
+    themeGlobalPreset = preset;
     theme_t themeLight = (theme_t) { 
         .textColor = MakeColor(0, 0, 0, 255),
         .frontWaveColor = MakeColor(100, 212, 250, 255),
@@ -70,6 +73,7 @@ void themeStartup(ThemePreset preset) {
     int waveBlending;
     const char *AText, *BText;
     bool good_cfg = config_read_file(&cfg, tmp_path);
+    
     switch (preset) {
         case THEME_PRESET_LIGHT:
         default:
@@ -84,6 +88,7 @@ void themeStartup(ThemePreset preset) {
                 theme = config_lookup(&cfg, "darkTheme");
             break;
     }
+
     if (good_cfg) {
         if (theme != NULL) {
             if (!colorFromSetting(config_setting_lookup(theme, "textColor"), &text))

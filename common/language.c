@@ -322,11 +322,11 @@ const char* const g_strings[StrId_Max][16] =
     
     [StrId_Actions_Theme_Menu] =
     {
-        STR_EN("Theme Switcher V1.0"),
-        STR_ES("Versión 1,0 del cambiador de tema"),
-        STR_JP("テーマスイッチャー版1.0"),
-        STR_KO("테마 스위처 에디션 1.0"),
-        STR_TW("主题切换器版本1。0"),
+        STR_EN("Theme Menu"),
+        STR_ES("Menú temático"),
+        STR_JP("テーマメニュー"),
+        STR_KO("테마 메뉴"),
+        STR_TW("主题菜单"),
     },
     /*[StrId_Reboot] =
     {
