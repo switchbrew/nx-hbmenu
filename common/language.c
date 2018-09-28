@@ -330,11 +330,11 @@ const char* const g_strings[StrId_Max][16] =
 
     [StrId_ThemeNotApplied] =
     {
-        STR_EN("Theme cannot be applied because an error occurred"),
-        STR_ES("El temático no se puede aplicar porque se ha producido un error"),
-        STR_JP("エラーが発生したため、テーマを適用できませんでした"),
+        STR_EN("Theme cannot be applied because an error occurred."),
+        STR_ES("El temático no se puede aplicar porque se ha producido un error."),
+        STR_JP("エラーが発生したため、テーマを適用できませんでした。"),
         STR_KO("오류가 발생 했기 때문에 테마를 적용할 수 없습니다."),
-        STR_TW("由于发生错误, 无法应用主题"),
+        STR_TW("由于发生错误, 无法应用主题。"),
     },
     
     /*[StrId_Reboot] =
