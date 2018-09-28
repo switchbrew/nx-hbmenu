@@ -55,7 +55,7 @@ void themeStartup(ThemePreset preset) {
     };
 
     char themePath[PATH_MAX] = {0};
-    GetThemePathFromConfig(themePath);
+    GetThemePathFromConfig(themePath, PATH_MAX);
 
     theme_t *themeDefault;
     config_t cfg = {0};
@@ -136,10 +136,10 @@ void themeStartup(ThemePreset preset) {
     config_destroy(&cfg);
 }
 
-void GetThemePathFromConfig(char* themePath) {
+void GetThemePathFromConfig(char* themePath, size_t size) {
     const char* tmpThemePath = "";
     config_t cfg = {0};
-    config_setting_t *setting;
+    config_setting_t *settings;
     char tmp_path[PATH_MAX] = {0};
 
     #ifdef __SWITCH__
@@ -150,10 +150,10 @@ void GetThemePathFromConfig(char* themePath) {
     bool good_cfg = config_read_file(&cfg, tmp_path);
     
     if(good_cfg) {
-        setting = config_lookup(&cfg, "settings");
-        if(setting != NULL){
-            if(config_setting_lookup_string(setting, "themePath", &tmpThemePath))
-                strncpy(themePath, tmpThemePath, PATH_MAX-1);
+        settings = config_lookup(&cfg, "settings");
+        if(settings != NULL) {
+            if(config_setting_lookup_string(settings, "themePath", &tmpThemePath))
+                strncpy(themePath, tmpThemePath, size-1);
         }
     }
 
@@ -165,7 +165,7 @@ void SetThemePathToConfig(const char* themePath) {
     config_init(&cfg);
 
     char settingPath[PATH_MAX] = {0};
-    config_setting_t *root,*group, *setting;
+    config_setting_t *root,*group, *settings;
 
     #ifdef __SWITCH__
     settingPath[0] = '/';
@@ -177,17 +177,17 @@ void SetThemePathToConfig(const char* themePath) {
     if(good_cfg) {
         group = config_lookup(&cfg, "settings");
         if(group != NULL)
-            setting = config_setting_lookup(group, "themePath");
-        if(setting != NULL)
-            config_setting_set_string(setting, themePath);
+            settings = config_setting_lookup(group, "themePath");
+        if(settings != NULL)
+            config_setting_set_string(settings, themePath);
     } else {
         root = config_root_setting(&cfg);
         if(root != NULL)
             group = config_setting_add(root, "settings", CONFIG_TYPE_GROUP);
         if(group != NULL)    
-            setting = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
-        if(setting != NULL)    
-            config_setting_set_string(setting, themePath);
+            settings = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
+        if(settings != NULL)    
+            config_setting_set_string(settings, themePath);
     }
 
     if(!config_write_file(&cfg, settingPath)) {

@@ -30,7 +30,7 @@ typedef enum
 
 bool colorFromSetting(config_setting_t *rgba, color_t *col);
 void themeStartup(ThemePreset preset);
-void GetThemePathFromConfig(char* themePath);
+void GetThemePathFromConfig(char* themePath, size_t size);
 void SetThemePathToConfig(const char* themePath);
 
 extern theme_t themeCurrent;
