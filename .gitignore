@@ -12,5 +12,4 @@ build
 *.nacp
 *.nro
 test.*
-*_bin.h
 switch

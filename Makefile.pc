@@ -91,4 +91,4 @@ build_pc/theme_icon_dark.bin.o	:	data/theme_icon_dark.bin
 
 
 clean:
-	rm -rf build_pc/ test *_bin.h test.*
+	rm -rf build_pc/ test test.*
