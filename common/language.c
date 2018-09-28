@@ -327,6 +327,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_KO("테마 메뉴"),
         STR_TW("主题菜单"),
     },
+    
     /*[StrId_Reboot] =
     {
         STR_EN(
