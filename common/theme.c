@@ -176,13 +176,18 @@ void SetThemePathToConfig(const char* themePath) {
     
     if(good_cfg) {
         group = config_lookup(&cfg, "hbmenuConfig");
-        setting = config_setting_lookup(group, "themePath");
-        config_setting_set_string(setting, themePath);
+        if(group != NULL)
+            setting = config_setting_lookup(group, "themePath");
+        if(setting != NULL)
+            config_setting_set_string(setting, themePath);
     } else {
         root = config_root_setting(&cfg);
-        group = config_setting_add(root, "hbmenuConfig", CONFIG_TYPE_GROUP);
-        setting = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
-        config_setting_set_string(setting, themePath);
+        if(root != NULL)
+            group = config_setting_add(root, "hbmenuConfig", CONFIG_TYPE_GROUP);
+        if(group != NULL)    
+            setting = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
+        if(setting != NULL)    
+            config_setting_set_string(setting, themePath);
     }
 
     if(!config_write_file(&cfg, settingPath)) {

@@ -319,7 +319,6 @@ const char* const g_strings[StrId_Max][16] =
         STR_TW("应用"),
     },
 
-    
     [StrId_ThemeMenu] =
     {
         STR_EN("Theme Menu"),
