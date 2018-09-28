@@ -34,6 +34,22 @@ static void menuAddEntry(menuEntry_s* me) {
     m->nEntries ++;
 }
 
+static void menuAddEntryToFront(menuEntry_s* me) {
+    menu_s* m = &s_menu[!s_curMenu];
+    me->menu = m;
+    if (m->lastEntry)
+    {
+        me->next = m->firstEntry;
+        m->firstEntry = me;
+    } else
+    {
+        m->firstEntry = me;
+        m->lastEntry = me;
+    }
+    m->xPos = 0;
+    m->nEntries ++;
+}
+
 static void menuClear(void) {
     menu_s* m = &s_menu[!s_curMenu];
     menuEntry_s *cur, *next;
@@ -150,6 +166,7 @@ int menuScan(const char* target) {
     return 0;
 }
 
+
 int themeMenuScan(const char* target) {
     menuClear();
     if (chdir(target) < 0) return 1;
@@ -189,6 +206,15 @@ int themeMenuScan(const char* target) {
 
     closedir(dir);
     menuSort();
+
+    menuEntry_s* me = menuCreateEntry(ENTRY_TYPE_THEME);
+    strncpy(me->path, "", sizeof(me->path)-1);
+    me->path[sizeof(me->path)-1] = 0;
+
+    if(me){
+        if(menuEntryLoad(me, "Default Theme", false));//Create Default theme Menu Entry
+            menuAddEntryToFront(me);
+    }
     // Swap the menu and clear the previous menu
     s_curMenu = !s_curMenu;
     menuClear();
