@@ -31,8 +31,6 @@ void themeStartup(ThemePreset preset) {
         .enableWaveBlending = 0,
         .buttonAText = "\uE0E0",
         .buttonBText = "\uE0E1",
-        //.buttonAImage = button_a_light_bin,
-        //.buttonBImage = button_b_light_bin,
         .hbmenuLogoImage = hbmenu_logo_light_bin
     };
     
@@ -49,8 +47,6 @@ void themeStartup(ThemePreset preset) {
         .enableWaveBlending = 0,
         .buttonAText = "\uE0A0",
         .buttonBText = "\uE0A1",
-        //.buttonAImage = button_a_dark_bin,
-        //.buttonBImage = button_b_dark_bin,
         .hbmenuLogoImage = hbmenu_logo_dark_bin
     };
 
@@ -60,7 +56,7 @@ void themeStartup(ThemePreset preset) {
     theme_t *themeDefault;
     config_t cfg = {0};
     config_init(&cfg);
-    config_setting_t *theme;
+    config_setting_t *theme = NULL;
     color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor;
     int waveBlending;
     const char *AText, *BText;
@@ -121,9 +117,7 @@ void themeStartup(ThemePreset preset) {
                 .borderColor = borderColor,
                 .borderTextColor = borderTextColor,
                 .enableWaveBlending = waveBlending,
-                //.buttonAImage = button_a_dark_bin,
-                //.buttonBImage = button_b_dark_bin,
-                .hbmenuLogoImage = hbmenu_logo_dark_bin
+                .hbmenuLogoImage = themeDefault->hbmenuLogoImage
             };
             strncpy(themeCurrent.buttonAText, AText, sizeof(themeCurrent.buttonAText)-1);
             strncpy(themeCurrent.buttonBText, BText, sizeof(themeCurrent.buttonBText)-1);
@@ -139,7 +133,7 @@ void themeStartup(ThemePreset preset) {
 void GetThemePathFromConfig(char* themePath, size_t size) {
     const char* tmpThemePath = "";
     config_t cfg = {0};
-    config_setting_t *settings;
+    config_setting_t *settings = NULL;
     char tmp_path[PATH_MAX] = {0};
 
     #ifdef __SWITCH__
@@ -165,7 +159,9 @@ void SetThemePathToConfig(const char* themePath) {
     config_init(&cfg);
 
     char settingPath[PATH_MAX] = {0};
-    config_setting_t *root,*group, *settings;
+    config_setting_t *root = NULL,
+                     *group = NULL, 
+                     *settings = NULL;
 
     #ifdef __SWITCH__
     settingPath[0] = '/';
@@ -191,7 +187,7 @@ void SetThemePathToConfig(const char* themePath) {
     }
 
     if(!config_write_file(&cfg, settingPath)) {
-        menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
+        menuCreateMsgBox(780, 300, textGetString(StrId_ThemeNotApplied));
     }
 
     config_destroy(&cfg);

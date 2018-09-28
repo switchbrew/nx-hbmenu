@@ -44,6 +44,7 @@ typedef enum
     StrId_NetLoaderTransferring,
 
     StrId_ThemeMenu,
+    StrId_ThemeNotApplied,
 
     StrId_Max,
 } StrId;
