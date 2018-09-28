@@ -150,7 +150,7 @@ void GetThemePathFromConfig(char* themePath) {
     bool good_cfg = config_read_file(&cfg, tmp_path);
     
     if(good_cfg) {
-        setting = config_lookup(&cfg, "hbmenuConfig");
+        setting = config_lookup(&cfg, "settings");
         if(setting != NULL){
             if(config_setting_lookup_string(setting, "themePath", &tmpThemePath))
                 strncpy(themePath, tmpThemePath, PATH_MAX-1);
@@ -175,7 +175,7 @@ void SetThemePathToConfig(const char* themePath) {
     bool good_cfg = config_read_file(&cfg, settingPath);
     
     if(good_cfg) {
-        group = config_lookup(&cfg, "hbmenuConfig");
+        group = config_lookup(&cfg, "settings");
         if(group != NULL)
             setting = config_setting_lookup(group, "themePath");
         if(setting != NULL)
@@ -183,7 +183,7 @@ void SetThemePathToConfig(const char* themePath) {
     } else {
         root = config_root_setting(&cfg);
         if(root != NULL)
-            group = config_setting_add(root, "hbmenuConfig", CONFIG_TYPE_GROUP);
+            group = config_setting_add(root, "settings", CONFIG_TYPE_GROUP);
         if(group != NULL)    
             setting = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
         if(setting != NULL)    
