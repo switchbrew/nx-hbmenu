@@ -54,11 +54,8 @@ void themeStartup(ThemePreset preset) {
         .hbmenuLogoImage = hbmenu_logo_dark_bin
     };
 
-    const char* themePath = "";
-    config_t themeCfg = {0};
-    config_setting_t *setting;
-    config_init(&themeCfg);
-    GetThemePathFromConfig(themeCfg, setting, &themePath);
+    char themePath[PATH_MAX] = {0};
+    GetThemePathFromConfig(themePath);
 
     theme_t *themeDefault;
     config_t cfg = {0};
@@ -67,8 +64,10 @@ void themeStartup(ThemePreset preset) {
     color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor;
     int waveBlending;
     const char *AText, *BText;
-    bool good_cfg = config_read_file(&cfg, themePath);
-    config_destroy(&themeCfg);
+    bool good_cfg = false;
+
+    if(themePath[0]!=0)
+        good_cfg = config_read_file(&cfg, themePath);
 
     switch (preset) {
         case THEME_PRESET_LIGHT:
@@ -137,7 +136,10 @@ void themeStartup(ThemePreset preset) {
     config_destroy(&cfg);
 }
 
-void GetThemePathFromConfig(config_t cfg, config_setting_t *setting, const char** themePath) {
+void GetThemePathFromConfig(char* themePath) {
+    const char* tmpThemePath = "";
+    config_t cfg = {0};
+    config_setting_t *setting;
     char tmp_path[PATH_MAX] = {0};
 
     #ifdef __SWITCH__
@@ -150,9 +152,12 @@ void GetThemePathFromConfig(config_t cfg, config_setting_t *setting, const char*
     if(good_cfg) {
         setting = config_lookup(&cfg, "hbmenuConfig");
         if(setting != NULL){
-            config_setting_lookup_string(setting, "themePath", themePath);
+            if(config_setting_lookup_string(setting, "themePath", &tmpThemePath))
+                strncpy(themePath, tmpThemePath, PATH_MAX-1);
         }
     }
+
+    config_destroy(&cfg);
 }
 
 void SetThemePathToConfig(const char* themePath) {
@@ -167,11 +172,18 @@ void SetThemePathToConfig(const char* themePath) {
     #endif
 
     strncat(settingPath, "config/nx-hbmenu/settings.cfg", sizeof(settingPath)-2);
-
-    root = config_root_setting(&cfg);
-    group = config_setting_add(root, "hbmenuConfig", CONFIG_TYPE_GROUP);
-    setting = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
-    config_setting_set_string(setting, themePath);
+    bool good_cfg = config_read_file(&cfg, settingPath);
+    
+    if(good_cfg) {
+        group = config_lookup(&cfg, "hbmenuConfig");
+        setting = config_setting_lookup(group, "themePath");
+        config_setting_set_string(setting, themePath);
+    } else {
+        root = config_root_setting(&cfg);
+        group = config_setting_add(root, "hbmenuConfig", CONFIG_TYPE_GROUP);
+        setting = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
+        config_setting_set_string(setting, themePath);
+    }
 
     if(!config_write_file(&cfg, settingPath)) {
         menuCreateMsgBox(780, 300, "Something went wrong, and the theme could not be applied!");
