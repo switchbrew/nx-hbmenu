@@ -21,7 +21,7 @@ endef
 test : pc_main/main.cpp pc_main/pc_launch.c \
 	common/menu.c common/font.c common/language.c common/launch.c \
 	common/menu-entry.c common/menu-list.c common/message-box.c common/text.c \
-	common/nanojpeg.c common/ui.c common/math.c common/theme.c \
+	common/ui.c common/math.c common/theme.c \
 	common/netloader.c \
 	build_pc/invalid_icon.bin.o build_pc/folder_icon.bin.o \
 	build_pc/hbmenu_logo_light.bin.o build_pc/hbmenu_logo_dark.bin.o \
