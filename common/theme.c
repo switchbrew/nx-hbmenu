@@ -31,8 +31,8 @@ void themeStartup(ThemePreset preset) {
         .enableWaveBlending = 0,
         .buttonAText = "\uE0E0",
         .buttonBText = "\uE0E1",
-        .buttonPText = "\uE0F3",
-        .buttonMText = "\uE0F4",
+        .buttonPText = "\uE0EF",
+        .buttonMText = "\uE0F0",
         .hbmenuLogoImage = hbmenu_logo_light_bin
     };
     
