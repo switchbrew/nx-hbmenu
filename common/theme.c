@@ -145,19 +145,22 @@ void GetThemePathFromConfig(char* themePath, size_t size) {
     config_t cfg = {0};
     config_setting_t *settings = NULL;
     char tmp_path[PATH_MAX] = {0};
+    char tmp_path_theme[PATH_MAX] = {0};
 
     #ifdef __SWITCH__
     tmp_path[0] = '/';
+    tmp_path_theme[0] = '/';
     #endif
 
     strncat(tmp_path, "config/nx-hbmenu/settings.cfg", sizeof(tmp_path)-2);
+    strncat(tmp_path_theme, "config/nx-hbmenu/themes/", sizeof(tmp_path_theme)-2);
     bool good_cfg = config_read_file(&cfg, tmp_path);
     
     if(good_cfg) {
         settings = config_lookup(&cfg, "settings");
         if(settings != NULL) {
             if(config_setting_lookup_string(settings, "themePath", &tmpThemePath))
-                strncpy(themePath, tmpThemePath, size-1);
+                snprintf(themePath, size-1, "%s%s", tmp_path_theme, tmpThemePath);
         }
     }
 
@@ -172,6 +175,9 @@ void SetThemePathToConfig(const char* themePath) {
     config_setting_t *root = NULL,
                      *group = NULL, 
                      *settings = NULL;
+
+    themePath = getSlash(themePath);
+    if(themePath[0] == '/') themePath++;
 
     #ifdef __SWITCH__
     settingPath[0] = '/';

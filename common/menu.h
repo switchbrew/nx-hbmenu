@@ -112,9 +112,3 @@ static inline char* getSlash(const char* str)
     return (char*)p;
 }
 
-static inline char* removeDriveFromPath(const char* str) {
-    const char* p;
-    for (p = str; p <= (str+strlen(str)) && *p != ':'; p++);
-    p++;//iterate one more time past ':'
-    return (char*)p;
-}
