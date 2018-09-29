@@ -334,8 +334,7 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     if (w != 256 || h != 256 ) return; //The decoded image must be 256x256.
 
-    if(tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, imageptr, w, 0/*pitch*/, h, TJPF_RGB, TJFLAG_ACCURATEDCT)==-1)//The decoded image must be RGB
-        return; 
+    if(tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, imageptr, w, 0/*pitch*/, h, TJPF_RGB, TJFLAG_ACCURATEDCT)==-1) return; //The decoded image must be RGB
     
     me->icon_size = 0;
     free(me->icon);
