@@ -17,8 +17,8 @@ typedef struct
     bool enableWaveBlending;
     char buttonAText[32];
     char buttonBText[32];
-    //const uint8_t *buttonAImage;
-    //const uint8_t *buttonBImage;
+    char buttonPText[32];
+    char buttonMText[32];
     const uint8_t *hbmenuLogoImage;
 } theme_t;
 

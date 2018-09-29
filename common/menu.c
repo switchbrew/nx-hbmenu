@@ -477,22 +477,25 @@ void menuLoop() {
             drawEntry(me, entry_start_x + menu->xPos, is_active);
         }
 
+        if(hbmenu_state == HBMENU_THEME_MENU) {
+            int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
+            DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+        } else {
+            int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
+            DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+            DrawText(fontscale7, getX - 40,  0 + 47, themeCurrent.textColor, themeCurrent.buttonMText);
+        }
+        
         if(active_entry != NULL) {
             if (active_entry->type == ENTRY_TYPE_THEME) {
-                int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
-                DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Apply));
             }
             else if (active_entry->type != ENTRY_TYPE_FOLDER) {
-                //TODO: add minus button for theme menu
-                //drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);//Display the 'A' button from SharedFont.
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
             }
             else {
-                //TODO: add minus button for theme menu
-                //drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Open));
             }

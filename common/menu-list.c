@@ -208,10 +208,8 @@ int themeMenuScan(const char* target) {
     menuSort();
 
     menuEntry_s* me = menuCreateEntry(ENTRY_TYPE_THEME);
-    strncpy(me->path, "", sizeof(me->path)-1);
-    me->path[sizeof(me->path)-1] = 0;
 
-    if(me){
+    if(me) {
         if(menuEntryLoad(me, "Default Theme", false));//Create Default theme Menu Entry
             menuAddEntryToFront(me);
     }
