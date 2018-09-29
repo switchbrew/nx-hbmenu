@@ -209,16 +209,12 @@ int themeMenuScan(const char* target) {
     menuEntry_s* me = menuCreateEntry(ENTRY_TYPE_THEME);
 
     if(me) {
-<<<<<<< HEAD
-        if(menuEntryLoad(me, "Default Theme", false));//Create Default theme Menu Entry
-            menuAddEntryToFront(me);
-=======
         if(menuEntryLoad(me, "Default Theme", false))//Create Default theme Menu Entry
             menuAddEntryToFront(me);
         else
             menuDeleteEntry(me);
->>>>>>> 5b35642de73c65ee63ae904288f1cbaea6a8e884
     }
+
     // Swap the menu and clear the previous menu
     s_curMenu = !s_curMenu;
     menuClear();
