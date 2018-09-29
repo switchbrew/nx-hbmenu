@@ -323,7 +323,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 
 void menuEntryParseIcon(menuEntry_s* me) {
     size_t imagesize = 256*256*3;
-    unsigned char imageptr[imagesize];
+    unsigned char *imageptr = (unsigned char*)malloc(imagesize);//imageptr cannot be null
+    me->icon_gfx = (uint8_t*)imageptr;
     int w,h,samp;
 
     if (me->icon_size==0 || me->icon==NULL) return;
