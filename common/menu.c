@@ -476,14 +476,14 @@ void menuLoop() {
 
             drawEntry(me, entry_start_x + menu->xPos, is_active);
         }
-        
+
         int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
 
         if(hbmenu_state == HBMENU_THEME_MENU) {
             DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
         } else {
-            DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
-            DrawText(fontscale7, getX - 40,  0 + 47, themeCurrent.textColor, themeCurrent.buttonMText);
+            //DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+            //DrawText(fontscale7, getX - 40,  0 + 47, themeCurrent.textColor, themeCurrent.buttonMText);
         }
         
         if(active_entry != NULL) {
