@@ -214,6 +214,7 @@ int themeMenuScan(const char* target) {
         else
             menuDeleteEntry(me);
     }
+
     // Swap the menu and clear the previous menu
     s_curMenu = !s_curMenu;
     menuClear();

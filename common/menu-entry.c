@@ -294,7 +294,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         /*if (shortcut)
             shortcutFree(&sc);*/
     }
-    
+
     if (me->type == ENTRY_TYPE_THEME) {
         config_t cfg = {0};
         config_init(&cfg);
@@ -322,42 +322,32 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 }
 
 void menuEntryParseIcon(menuEntry_s* me) {
-    uint8_t *imageptr = NULL;
     size_t imagesize = 256*256*3;
+    unsigned char imageptr[imagesize];
+    int w,h,samp;
 
     if (me->icon_size==0 || me->icon==NULL) return;
 
-    njInit();
+    tjhandle _jpegDecompressor = tjInitDecompress();
+   
+    if(tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp)==-1) return;
 
-    if (njDecode(me->icon, me->icon_size) != NJ_OK) {
-        njDone();
-        return;
-    }
+    if (w != 256 || h != 256 ) return; //The decoded image must be 256x256.
 
+    if(tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, imageptr, w, 0/*pitch*/, h, TJPF_RGB, TJFLAG_ACCURATEDCT)==-1) return; //The decoded image must be RGB
+    
     me->icon_size = 0;
     free(me->icon);
     me->icon = NULL;
 
-    if ((njGetWidth() != 256 || njGetHeight() != 256 || (size_t)njGetImageSize() != imagesize) || njIsColor() != 1) {//The decoded image must be RGB and 256x256.
-        njDone();
-        return;
-    }
-
-    imageptr = njGetImage();
-    if (imageptr == NULL) {
-        njDone();
-        return;
-    }
-
+    if (imageptr[0] == 0) return;
+    
     me->icon_gfx = (uint8_t*)malloc(imagesize);
-    if (me->icon_gfx == NULL) {
-        njDone();
-        return;
-    }
+
+    if (me->icon_gfx == NULL) return;
 
     memcpy(me->icon_gfx, imageptr, imagesize);
-
-    njDone();
+    tjDestroy(_jpegDecompressor);
 
     me->icon_gfx_small = downscaleImg(me->icon_gfx, 256, 256, 140, 140, IMAGE_MODE_RGB24);
 }
