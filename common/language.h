@@ -45,6 +45,7 @@ typedef enum
 
     StrId_ThemeMenu,
     StrId_ThemeNotApplied,
+    StrId_DefaultThemeName,
 
     StrId_Max,
 } StrId;

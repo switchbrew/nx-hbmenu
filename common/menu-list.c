@@ -209,7 +209,7 @@ int themeMenuScan(const char* target) {
     menuEntry_s* me = menuCreateEntry(ENTRY_TYPE_THEME);
 
     if(me) {
-        if(menuEntryLoad(me, "Default Theme", false))//Create Default theme Menu Entry
+        if(menuEntryLoad(me, textGetString(StrId_DefaultThemeName), false))//Create Default theme Menu Entry
             menuAddEntryToFront(me);
         else
             menuDeleteEntry(me);
