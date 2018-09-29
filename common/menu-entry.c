@@ -349,6 +349,7 @@ void menuEntryParseIcon(menuEntry_s* me) {
     if (me->icon_gfx == NULL) return;
 
     memcpy(me->icon_gfx, imageptr, imagesize);
+    free(imageptr);//this now points to what tjDecompress2 allocated with malloc, needs to be freed
     tjDestroy(_jpegDecompressor);
 
     me->icon_gfx_small = downscaleImg(me->icon_gfx, 256, 256, 140, 140, IMAGE_MODE_RGB24);
