@@ -84,17 +84,7 @@ extern "C" bool menuUpdate(void) {
     }
     else if (!new_return_state && return_state)
     {
-        if (menuIsMsgBoxOpen()) {
-            menuCloseMsgBox();
-        }
-        else if (menu->nEntries > 0)
-        {
-            int i;
-            menuEntry_s* me;
-            for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
-            launchMenuEntryTask(me);
-            //workerSchedule(launchMenuEntryTask, me);
-        }
+        menuHandleAButton();
     }
     else if (menu->nEntries > 0)
     {

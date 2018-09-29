@@ -93,6 +93,7 @@ void launchMenuBackTask();
 void launchMenuNetloaderTask();
 char *menuGetRootPath();
 
+void menuHandleAButton(void);
 
 #ifdef __cplusplus
 }

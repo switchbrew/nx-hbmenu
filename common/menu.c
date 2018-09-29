@@ -54,6 +54,22 @@ void launchMenuBackTask() {
 
 }
 
+void menuHandleAButton(void) {
+    menu_s* menu = menuGetCurrent();
+
+    if (menuIsMsgBoxOpen()) {
+        menuCloseMsgBox();
+    }
+    else if (menu->nEntries > 0 && (hbmenu_state == HBMENU_DEFAULT || hbmenu_state == HBMENU_THEME_MENU))
+    {
+        int i;
+        menuEntry_s* me;
+        for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
+        launchMenuEntryTask(me);
+        //workerSchedule(launchMenuEntryTask, me);
+    }
+}
+
 void launchApplyThemeTask(menuEntry_s* arg) {
     const char* themePath = arg->path;
     SetThemePathToConfig(themePath);
