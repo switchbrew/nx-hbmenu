@@ -166,7 +166,6 @@ int menuScan(const char* target) {
     return 0;
 }
 
-
 int themeMenuScan(const char* target) {
     menuClear();
     if (chdir(target) < 0) return 1;
