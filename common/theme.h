@@ -12,12 +12,13 @@ typedef struct
     color_t backgroundColor;
     color_t highlightColor;
     color_t separatorColor;
-    color_t activeColor;
+    color_t borderColor;
+    color_t borderTextColor;
     bool enableWaveBlending;
-    const char *buttonAText;
-    const char *buttonBText;
-    //const uint8_t *buttonAImage;
-    //const uint8_t *buttonBImage;
+    char buttonAText[32];
+    char buttonBText[32];
+    char buttonPText[32];
+    char buttonMText[32];
     const uint8_t *hbmenuLogoImage;
 } theme_t;
 
@@ -28,7 +29,10 @@ typedef enum
 } ThemePreset;
 
 bool colorFromSetting(config_setting_t *rgba, color_t *col);
-
 void themeStartup(ThemePreset preset);
+void GetThemePathFromConfig(char* themePath, size_t size);
+void SetThemePathToConfig(const char* themePath);
 
-theme_t themeCurrent;
+extern theme_t themeCurrent;
+
+extern ThemePreset themeGlobalPreset;

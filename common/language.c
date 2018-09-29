@@ -310,6 +310,33 @@ const char* const g_strings[StrId_Max][16] =
         STR_TW("確認"),
     },
 
+    [StrId_Actions_Apply] =
+    {
+        STR_EN("Apply"),
+        STR_ES("Aplicar"),
+        STR_JP("適用"),
+        STR_KO("대다"),
+        STR_TW("应用"),
+    },
+
+    [StrId_ThemeMenu] =
+    {
+        STR_EN("Theme Menu"),
+        STR_ES("Menú temático"),
+        STR_JP("テーマメニュー"),
+        STR_KO("테마 메뉴"),
+        STR_TW("主题菜单"),
+    },
+
+    [StrId_ThemeNotApplied] =
+    {
+        STR_EN("Theme cannot be applied because an error occurred."),
+        STR_ES("El tema no se pudo aplicar porque se ha producido un error."),
+        STR_JP("エラーが発生したため、テーマを適用できませんでした。"),
+        STR_KO("오류가 발생 했기 때문에 테마를 적용할 수 없습니다."),
+        STR_TW("由于发生错误, 无法应用主题。"),
+    },
+    
     /*[StrId_Reboot] =
     {
         STR_EN(

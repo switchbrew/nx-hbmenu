@@ -4,19 +4,23 @@
 
 #include "invalid_icon_bin.h"
 #include "folder_icon_bin.h"
+#include "theme_icon_dark_bin.h"
+#include "theme_icon_light_bin.h"
 
 char rootPath[PATH_MAX+8];
+void computeFrontGradient(color_t baseColor, int height);
 
 char *menuGetRootPath() {
     return rootPath;
 }
 
-void launchMenuEntryTask(menuEntry_s* arg)
-{
+void launchMenuEntryTask(menuEntry_s* arg) {
     menuEntry_s* me = arg;
     if (me->type == ENTRY_TYPE_FOLDER)
         menuScan(me->path);
         //changeDirTask(me->path);
+    else if(me->type == ENTRY_TYPE_THEME)
+        launchApplyThemeTask(me);
     else
         launchMenuEntry(me);
 }
@@ -27,6 +31,7 @@ static enum
     HBMENU_NETLOADER_ACTIVE,
     HBMENU_NETLOADER_ERROR,
     HBMENU_NETLOADER_SUCCESS,
+    HBMENU_THEME_MENU,
 } hbmenu_state = HBMENU_DEFAULT;
 
 void launchMenuNetloaderTask() {
@@ -34,15 +39,26 @@ void launchMenuNetloaderTask() {
         if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 }
 
-void launchMenuBackTask()
-{
+void launchMenuBackTask() {
     if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
         netloader_deactivate();
         hbmenu_state = HBMENU_DEFAULT;
-    } else {
+    }
+    else if(hbmenu_state == HBMENU_THEME_MENU) {
+        hbmenu_state = HBMENU_DEFAULT;
+        menuScan(rootPath);
+    }
+    else {
         menuScan("..");
     }
 
+}
+
+void launchApplyThemeTask(menuEntry_s* arg) {
+    const char* themePath = removeDriveFromPath(arg->path);
+    SetThemePathToConfig(themePath);
+    themeStartup(themeGlobalPreset);
+    computeFrontGradient(themeCurrent.frontWaveColor, 280); 
 }
 
 //Draws an RGB888 or RGBA8888 image.
@@ -72,6 +88,7 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
 
 uint8_t *folder_icon_small;
 uint8_t *invalid_icon_small;
+uint8_t *theme_icon_small;
 
 static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     int x, y;
@@ -87,7 +104,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     int border_start_x, border_end_x;
     int border_start_y, border_end_y;
-    color_t border_color = MakeColor(255, 255, 255, 255);
+    color_t border_color = themeCurrent.borderColor;
 
     int shadow_start_y, shadow_y;
     int shadow_inset;
@@ -166,7 +183,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     for (y=start_y; y<end_y; y++) {
         for (x=start_x; x<end_x; x+=4) {
-            Draw4PixelsRaw(x, y, MakeColor(255, 255, 255, 255));
+            Draw4PixelsRaw(x, y, themeCurrent.borderColor);
         }
     }
 
@@ -177,6 +194,12 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     else if (me->type == ENTRY_TYPE_FOLDER) {
         smallimg = folder_icon_small;
         largeimg = folder_icon_bin;
+    }
+    else if (me->type == ENTRY_TYPE_THEME){
+        smallimg = theme_icon_small;
+        if(themeGlobalPreset == THEME_PRESET_DARK)
+            largeimg = theme_icon_dark_bin;
+        else largeimg = theme_icon_light_bin;
     }
     else {
         smallimg = invalid_icon_small;
@@ -206,7 +229,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         }
     }
 
-    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, MakeColor(64, 64, 64, 255), me->name, 140 - 32, "...");
+    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, themeCurrent.borderTextColor, me->name, 140 - 32, "...");
 
     if (is_active) {
         start_x = 1280 - 790;
@@ -267,8 +290,22 @@ void menuStartup() {
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    if(themeGlobalPreset == THEME_PRESET_DARK)
+        theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    else
+        theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
+}
+
+void themeMenuStartup() {
+    if(hbmenu_state != HBMENU_DEFAULT) return;
+    hbmenu_state = HBMENU_THEME_MENU;
+    char tmp_path[PATH_MAX];
+
+    snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s%s%s%s",DIRECTORY_SEPARATOR, "config", DIRECTORY_SEPARATOR, "nx-hbmenu" , DIRECTORY_SEPARATOR, "themes");
+
+    themeMenuScan(tmp_path);
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
@@ -440,14 +477,25 @@ void menuLoop() {
             drawEntry(me, entry_start_x + menu->xPos, is_active);
         }
 
+        int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
+
+        if(hbmenu_state == HBMENU_THEME_MENU) {
+            DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+        } else {
+            //DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+            //DrawText(fontscale7, getX - 40,  0 + 47, themeCurrent.textColor, themeCurrent.buttonMText);
+        }
+        
         if(active_entry != NULL) {
-            if (active_entry->type != ENTRY_TYPE_FOLDER) {
-                //drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
+            if (active_entry->type == ENTRY_TYPE_THEME) {
+                DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
+                DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Apply));
+            }
+            else if (active_entry->type != ENTRY_TYPE_FOLDER) {
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);//Display the 'A' button from SharedFont.
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Launch));
             }
             else {
-                //drawImage(1280 - 126 - 30 - 32, 720 - 48, 32, 32, themeCurrent.buttonAImage, IMAGE_MODE_RGBA32);
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
                 DrawText(interuiregular18, 1280 - 90 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Open));
             }

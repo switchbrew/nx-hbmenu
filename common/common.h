@@ -60,6 +60,7 @@ typedef union {
 #include "message-box.h"
 
 void menuStartup();
+void themeMenuStartup();
 void menuLoop();
 
 static inline uint8_t BlendColor(uint32_t src, uint32_t dst, uint8_t alpha)
@@ -152,6 +153,8 @@ void DrawPixel(uint32_t x, uint32_t y, color_t clr);
 void DrawText(u32 font, uint32_t x, uint32_t y, color_t clr, const char* text);
 void DrawTextTruncate(u32 font, uint32_t x, uint32_t y, color_t clr, const char* text, uint32_t max_width, const char* end_text);
 void GetTextDimensions(u32 font, const char* text, uint32_t* width_out, uint32_t* height_out);
+uint32_t GetTextXCoordinate(u32 font, uint32_t rX, const char* text, const char align);
+uint32_t GetTextYCoordinate(u32 font, uint32_t rY, const char* text, const char align);
 
 bool fontInitialize(void);
 void fontExit();

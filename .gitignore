@@ -11,3 +11,5 @@ build
 *.pfs0
 *.nacp
 *.nro
+test.*
+switch

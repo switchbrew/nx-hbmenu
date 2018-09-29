@@ -135,6 +135,9 @@ bool menuUpdate(void) {
     {
         launchMenuBackTask();
     }
+    else if(down & KEY_MINUS){
+        themeMenuStartup();
+    }
     else if (down & KEY_PLUS)
     {
         exitflag = 1;

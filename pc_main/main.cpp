@@ -66,6 +66,8 @@ extern "C" bool menuUpdate(void) {
     int new_return_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
     static int y_state = 0;
     int new_y_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Y);
+    static int t_state = 0;
+    int new_t_state = sf::Keyboard::isKeyPressed(sf::Keyboard::T);
 
     if(!new_y_state && y_state)
     {
@@ -76,6 +78,9 @@ extern "C" bool menuUpdate(void) {
     if (!new_esc_state && esc_state)
     {
         launchMenuBackTask();
+    }
+    else if(!new_t_state && t_state){
+        themeMenuStartup();
     }
     else if (!new_return_state && return_state)
     {

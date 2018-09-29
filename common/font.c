@@ -376,3 +376,51 @@ void fontExit()
     if (s_font_libret==0) FT_Done_FreeType(s_font_library);
 }
 
+/*Automatically gives you the desired x-coordinate 
+ *based on the string length and desired alignment
+ *rY=reference point... where to align around
+ *align='t','b','c' translates to (top,bottom,center)
+ *'t' aligned, top of text aligns with rY, 
+ *you get the rest....
+ */
+uint32_t GetTextYCoordinate(u32 font, uint32_t rY, const char* text, const char align) {
+    uint32_t height_o,width;
+    GetTextDimensions(font,text,&width,&height_o);
+    uint32_t height = (uint32_t)height_o;
+    uint32_t fC = (rY-height);
+
+    switch(align){
+        case 't':
+        default:
+            return rY;
+        case 'c':
+            return (rY+(height>>1));//>>1 is a bitwise shift for dividing by 2
+        case 'b':
+            if(fC<=0) return 0;
+            else return fC;
+    }
+}
+
+/*Automatically gives you the desired x-coordinate 
+ *based on the string length and desired alignment
+ *rX=reference point... where to align around
+ *text=string you want to display
+ *align='r','l','c' translates to (right,left,center)
+ *'r' aligned, rX location = end of string, you get the rest...
+ */
+uint32_t GetTextXCoordinate(u32 font, uint32_t rX, const char* text, const char align) {
+    uint32_t height,width_o;
+    GetTextDimensions(font,text,&width_o,&height);
+    uint32_t fC = (rX-width_o);
+
+    switch(align){
+        case 'r':
+            if(fC<0) return 0;
+            else return fC;
+        case 'c':
+            return (rX+(width_o>>1));//>>1 is a bitwise shift for dividing by 2
+        case 'l':
+        default:
+            return rX;
+    }
+}

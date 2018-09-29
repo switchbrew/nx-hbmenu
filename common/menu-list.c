@@ -34,6 +34,22 @@ static void menuAddEntry(menuEntry_s* me) {
     m->nEntries ++;
 }
 
+static void menuAddEntryToFront(menuEntry_s* me) {
+    menu_s* m = &s_menu[!s_curMenu];
+    me->menu = m;
+    if (m->lastEntry)
+    {
+        me->next = m->firstEntry;
+        m->firstEntry = me;
+    } else
+    {
+        m->firstEntry = me;
+        m->lastEntry = me;
+    }
+    m->xPos = 0;
+    m->nEntries ++;
+}
+
 static void menuClear(void) {
     menu_s* m = &s_menu[!s_curMenu];
     menuEntry_s *cur, *next;
@@ -150,3 +166,54 @@ int menuScan(const char* target) {
     return 0;
 }
 
+int themeMenuScan(const char* target) {
+    menuClear();
+    if (chdir(target) < 0) return 1;
+    if (getcwd(s_menu[!s_curMenu].dirname, PATH_MAX+1) == NULL)
+        return 1;
+    DIR* dir;
+    struct dirent* dp;
+    char tmp_path[PATH_MAX+1];
+    dir = opendir(s_menu[!s_curMenu].dirname);
+    if (!dir) return 2;
+
+    while ((dp = readdir(dir)))
+    {
+        menuEntry_s* me = NULL;
+
+        bool shortcut = false;
+        if (dp->d_name[0]=='.')
+            continue;
+
+        memset(tmp_path, 0, sizeof(tmp_path));
+        snprintf(tmp_path, sizeof(tmp_path)-1, "%s/%s", s_menu[!s_curMenu].dirname, dp->d_name);
+
+        const char* ext = getExtension(dp->d_name);
+        if (strcasecmp(ext, ".cfg")==0)
+            me = menuCreateEntry(ENTRY_TYPE_THEME);
+
+        if (!me)
+            continue;
+
+        strncpy(me->path, tmp_path, sizeof(me->path)-1);
+        me->path[sizeof(me->path)-1] = 0;
+        if (menuEntryLoad(me, dp->d_name, shortcut))
+            menuAddEntry(me);
+        else
+            menuDeleteEntry(me);
+    }
+
+    closedir(dir);
+    menuSort();
+
+    menuEntry_s* me = menuCreateEntry(ENTRY_TYPE_THEME);
+
+    if(me) {
+        if(menuEntryLoad(me, "Default Theme", false));//Create Default theme Menu Entry
+            menuAddEntryToFront(me);
+    }
+    // Swap the menu and clear the previous menu
+    s_curMenu = !s_curMenu;
+    menuClear();
+    return 0;
+}

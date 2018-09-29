@@ -137,6 +137,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 
     tempbuf[PATH_MAX] = 0;
     strcpy(me->name, name);
+    
     if (me->type == ENTRY_TYPE_FOLDER)
     {
         //Check for <dirpath>/<dirname>.nro
@@ -182,7 +183,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 
     if (me->type == ENTRY_TYPE_FILE)
     {
-        strcpy(me->name, name);
+        //strcpy(me->name, name);//This is already done before both if statements
         strcpy(me->author, textGetString(StrId_DefaultPublisher));
         strcpy(me->version, "1.0.0");
 
@@ -292,6 +293,29 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 
         /*if (shortcut)
             shortcutFree(&sc);*/
+    }
+    
+    if (me->type == ENTRY_TYPE_THEME) {
+        config_t cfg = {0};
+        config_init(&cfg);
+        config_setting_t *themeInfo;
+        const char *name,
+                   *author = textGetString(StrId_DefaultPublisher),
+                   *version = "1.0.0";
+                   
+        if(config_read_file(&cfg, me->path)) {
+            themeInfo = config_lookup(&cfg, "themeInfo");
+            if (themeInfo != NULL) {
+                if(config_setting_lookup_string(themeInfo, "name", &name))
+                    strncpy(me->name, name, sizeof(me->name)-1);
+                config_setting_lookup_string(themeInfo, "author", &author);
+                config_setting_lookup_string(themeInfo, "version", &version);
+            }
+        }
+
+        strncpy(me->author, author, sizeof(me->author)-1);
+        strncpy(me->version, version, sizeof(me->version)-1);
+        config_destroy(&cfg);
     }
 
     return true;

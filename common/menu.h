@@ -19,6 +19,7 @@ typedef enum
 {
     ENTRY_TYPE_FILE,
     ENTRY_TYPE_FOLDER,
+    ENTRY_TYPE_THEME,
 } MenuEntryType;
 
 typedef struct menuEntry_s_tag menuEntry_s;
@@ -84,8 +85,10 @@ void menuEntryParseNacp(menuEntry_s* me);
 
 menu_s* menuGetCurrent(void);
 int menuScan(const char* target);
+int themeMenuScan(const char* target);
 
 void launchMenuEntryTask(menuEntry_s* arg);
+void launchApplyThemeTask(menuEntry_s* arg);
 void launchMenuBackTask();
 void launchMenuNetloaderTask();
 char *menuGetRootPath();
@@ -109,3 +112,9 @@ static inline char* getSlash(const char* str)
     return (char*)p;
 }
 
+static inline char* removeDriveFromPath(const char* str) {
+    const char* p;
+    for (p = str; p <= (str+strlen(str)) && *p != ':'; p++);
+    p++;//iterate one more time past ':'
+    return (char*)p;
+}
