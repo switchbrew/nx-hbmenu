@@ -10,4 +10,4 @@ Build with ```make nx``` or just run ```make```.
 #### Credits
 
 * This uses code based on 3DS [new-hbmenu](https://github.com/fincs/new-hbmenu).
-* [nanojpeg](https://svn.emphy.de/nanojpeg/trunk/nanojpeg/nanojpeg.c) is used for handling JPEG icons. This library doesn't support lossless JPEG.
+* libjpeg-turbo is used for handling JPEG icons. This library doesn't support lossless JPEG (likewise for official sw which uses libjpeg-turbo).
