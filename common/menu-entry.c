@@ -332,13 +332,13 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     tjhandle _jpegDecompressor = tjInitDecompress();
 
-    if(_jpegDecompressor = NULL) {
+    if(_jpegDecompressor == NULL) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
         return;
     }
 
-    if(tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp)==-1) {
+    if(tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp)) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
         tjDestroy(_jpegDecompressor);
@@ -347,7 +347,7 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     if (w != 256 || h != 256 ) return;
 
-    if(tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, me->icon_gfx, w, 0, h, TJPF_RGB, TJFLAG_ACCURATEDCT)==-1) {
+    if(tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, me->icon_gfx, w, 0, h, TJPF_RGB, TJFLAG_ACCURATEDCT)) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
         tjDestroy(_jpegDecompressor);
