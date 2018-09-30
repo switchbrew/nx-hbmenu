@@ -334,6 +334,7 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     if(_jpegDecompressor = NULL) {
         free(me->icon_gfx);
+        me->icon_gfx = NULL;
         return;
     }
 
