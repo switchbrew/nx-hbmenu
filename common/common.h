@@ -54,7 +54,7 @@ typedef union {
 #include "text.h"
 #include "ui.h"
 #include "launch.h"
-#include "nanojpeg.h"
+#include <turbojpeg.h>
 #include "math.h"
 #include "theme.h"
 #include "message-box.h"

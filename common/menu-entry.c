@@ -303,7 +303,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
                    *author = textGetString(StrId_DefaultPublisher),
                    *version = "1.0.0";
                    
-        if(config_read_file(&cfg, me->path)) {
+        if (config_read_file(&cfg, me->path)) {
             themeInfo = config_lookup(&cfg, "themeInfo");
             if (themeInfo != NULL) {
                 if(config_setting_lookup_string(themeInfo, "name", &name))
@@ -322,15 +322,35 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 }
 
 void menuEntryParseIcon(menuEntry_s* me) {
-    uint8_t *imageptr = NULL;
-    size_t imagesize = 256*256*3;
-
     if (me->icon_size==0 || me->icon==NULL) return;
 
-    njInit();
+    int w,h,samp;
+    size_t imagesize = 256*256*3;
+    me->icon_gfx = (uint8_t*)malloc(imagesize);
 
-    if (njDecode(me->icon, me->icon_size) != NJ_OK) {
-        njDone();
+    if (me->icon_gfx == NULL) return;
+
+    tjhandle _jpegDecompressor = tjInitDecompress();
+
+    if (_jpegDecompressor == NULL) {
+        free(me->icon_gfx);
+        me->icon_gfx = NULL;
+        return;
+    }
+
+    if (tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp) == -1) {
+        free(me->icon_gfx);
+        me->icon_gfx = NULL;
+        tjDestroy(_jpegDecompressor);
+        return;
+    }
+
+    if (w != 256 || h != 256 ) return;
+
+    if (tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, me->icon_gfx, w, 0, h, TJPF_RGB, TJFLAG_ACCURATEDCT) == -1) {
+        free(me->icon_gfx);
+        me->icon_gfx = NULL;
+        tjDestroy(_jpegDecompressor);
         return;
     }
 
@@ -338,26 +358,7 @@ void menuEntryParseIcon(menuEntry_s* me) {
     free(me->icon);
     me->icon = NULL;
 
-    if ((njGetWidth() != 256 || njGetHeight() != 256 || (size_t)njGetImageSize() != imagesize) || njIsColor() != 1) {//The decoded image must be RGB and 256x256.
-        njDone();
-        return;
-    }
-
-    imageptr = njGetImage();
-    if (imageptr == NULL) {
-        njDone();
-        return;
-    }
-
-    me->icon_gfx = (uint8_t*)malloc(imagesize);
-    if (me->icon_gfx == NULL) {
-        njDone();
-        return;
-    }
-
-    memcpy(me->icon_gfx, imageptr, imagesize);
-
-    njDone();
+    tjDestroy(_jpegDecompressor);
 
     me->icon_gfx_small = downscaleImg(me->icon_gfx, 256, 256, 140, 140, IMAGE_MODE_RGB24);
 }
