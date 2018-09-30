@@ -332,6 +332,11 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     tjhandle _jpegDecompressor = tjInitDecompress();
 
+    if(_jpegDecompressor = NULL) {
+        free(me->icon_gfx);
+        return;
+    }
+
     if(tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp)==-1) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
