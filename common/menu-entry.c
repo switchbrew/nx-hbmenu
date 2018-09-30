@@ -322,35 +322,26 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 }
 
 void menuEntryParseIcon(menuEntry_s* me) {
-    size_t imagesize = 256*256*3;
-    unsigned char *imageptr = (unsigned char*)malloc(imagesize);
-
-    if (imageptr == NULL) return;
-
-    me->icon_gfx = (uint8_t*)imageptr;
-    int w,h,samp;
-
     if (me->icon_size==0 || me->icon==NULL) return;
+
+    int w,h,samp;
+    size_t imagesize = 256*256*3;
+    me->icon_gfx = (uint8_t*)malloc(imagesize);
+
+    if (me->icon_gfx == NULL) return;
 
     tjhandle _jpegDecompressor = tjInitDecompress();
 
     if(tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp)==-1) return;
 
-    if (w != 256 || h != 256 ) return; //The decoded image must be 256x256.
+    if (w != 256 || h != 256 ) return;
 
-    if(tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, imageptr, w, 0/*pitch*/, h, TJPF_RGB, TJFLAG_ACCURATEDCT)==-1)//The decoded image must be RGB
-        return;
+    if(tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, me->icon_gfx, w, 0/*pitch*/, h, TJPF_RGB, TJFLAG_ACCURATEDCT)==-1) return;
 
     me->icon_size = 0;
     free(me->icon);
     me->icon = NULL;
 
-    me->icon_gfx = (uint8_t*)malloc(imagesize);
-
-    if (me->icon_gfx == NULL) return;
-
-    memcpy(me->icon_gfx, imageptr, imagesize);
-    free(imageptr);//this now points to what tjDecompress2 allocated with malloc, needs to be freed
     tjDestroy(_jpegDecompressor);
 
     me->icon_gfx_small = downscaleImg(me->icon_gfx, 256, 256, 140, 140, IMAGE_MODE_RGB24);
