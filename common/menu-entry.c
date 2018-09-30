@@ -337,7 +337,7 @@ void menuEntryParseIcon(menuEntry_s* me) {
         me->icon_gfx = NULL;
         tjDestroy(_jpegDecompressor);
         return;
-    } 
+    }
 
     if (w != 256 || h != 256 ) return;
 
