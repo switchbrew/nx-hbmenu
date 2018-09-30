@@ -303,7 +303,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
                    *author = textGetString(StrId_DefaultPublisher),
                    *version = "1.0.0";
                    
-        if(config_read_file(&cfg, me->path)) {
+        if (config_read_file(&cfg, me->path)) {
             themeInfo = config_lookup(&cfg, "themeInfo");
             if (themeInfo != NULL) {
                 if(config_setting_lookup_string(themeInfo, "name", &name))
@@ -332,13 +332,13 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     tjhandle _jpegDecompressor = tjInitDecompress();
 
-    if(_jpegDecompressor == NULL) {
+    if (_jpegDecompressor == NULL) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
         return;
     }
 
-    if(tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp)) {
+    if (tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp) == -1) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
         tjDestroy(_jpegDecompressor);
@@ -347,7 +347,7 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     if (w != 256 || h != 256 ) return;
 
-    if(tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, me->icon_gfx, w, 0, h, TJPF_RGB, TJFLAG_ACCURATEDCT)) {
+    if (tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, me->icon_gfx, w, 0, h, TJPF_RGB, TJFLAG_ACCURATEDCT) == -1) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
         tjDestroy(_jpegDecompressor);
