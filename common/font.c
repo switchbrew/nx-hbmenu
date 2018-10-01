@@ -349,7 +349,7 @@ bool fontInitialize(void)
 
     for (i=0; i<FONT_FACES_MAX; i++) {
         memset(fontpath, 0, sizeof(fontpath));
-        snprintf(fontpath, sizeof(fontpath)-1, "fonts%s%u.ttf", DIRECTORY_SEPARATOR, i);
+        snprintf(fontpath, sizeof(fontpath)-1, "%s%sfonts%s%u.ttf", menuGetRootBasePath(), DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, i);
 
         ret = FT_New_Face(        s_font_library,
                                   fontpath,

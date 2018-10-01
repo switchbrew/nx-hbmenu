@@ -7,11 +7,16 @@
 #include "theme_icon_dark_bin.h"
 #include "theme_icon_light_bin.h"
 
+char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
 void computeFrontGradient(color_t baseColor, int height);
 
-char *menuGetRootPath() {
+char *menuGetRootPath(void) {
     return rootPath;
+}
+
+char *menuGetRootBasePath(void) {
+    return rootPathBase;
 }
 
 void launchMenuEntryTask(menuEntry_s* arg) {
@@ -286,15 +291,15 @@ void computeFrontGradient(color_t baseColor, int height) {
     }
 }
 
-void menuStartup() {
-    char tmp_path[PATH_MAX];
+void menuStartupPath(void) {
+    char tmp_path[PATH_MAX+25];
 
     #ifdef __SWITCH__
-    strcpy(tmp_path,"sdmc:");
+    strncpy(rootPathBase, "sdmc:", sizeof(rootPathBase)-1);
     #else
-    getcwd(tmp_path, PATH_MAX);
+    getcwd(rootPathBase, sizeof(rootPathBase));
     #endif
-    snprintf(rootPath, sizeof(rootPath)-1, "%s%s%s", tmp_path, DIRECTORY_SEPARATOR, "switch");
+    snprintf(rootPath, sizeof(rootPath)-1, "%s%s%s", rootPathBase, DIRECTORY_SEPARATOR, "switch");
 
     struct stat st = {0};
 
@@ -302,6 +307,20 @@ void menuStartup() {
         mkdir(rootPath, 0755);
     }
 
+    snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/themes", rootPathBase);
+    if (stat(tmp_path, &st) == -1) {
+        snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config", rootPathBase);
+        mkdir(tmp_path, 0755);
+
+        snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu", rootPathBase);
+        mkdir(tmp_path, 0755);
+
+        snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/themes", rootPathBase);
+        mkdir(tmp_path, 0755);
+    }
+}
+
+void menuStartup(void) {
     menuScan(rootPath);
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
@@ -314,12 +333,12 @@ void menuStartup() {
     //menuCreateMsgBox(780, 300, "This is a test");
 }
 
-void themeMenuStartup() {
+void themeMenuStartup(void) {
     if(hbmenu_state != HBMENU_DEFAULT) return;
     hbmenu_state = HBMENU_THEME_MENU;
-    char tmp_path[PATH_MAX];
+    char tmp_path[PATH_MAX+25];
 
-    snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s%s%s%s",DIRECTORY_SEPARATOR, "config", DIRECTORY_SEPARATOR, "nx-hbmenu" , DIRECTORY_SEPARATOR, "themes");
+    snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s%s%s%s%s", rootPathBase, DIRECTORY_SEPARATOR, "config", DIRECTORY_SEPARATOR, "nx-hbmenu" , DIRECTORY_SEPARATOR, "themes");
 
     themeMenuScan(tmp_path);
 }
@@ -406,7 +425,7 @@ void drawBackBtn(menu_s* menu, bool emptyDir) {
     }
 }
 
-void menuLoop() {
+void menuLoop(void) {
     menuEntry_s* me;
     menu_s* menu = menuGetCurrent();
     int i;

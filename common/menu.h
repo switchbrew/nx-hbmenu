@@ -91,7 +91,8 @@ void launchMenuEntryTask(menuEntry_s* arg);
 void launchApplyThemeTask(menuEntry_s* arg);
 void launchMenuBackTask();
 void launchMenuNetloaderTask();
-char *menuGetRootPath();
+char *menuGetRootPath(void);
+char *menuGetRootBasePath(void);
 
 void menuHandleAButton(void);
 

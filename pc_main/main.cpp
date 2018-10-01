@@ -15,9 +15,10 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Test");
     window.setFramerateLimit(60);
 
+    menuStartupPath();
     themeStartup(THEME_PRESET_LIGHT);
     textInit();
-    fontInitialize();//Must be called before menuStartup() due to cwd.
+    fontInitialize();
     menuStartup();
 
     while (window.isOpen())
@@ -111,6 +112,7 @@ extern "C" bool menuUpdate(void) {
     esc_state = new_esc_state;
     return_state = new_return_state;
     y_state = new_y_state;
+    t_state = new_t_state;
 
     return 0;
 }

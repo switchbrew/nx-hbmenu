@@ -59,9 +59,10 @@ typedef union {
 #include "theme.h"
 #include "message-box.h"
 
-void menuStartup();
-void themeMenuStartup();
-void menuLoop();
+void menuStartupPath(void);
+void menuStartup(void);
+void themeMenuStartup(void);
+void menuLoop(void);
 
 static inline uint8_t BlendColor(uint32_t src, uint32_t dst, uint8_t alpha)
 {

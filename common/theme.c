@@ -144,16 +144,11 @@ void GetThemePathFromConfig(char* themePath, size_t size) {
     const char* tmpThemePath = "";
     config_t cfg = {0};
     config_setting_t *settings = NULL;
-    char tmp_path[PATH_MAX] = {0};
-    char tmp_path_theme[PATH_MAX] = {0};
+    char tmp_path[PATH_MAX+1] = {0};
+    char tmp_path_theme[PATH_MAX+1] = {0};
 
-    #ifdef __SWITCH__
-    tmp_path[0] = '/';
-    tmp_path_theme[0] = '/';
-    #endif
-
-    strncat(tmp_path, "config/nx-hbmenu/settings.cfg", sizeof(tmp_path)-2);
-    strncat(tmp_path_theme, "config/nx-hbmenu/themes/", sizeof(tmp_path_theme)-2);
+    snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/settings.cfg", menuGetRootBasePath());
+    snprintf(tmp_path_theme, sizeof(tmp_path_theme)-1, "%s/config/nx-hbmenu/themes/", menuGetRootBasePath());
     bool good_cfg = config_read_file(&cfg, tmp_path);
     
     if(good_cfg) {
@@ -183,7 +178,7 @@ void SetThemePathToConfig(const char* themePath) {
     settingPath[0] = '/';
     #endif
 
-    strncat(settingPath, "config/nx-hbmenu/settings.cfg", sizeof(settingPath)-2);
+    snprintf(settingPath, sizeof(settingPath)-1, "%s/config/nx-hbmenu/settings.cfg", menuGetRootBasePath());
     bool good_cfg = config_read_file(&cfg, settingPath);
     
     if(good_cfg) {
