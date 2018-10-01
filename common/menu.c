@@ -325,7 +325,7 @@ void themeMenuStartup() {
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {
-    return MakeColor(a.r+(b.r*alpha), a.g+b.g*alpha, a.b + b.b*alpha, 255);
+    return MakeColor(a.r*(1.0f-alpha) + b.r*alpha, a.g*(1.0f-alpha) + b.g*alpha, a.b*(1.0f-alpha) + b.b*alpha, 255);
 }
 
 void drawWave(int id, float timer, color_t color, int height, float phase, float speed) {
