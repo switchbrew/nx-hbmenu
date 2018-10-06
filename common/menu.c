@@ -392,7 +392,7 @@ void drawTime() {
     char timeString[9];
 
     time_t unixTime = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t *)&unixTime);
+    struct tm* timeStruct = localtime((const time_t *)&unixTime);
 
     int hours = timeStruct->tm_hour;
     int minutes = timeStruct->tm_min;
@@ -400,7 +400,7 @@ void drawTime() {
 
     sprintf(timeString, "%02d:%02d:%02d", hours, minutes, seconds);
 
-    DrawText(interuimedium20, 1280 - (9 * 16) - 30, 30 + 26, MakeColor(255, 255, 255, 255), timeString);
+    DrawText(interuimedium20, 1280 - (9 * 16) - 30 - 32, 30 + 26 + 32, themeCurrent.textColor, timeString);
 
 }
 
@@ -459,7 +459,7 @@ void menuLoop(void) {
     DrawText(interuiregular14, 180 + 256, 46 + 16 + 18, themeCurrent.textColor, tmpstr);
     #endif
 
-    //drawTime();
+    drawTime();
 
     if (menu->nEntries==0 || hbmenu_state == HBMENU_NETLOADER_ACTIVE)
     {
