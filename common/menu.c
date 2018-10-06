@@ -400,7 +400,7 @@ void drawTime() {
 
     sprintf(timeString, "%02d:%02d:%02d", hours, minutes, seconds);
 
-    DrawText(interuimedium20, 1280 - (9 * 16) - 30 - 32, 30 + 26 + 32, themeCurrent.textColor, timeString);
+    DrawText(interuimedium20, 1280 - (9 * 16) - 30 - 32, 0 + 47, themeCurrent.textColor, timeString);
 
 }
 
@@ -515,10 +515,10 @@ void menuLoop(void) {
         int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
 
         if(hbmenu_state == HBMENU_THEME_MENU) {
-            DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+            DrawText(interuiregular18, getX, 30 + 26 + 32, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
         } else {
-            //DrawText(interuiregular18, getX, 0 + 47, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
-            //DrawText(fontscale7, getX - 40,  0 + 47, themeCurrent.textColor, themeCurrent.buttonMText);
+            //DrawText(interuiregular18, getX, 30 + 26 + 32, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+            //DrawText(fontscale7, getX - 40,  30 + 26 + 32, themeCurrent.textColor, themeCurrent.buttonMText);
         }
         
         if(active_entry != NULL) {
