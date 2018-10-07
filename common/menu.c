@@ -445,10 +445,14 @@ void drawCharge() {
     char chargeString[5];
 
     uint32_t batteryCharge;
-    ChargerType chargeType = 0;
+    ChargerType chargeType = ChargerType_None;
 
     #ifdef __SWITCH__
-    psmGetBatteryChargePercentage(&batteryCharge);
+    if (psmInitialized)
+    {
+        psmGetBatteryChargePercentage(&batteryCharge);
+        psmGetChargerType(&chargeType);
+    }
     #else
     batteryCharge = 100;
     #endif
@@ -458,10 +462,6 @@ void drawCharge() {
     int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
 
     DrawText(interuiregular14, tmpX, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
-
-    #ifdef __SWITCH__
-    psmGetChargerType(&chargeType);
-    #endif
 
     if (chargeType > (ChargerType)ChargerType_None)
         drawImage(tmpX - 20, 0 + 47 + 10 + 5, 9, 15, charging_icon_small, IMAGE_MODE_RGBA32);
