@@ -335,12 +335,12 @@ void menuStartup(void) {
     if(themeGlobalPreset == THEME_PRESET_DARK)
     {
         theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-        charging_icon_small = downscaleImg(charging_icon_white_bin, 155, 256, 14, 23, IMAGE_MODE_RGBA32);
+        charging_icon_small = downscaleImg(charging_icon_white_bin, 155, 256, 9, 15, IMAGE_MODE_RGBA32);
     }
     else
     {
         theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-        charging_icon_small = downscaleImg(charging_icon_black_bin, 155, 256, 14, 23, IMAGE_MODE_RGBA32);
+        charging_icon_small = downscaleImg(charging_icon_black_bin, 155, 256, 9, 15, IMAGE_MODE_RGBA32);
     }
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
@@ -455,16 +455,16 @@ void drawCharge() {
 
     sprintf(chargeString, "%d%%", (int)batteryCharge);
 
-    int tmpX = GetTextXCoordinate(interuimedium20, 1180, chargeString, 'r');
+    int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
 
-    DrawText(interuimedium20, tmpX, 0 + 47 + 10 + 32, themeCurrent.textColor, chargeString);
+    DrawText(interuiregular14, tmpX, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
 
     #ifdef __SWITCH__
     psmGetChargerType(&chargeType);
     #endif
 
     if (chargeType > (ChargerType)ChargerType_None)
-        drawImage(tmpX - 20, 0 + 47 + 10 + 9, 14, 23, charging_icon_small, IMAGE_MODE_RGBA32);
+        drawImage(tmpX - 20, 0 + 47 + 10 + 5, 9, 15, charging_icon_small, IMAGE_MODE_RGBA32);
 }
 
 void drawBackBtn(menu_s* menu, bool emptyDir) {
