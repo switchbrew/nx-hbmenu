@@ -101,6 +101,7 @@ int main(int argc, char **argv)
 
     fontExit();
     launchExit();
+    menuExit();
     plExit();
     setsysExit();
 

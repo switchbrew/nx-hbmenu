@@ -6,6 +6,8 @@
 #include "folder_icon_bin.h"
 #include "theme_icon_dark_bin.h"
 #include "theme_icon_light_bin.h"
+#include "charging_icon_black_bin.h"
+#include "charging_icon_white_bin.h"
 
 char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
@@ -320,17 +322,49 @@ void menuStartupPath(void) {
     }
 }
 
+uint8_t *charging_icon_small;
+#ifdef __SWITCH__
+static bool psmInitialized = false;
+#endif
+
 void menuStartup(void) {
     menuScan(rootPath);
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     if(themeGlobalPreset == THEME_PRESET_DARK)
+    {
         theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+        charging_icon_small = downscaleImg(charging_icon_white_bin, 155, 256, 14, 23, IMAGE_MODE_RGBA32);
+    }
     else
+    {
         theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+        charging_icon_small = downscaleImg(charging_icon_black_bin, 155, 256, 14, 23, IMAGE_MODE_RGBA32);
+    }
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
+
+    #ifdef __SWITCH__
+    if (!psmInitialized)
+    {
+        Result rc = psmInitialize();
+        if (R_SUCCEEDED(rc))
+        {
+            psmInitialized = true;
+        }
+    }
+    #endif
+
+}
+
+void menuExit(void) {
+    #ifdef __SWITCH__
+    if (psmInitialized)
+    {
+        psmExit();
+    }
+    #endif
 }
 
 void themeMenuStartup(void) {
@@ -406,6 +440,33 @@ void drawTime() {
 
 }
 
+void drawCharge() {
+
+    char chargeString[5];
+
+    uint32_t batteryCharge;
+    ChargerType chargeType = 0;
+
+    #ifdef __SWITCH__
+    psmGetBatteryChargePercentage(&batteryCharge);
+    #else
+    batteryCharge = 100;
+    #endif
+
+    sprintf(chargeString, "%d%%", (int)batteryCharge);
+
+    int tmpX = GetTextXCoordinate(interuimedium20, 1180, chargeString, 'r');
+
+    DrawText(interuimedium20, tmpX, 0 + 47 + 10 + 32, themeCurrent.textColor, chargeString);
+
+    #ifdef __SWITCH__
+    psmGetChargerType(&chargeType);
+    #endif
+
+    if (chargeType > (ChargerType)ChargerType_None)
+        drawImage(tmpX - 20, 0 + 47 + 10 + 9, 14, 23, charging_icon_small, IMAGE_MODE_RGBA32);
+}
+
 void drawBackBtn(menu_s* menu, bool emptyDir) {
     int x_image = 1280 - 252 - 30 - 32;
     int x_text = 1280 - 216 - 30 - 32;
@@ -462,6 +523,7 @@ void menuLoop(void) {
     #endif
 
     drawTime();
+    drawCharge();
 
     if (menu->nEntries==0 || hbmenu_state == HBMENU_NETLOADER_ACTIVE)
     {
