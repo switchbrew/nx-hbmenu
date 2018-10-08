@@ -7,6 +7,7 @@
 #include "theme_icon_dark_bin.h"
 #include "theme_icon_light_bin.h"
 #include "charging_icon_bin.h"
+#include "battery_icon_bin.h"
 
 char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
@@ -337,6 +338,7 @@ void menuStartupPath(void) {
 }
 
 uint8_t *charging_icon_small;
+uint8_t *battery_icon_small;
 
 void menuStartup(void) {
     menuScan(rootPath);
@@ -348,6 +350,7 @@ void menuStartup(void) {
     else
         theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     charging_icon_small = downscaleImg(charging_icon_bin, 155, 256, 9, 15, IMAGE_MODE_RGBA32);
+    battery_icon_small = downscaleImg(battery_icon_bin, 175, 256, 10, 15, IMAGE_MODE_RGBA32);
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
 }
@@ -437,9 +440,10 @@ void drawCharge() {
 
     int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
 
-    DrawText(interuiregular14, tmpX, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
+    DrawText(interuiregular14, tmpX - 15, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
+    drawIcon(1180 - 11, 0 + 47 + 10 + 6, 10, 15, battery_icon_small, themeCurrent.textColor);
     if (isCharging)
-        drawIcon(tmpX - 20, 0 + 47 + 10 + 5, 9, 15, charging_icon_small, themeCurrent.textColor);
+        drawIcon(tmpX - 35, 0 + 47 + 10 + 5, 9, 15, charging_icon_small, themeCurrent.textColor);
 }
 
 void drawBackBtn(menu_s* menu, bool emptyDir) {
