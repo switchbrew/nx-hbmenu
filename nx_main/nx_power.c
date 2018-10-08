@@ -3,7 +3,6 @@
 
 static bool psmInitialized;
 
-
 void powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
     ChargerType charger = ChargerType_None;
 

@@ -1,6 +1,5 @@
 #include "../common/common.h"
 
-
 void powerInit(void) {
 
 }
