@@ -6,8 +6,7 @@
 #include "folder_icon_bin.h"
 #include "theme_icon_dark_bin.h"
 #include "theme_icon_light_bin.h"
-#include "charging_icon_black_bin.h"
-#include "charging_icon_white_bin.h"
+#include "charging_icon_bin.h"
 
 char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
@@ -104,6 +103,21 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
                     break;
             }
 
+            DrawPixel(x+tmpx, y+tmpy, current_color);
+        }
+    }
+}
+
+//Draws an RGBA8888 image masked by the passed color.
+static void drawIcon(int x, int y, int width, int height, const uint8_t *image, color_t color) {
+    int tmpx, tmpy;
+    int pos;
+    color_t current_color;
+
+    for (tmpy=0; tmpy<height; tmpy++) {
+        for (tmpx=0; tmpx<width; tmpx++) {
+            pos = ((tmpy*width) + tmpx) * 4;
+            current_color = MakeColor(color.r, color.g, color.b, image[pos+3]);
             DrawPixel(x+tmpx, y+tmpy, current_color);
         }
     }
@@ -323,9 +337,6 @@ void menuStartupPath(void) {
 }
 
 uint8_t *charging_icon_small;
-#ifdef __SWITCH__
-static bool psmInitialized = false;
-#endif
 
 void menuStartup(void) {
     menuScan(rootPath);
@@ -333,38 +344,12 @@ void menuStartup(void) {
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
     if(themeGlobalPreset == THEME_PRESET_DARK)
-    {
         theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-        charging_icon_small = downscaleImg(charging_icon_white_bin, 155, 256, 9, 15, IMAGE_MODE_RGBA32);
-    }
     else
-    {
         theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-        charging_icon_small = downscaleImg(charging_icon_black_bin, 155, 256, 9, 15, IMAGE_MODE_RGBA32);
-    }
+    charging_icon_small = downscaleImg(charging_icon_bin, 155, 256, 9, 15, IMAGE_MODE_RGBA32);
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
-
-    #ifdef __SWITCH__
-    if (!psmInitialized)
-    {
-        Result rc = psmInitialize();
-        if (R_SUCCEEDED(rc))
-        {
-            psmInitialized = true;
-        }
-    }
-    #endif
-
-}
-
-void menuExit(void) {
-    #ifdef __SWITCH__
-    if (psmInitialized)
-    {
-        psmExit();
-    }
-    #endif
 }
 
 void themeMenuStartup(void) {
@@ -441,30 +426,20 @@ void drawTime() {
 }
 
 void drawCharge() {
-
     char chargeString[5];
-
     uint32_t batteryCharge;
-    ChargerType chargeType = ChargerType_None;
+    bool isCharging;
+    
+    powerGetDetails(&batteryCharge, &isCharging);
+    batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
 
-    #ifdef __SWITCH__
-    if (psmInitialized)
-    {
-        psmGetBatteryChargePercentage(&batteryCharge);
-        psmGetChargerType(&chargeType);
-    }
-    #else
-    batteryCharge = 100;
-    #endif
-
-    sprintf(chargeString, "%d%%", (int)batteryCharge);
+    sprintf(chargeString, "%d%%", batteryCharge);
 
     int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
 
     DrawText(interuiregular14, tmpX, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
-
-    if (chargeType > (ChargerType)ChargerType_None)
-        drawImage(tmpX - 20, 0 + 47 + 10 + 5, 9, 15, charging_icon_small, IMAGE_MODE_RGBA32);
+    if (isCharging)
+        drawIcon(tmpX - 20, 0 + 47 + 10 + 5, 9, 15, charging_icon_small, themeCurrent.textColor);
 }
 
 void drawBackBtn(menu_s* menu, bool emptyDir) {

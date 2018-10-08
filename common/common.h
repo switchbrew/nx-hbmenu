@@ -58,6 +58,7 @@ typedef union {
 #include "math.h"
 #include "theme.h"
 #include "message-box.h"
+#include "power.h"
 
 void menuStartupPath(void);
 void menuStartup(void);
