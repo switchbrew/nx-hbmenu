@@ -3,18 +3,24 @@
 
 static bool psmInitialized;
 
-void powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
+bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
     ChargerType charger = ChargerType_None;
+    bool hwReadsSucceeded = false;
+    Result rc = 0;
 
     *isCharging = false;
     *batteryCharge = 0;
 
     if (psmInitialized)
     {
-        psmGetBatteryChargePercentage(batteryCharge);
-        psmGetChargerType(&charger);
+        rc = psmGetBatteryChargePercentage(batteryCharge);
+        hwReadsSucceeded = R_SUCCEEDED(rc);
+        rc = psmGetChargerType(&charger);
+        hwReadsSucceeded &= R_SUCCEEDED(rc);
         *isCharging = (charger > ChargerType_None);
     }
+
+    return hwReadsSucceeded;
 }
 
 void powerInit(void) {

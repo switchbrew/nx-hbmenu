@@ -8,7 +8,8 @@ void powerExit(void) {
 
 }
 
-void powerGetDetails(uint32_t *batteryCharge, bool *isCharging)
+bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging)
     *isCharging = false;
     *batteryCharge = 100;
+    return false;
 }

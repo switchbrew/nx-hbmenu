@@ -427,18 +427,23 @@ void drawCharge() {
     char chargeString[5];
     uint32_t batteryCharge;
     bool isCharging;
+    bool validPower;
+
+    validPower = powerGetDetails(&batteryCharge, &isCharging);
     
-    powerGetDetails(&batteryCharge, &isCharging);
-    batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
+    if (validPower)
+    {
+        batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
 
-    sprintf(chargeString, "%d%%", batteryCharge);
+        sprintf(chargeString, "%d%%", batteryCharge);
+        
+        int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
 
-    int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
-
-    DrawText(interuiregular14, tmpX - 15, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
-    drawIcon(1180 - 11, 0 + 47 + 10 + 6, 10, 15, battery_icon_bin, themeCurrent.textColor);
-    if (isCharging)
-        drawIcon(tmpX - 32, 0 + 47 + 10 + 6, 9, 15, charging_icon_bin, themeCurrent.textColor);
+        DrawText(interuiregular14, tmpX - 15, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
+        drawIcon(1180 - 11, 0 + 47 + 10 + 6, 10, 15, battery_icon_bin, themeCurrent.textColor);
+        if (isCharging)
+            drawIcon(tmpX - 32, 0 + 47 + 10 + 6, 9, 15, charging_icon_bin, themeCurrent.textColor);
+    }
 }
 
 void drawBackBtn(menu_s* menu, bool emptyDir) {

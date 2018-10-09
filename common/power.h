@@ -3,6 +3,6 @@
 
 void powerInit(void);
 
-void powerGetDetails(uint32_t *batteryCharge, bool *isCharging);
+bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging);
 
 void powerExit(void);

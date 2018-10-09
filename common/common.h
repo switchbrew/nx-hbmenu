@@ -64,7 +64,6 @@ void menuStartupPath(void);
 void menuStartup(void);
 void themeMenuStartup(void);
 void menuLoop(void);
-void menuExit(void);
 
 static inline uint8_t BlendColor(uint32_t src, uint32_t dst, uint8_t alpha)
 {
