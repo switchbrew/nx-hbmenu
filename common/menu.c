@@ -6,6 +6,8 @@
 #include "folder_icon_bin.h"
 #include "theme_icon_dark_bin.h"
 #include "theme_icon_light_bin.h"
+#include "charging_icon_bin.h"
+#include "battery_icon_bin.h"
 
 char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
@@ -102,6 +104,21 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
                     break;
             }
 
+            DrawPixel(x+tmpx, y+tmpy, current_color);
+        }
+    }
+}
+
+//Draws an RGBA8888 image masked by the passed color.
+static void drawIcon(int x, int y, int width, int height, const uint8_t *image, color_t color) {
+    int tmpx, tmpy;
+    int pos;
+    color_t current_color;
+
+    for (tmpy=0; tmpy<height; tmpy++) {
+        for (tmpx=0; tmpx<width; tmpx++) {
+            pos = ((tmpy*width) + tmpx) * 4;
+            current_color = MakeColor(color.r, color.g, color.b, image[pos+3]);
             DrawPixel(x+tmpx, y+tmpy, current_color);
         }
     }
@@ -406,6 +423,29 @@ void drawTime() {
 
 }
 
+void drawCharge() {
+    char chargeString[5];
+    uint32_t batteryCharge;
+    bool isCharging;
+    bool validPower;
+
+    validPower = powerGetDetails(&batteryCharge, &isCharging);
+    
+    if (validPower)
+    {
+        batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
+
+        sprintf(chargeString, "%d%%", batteryCharge);
+        
+        int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
+
+        DrawText(interuiregular14, tmpX - 15, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
+        drawIcon(1180 - 11, 0 + 47 + 10 + 6, 10, 15, battery_icon_bin, themeCurrent.textColor);
+        if (isCharging)
+            drawIcon(tmpX - 32, 0 + 47 + 10 + 6, 9, 15, charging_icon_bin, themeCurrent.textColor);
+    }
+}
+
 void drawBackBtn(menu_s* menu, bool emptyDir) {
     int x_image = 1280 - 252 - 30 - 32;
     int x_text = 1280 - 216 - 30 - 32;
@@ -462,6 +502,7 @@ void menuLoop(void) {
     #endif
 
     drawTime();
+    drawCharge();
 
     if (menu->nEntries==0 || hbmenu_state == HBMENU_NETLOADER_ACTIVE)
     {
