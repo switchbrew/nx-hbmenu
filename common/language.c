@@ -315,7 +315,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_EN("Apply"),
         STR_ES("Aplicar"),
         STR_JP("適用"),
-        STR_KO("대다"),
+        STR_KO("적용"),
         STR_TW("应用"),
     },
 
