@@ -20,6 +20,8 @@ typedef enum
     ENTRY_TYPE_FILE,
     ENTRY_TYPE_FOLDER,
     ENTRY_TYPE_THEME,
+    ENTRY_TYPE_FILEASSOC,
+    ENTRY_TYPE_FILE_OTHER,
 } MenuEntryType;
 
 typedef struct menuEntry_s_tag menuEntry_s;
@@ -51,6 +53,9 @@ struct menuEntry_s_tag
     char path[PATH_MAX+8];
     argData_s args;
 
+    bool fileassoc_type;//0=file_extension, 1 = filename
+    char fileassoc_str[PATH_MAX+1];//file_extension/filename
+
     char name[ENTRY_NAMELENGTH+1];
     char author[ENTRY_AUTHORLENGTH+1];
     char version[ENTRY_VERLENGTH+1];
@@ -76,16 +81,25 @@ extern "C" {
 #endif
 
 void menuEntryInit(menuEntry_s* me, MenuEntryType type);
-void menuEntryFree(menuEntry_s* me);
+void menuEntryFree(menuEntry_s* me, bool skip_icongfx);
 bool fileExists(const char* path);
 bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut);
 void menuEntryParseIcon(menuEntry_s* me);
 uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int destWidth, int destHeight, ImageMode mode);
 void menuEntryParseNacp(menuEntry_s* me);
 
+void menuEntryFileassocLoad(const char* filepath);
+
+menuEntry_s* menuCreateEntry(MenuEntryType type);
+
+void menuFileassocAddEntry(menuEntry_s* me);
+void menuDeleteEntry(menuEntry_s* me, bool skip_icongfx);
+
 menu_s* menuGetCurrent(void);
+menu_s* menuFileassocGetCurrent(void);
 int menuScan(const char* target);
 int themeMenuScan(const char* target);
+int menuFileassocScan(const char* target);
 
 void launchMenuEntryTask(menuEntry_s* arg);
 void launchApplyThemeTask(menuEntry_s* arg);

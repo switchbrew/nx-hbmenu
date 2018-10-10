@@ -309,7 +309,7 @@ void computeFrontGradient(color_t baseColor, int height) {
 }
 
 void menuStartupPath(void) {
-    char tmp_path[PATH_MAX+25];
+    char tmp_path[PATH_MAX+28];
 
     #ifdef __SWITCH__
     strncpy(rootPathBase, "sdmc:", sizeof(rootPathBase)-1);
@@ -335,9 +335,19 @@ void menuStartupPath(void) {
         snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/themes", rootPathBase);
         mkdir(tmp_path, 0755);
     }
+
+    snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/fileassoc", rootPathBase);
+    if (stat(tmp_path, &st) == -1) {
+        mkdir(tmp_path, 0755);
+    }
 }
 
 void menuStartup(void) {
+    char tmp_path[PATH_MAX+28];
+
+    snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/fileassoc", rootPathBase);
+    menuFileassocScan(tmp_path);
+
     menuScan(rootPath);
 
     folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);

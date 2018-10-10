@@ -1,25 +1,29 @@
 #include "common.h"
 
 static menu_s s_menu[2];
-static bool s_curMenu;
+static menu_s s_menuFileassoc[2];
+static bool s_curMenu, s_curMenuFileassoc;
 
 menu_s* menuGetCurrent(void) {
     return &s_menu[s_curMenu];
 }
 
-static menuEntry_s* menuCreateEntry(MenuEntryType type) {
+menu_s* menuFileassocGetCurrent(void) {
+    return &s_menuFileassoc[s_curMenuFileassoc];
+}
+
+menuEntry_s* menuCreateEntry(MenuEntryType type) {
     menuEntry_s* me = (menuEntry_s*)malloc(sizeof(menuEntry_s));
     menuEntryInit(me, type);
     return me;
 }
 
-static void menuDeleteEntry(menuEntry_s* me) {
-    menuEntryFree(me);
+void menuDeleteEntry(menuEntry_s* me, bool skip_icongfx) {
+    menuEntryFree(me, skip_icongfx);
     free(me);
 }
 
-static void menuAddEntry(menuEntry_s* me) {
-    menu_s* m = &s_menu[!s_curMenu];
+static void _menuAddEntry(menu_s *m, menuEntry_s* me) {
     me->menu = m;
     if (m->lastEntry)
     {
@@ -32,6 +36,14 @@ static void menuAddEntry(menuEntry_s* me) {
     }
     m->xPos = 0;
     m->nEntries ++;
+}
+
+static void menuAddEntry(menuEntry_s* me) {
+    _menuAddEntry(&s_menu[!s_curMenu], me);
+}
+
+void menuFileassocAddEntry(menuEntry_s* me) {
+    _menuAddEntry(&s_menuFileassoc[!s_curMenuFileassoc], me);
 }
 
 static void menuAddEntryToFront(menuEntry_s* me) {
@@ -50,15 +62,22 @@ static void menuAddEntryToFront(menuEntry_s* me) {
     m->nEntries ++;
 }
 
-static void menuClear(void) {
-    menu_s* m = &s_menu[!s_curMenu];
+static void _menuClear(menu_s* m) {
     menuEntry_s *cur, *next;
     for (cur = m->firstEntry; cur; cur = next)
     {
         next = cur->next;
-        menuDeleteEntry(cur);
+        menuDeleteEntry(cur, 0);
     }
     memset(m, 0, sizeof(*m));
+}
+
+static void menuClear(void) {
+    _menuClear(&s_menu[!s_curMenu]);
+}
+
+static void menuFileassocClear(void) {
+    _menuClear(&s_menuFileassoc[!s_curMenuFileassoc]);
 }
 
 static int menuEntryCmp(const void *p1, const void *p2) {
@@ -144,6 +163,9 @@ int menuScan(const char* target) {
             const char* ext = getExtension(dp->d_name);
             if (strcasecmp(ext, ".nro")==0/* || (shortcut = strcasecmp(ext, ".xml")==0)*/)
                 me = menuCreateEntry(ENTRY_TYPE_FILE);
+
+            if (!me)
+                me = menuCreateEntry(ENTRY_TYPE_FILE_OTHER);
         }
 
         if (!me)
@@ -151,10 +173,11 @@ int menuScan(const char* target) {
 
         strncpy(me->path, tmp_path, sizeof(me->path)-1);
         me->path[sizeof(me->path)-1] = 0;
+
         if (menuEntryLoad(me, dp->d_name, shortcut))
             menuAddEntry(me);
         else
-            menuDeleteEntry(me);
+            menuDeleteEntry(me, 0);
     }
 
     closedir(dir);
@@ -200,7 +223,7 @@ int themeMenuScan(const char* target) {
         if (menuEntryLoad(me, dp->d_name, shortcut))
             menuAddEntry(me);
         else
-            menuDeleteEntry(me);
+            menuDeleteEntry(me, 0);
     }
 
     closedir(dir);
@@ -212,10 +235,44 @@ int themeMenuScan(const char* target) {
         if(menuEntryLoad(me, textGetString(StrId_DefaultThemeName), false))//Create Default theme Menu Entry
             menuAddEntryToFront(me);
         else
-            menuDeleteEntry(me);
+            menuDeleteEntry(me, 0);
     }
     // Swap the menu and clear the previous menu
     s_curMenu = !s_curMenu;
     menuClear();
+    return 0;
+}
+
+int menuFileassocScan(const char* target) {
+    menuFileassocClear();
+    if (chdir(target) < 0) return 1;
+    if (getcwd(s_menuFileassoc[!s_curMenuFileassoc].dirname, PATH_MAX+1) == NULL)
+        return 1;
+    DIR* dir;
+    struct dirent* dp;
+    char tmp_path[PATH_MAX+1];
+    dir = opendir(s_menuFileassoc[!s_curMenuFileassoc].dirname);
+    if (!dir) return 2;
+
+    while ((dp = readdir(dir)))
+    {
+        if (dp->d_name[0]=='.')
+            continue;
+
+        memset(tmp_path, 0, sizeof(tmp_path));
+        snprintf(tmp_path, sizeof(tmp_path)-1, "%s/%s", s_menuFileassoc[!s_curMenuFileassoc].dirname, dp->d_name);
+
+        const char* ext = getExtension(dp->d_name);
+        if (strcasecmp(ext, ".cfg")!=0)
+            continue;
+
+        menuEntryFileassocLoad(tmp_path);
+    }
+
+    closedir(dir);
+
+    // Swap the menu and clear the previous menu
+    s_curMenuFileassoc = !s_curMenuFileassoc;
+    menuFileassocClear();
     return 0;
 }
