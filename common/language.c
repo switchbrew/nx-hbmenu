@@ -304,6 +304,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_MsgBox_OK] =
     {
         STR_EN("OK"),
+        STR_FR("OK"),
         STR_ES("Aceptar"),
         STR_JP("了解"),
         STR_KO("확인"),
@@ -313,6 +314,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_Actions_Apply] =
     {
         STR_EN("Apply"),
+        STR_FR("Appliquer"),
         STR_ES("Aplicar"),
         STR_JP("適用"),
         STR_KO("적용"),
@@ -322,6 +324,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_ThemeMenu] =
     {
         STR_EN("Theme Menu"),
+        STR_FR("Menu Thème"),
         STR_ES("Menú temático"),
         STR_JP("テーマメニュー"),
         STR_KO("테마 메뉴"),
@@ -331,6 +334,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_ThemeNotApplied] =
     {
         STR_EN("Theme cannot be applied because an error occurred."),
+        STR_FR("Le thème ne peut pas être appliqué car une erreur est survenue."),
         STR_ES("El tema no se pudo aplicar porque se ha producido un error."),
         STR_JP("エラーが発生したため、テーマを適用できませんでした。"),
         STR_KO("오류가 발생 했기 때문에 테마를 적용할 수 없습니다."),
@@ -340,6 +344,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_DefaultThemeName] =
     {
         STR_EN("Default Theme"),
+        STR_FR("Thème par défaut"),
     },
 
     /*[StrId_Reboot] =
