@@ -343,6 +343,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_DefaultThemeName] =
     {
         STR_EN("Default Theme"),
+        STR_FR("Thème par défaut"),
     },
 
     /*[StrId_Reboot] =
