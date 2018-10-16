@@ -304,6 +304,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_MsgBox_OK] =
     {
         STR_EN("OK"),
+        STR_FR("OK"),
         STR_ES("Aceptar"),
         STR_JP("了解"),
         STR_KO("확인"),
