@@ -731,23 +731,23 @@ const char* const g_strings[StrId_Max][16] =
         ),
     },*/
 
-    /*[StrId_NetLoader] =
+    [StrId_NetLoader] =
     {
-        STR_EN("3dslink NetLoader"),
-        STR_ES("Cargador de programas 3dslink"),
-        STR_DE("3dslink Netzwerk-Loader"),
-        STR_FR("Chargeur de programme 3dslink"),
-        STR_IT("Caricamento programmi 3dslink"),
-        STR_JP("3dslinkネットローダ"),
-        STR_PT("Carregador de programas 3dslink"),
-        STR_NL("3dslink netwerk lader"),
-        STR_KO("3dslink 네트워크 로더"),
-        STR_RU("Загрузчик 3dslink"),
-        STR_ZH("3dslink 网络执行模块"),
-        STR_TW("3dslink 網路執行模組"),
+        STR_EN("NetLoader"),
+        STR_ES("Cargador de programas"),
+        STR_DE("Netzwerk-Loader"),
+        STR_FR("Chargeur de programme"),
+        STR_IT("Caricamento programmi"),
+        STR_JP("ネットローダ"),
+        STR_PT("Carregador de programas"),
+        STR_NL("netwerk lader"),
+        STR_KO("네트워크 로더"),
+        STR_RU("Загрузчик"),
+        STR_ZH("网络执行模块"),
+        STR_TW("網路執行模組"),
     },
 
-    [StrId_NetLoaderUnavailable] =
+    /*[StrId_NetLoaderUnavailable] =
     {
         STR_EN("The NetLoader is currently unavailable."),
         STR_ES("El cargador de programas no está disponible."),

@@ -456,7 +456,7 @@ void drawCharge() {
     }
 }
 
-void drawBackBtn(menu_s* menu, bool emptyDir) {
+void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
     int x_image = 1280 - 252 - 30 - 32;
     int x_text = 1280 - 216 - 30 - 32;
 
@@ -475,6 +475,16 @@ void drawBackBtn(menu_s* menu, bool emptyDir) {
         DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonBText);//Display the 'B' button from SharedFont.
         DrawText(interuimedium20, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_Actions_Back));
     }
+
+    if(hbmenu_state == HBMENU_DEFAULT)
+    {
+        x_text = GetTextXCoordinate(interuiregular18, x_image - 32, textGetString(StrId_NetLoader), 'r');
+        x_image = x_text - 36;
+        *x_image_out = x_image - 40;
+
+        DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonYText);
+        DrawText(interuiregular18, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_NetLoader));
+    }
 }
 
 void menuLoop(void) {
@@ -482,6 +492,7 @@ void menuLoop(void) {
     menu_s* menu = menuGetCurrent();
     int i;
     int x, y;
+    int menupath_x_endpos = 918 + 40;
 
     for (y=0; y<450; y++) {
         for (x=0; x<1280; x+=4) {// don't draw bottom pixels as they are covered by the waves
@@ -496,7 +507,6 @@ void menuLoop(void) {
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
     DrawText(interuiregular14, 180, 46 + 18, themeCurrent.textColor, VERSION);
-    DrawTextTruncate(interuiregular18, 40, 720 - 47 + 24, themeCurrent.textColor, menu->dirname, 918, "...");
 
     #ifdef PERF_LOG_DRAW//Seperate from the PERF_LOG define since this might affect perf.
     extern u64 g_tickdiff_vsync;
@@ -531,7 +541,7 @@ void menuLoop(void) {
         } else {
             DrawText(interuiregular14, 64, 128 + 18, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));
         }
-        drawBackBtn(menu, true);
+        drawButtons(menu, true, &menupath_x_endpos);
     }
     else
     {
@@ -589,8 +599,10 @@ void menuLoop(void) {
             }
         }
 
-        drawBackBtn(menu, false);
+        drawButtons(menu, false, &menupath_x_endpos);
     }
+
+    DrawTextTruncate(interuiregular18, 40, 720 - 47 + 24, themeCurrent.textColor, menu->dirname, menupath_x_endpos - 40, "...");
 
     menuDrawMsgBox();
 }

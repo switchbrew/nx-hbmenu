@@ -31,6 +31,7 @@ void themeStartup(ThemePreset preset) {
         .enableWaveBlending = 0,
         .buttonAText = "\uE0E0",
         .buttonBText = "\uE0E1",
+        .buttonYText = "\uE0E3",
         .buttonPText = "\uE0EF",
         .buttonMText = "\uE0F0",
         .hbmenuLogoImage = hbmenu_logo_light_bin
@@ -49,6 +50,7 @@ void themeStartup(ThemePreset preset) {
         .enableWaveBlending = 0,
         .buttonAText = "\uE0A0",
         .buttonBText = "\uE0A1",
+        .buttonYText = "\uE0A3",
         .buttonPText = "\uE0B3",
         .buttonMText = "\uE0B4",
         .hbmenuLogoImage = hbmenu_logo_dark_bin
@@ -63,7 +65,7 @@ void themeStartup(ThemePreset preset) {
     config_setting_t *theme = NULL;
     color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor;
     int waveBlending;
-    const char *AText, *BText, *PText, *MText;
+    const char *AText, *BText, *YText, *PText, *MText;
     bool good_cfg = false;
 
     if(themePath[0]!=0)
@@ -110,6 +112,8 @@ void themeStartup(ThemePreset preset) {
                 AText = themeDefault->buttonAText;
             if (!config_setting_lookup_string(theme, "buttonBText", &BText))
                 BText = themeDefault->buttonBText;
+            if (!config_setting_lookup_string(theme, "buttonYText", &YText))
+                YText = themeDefault->buttonYText;
             if (!config_setting_lookup_string(theme, "buttonPText", &PText))
                 PText = themeDefault->buttonPText;
             if (!config_setting_lookup_string(theme, "buttonMText", &MText))
@@ -129,6 +133,7 @@ void themeStartup(ThemePreset preset) {
             };
             strncpy(themeCurrent.buttonAText, AText, sizeof(themeCurrent.buttonAText)-1);
             strncpy(themeCurrent.buttonBText, BText, sizeof(themeCurrent.buttonBText)-1);
+            strncpy(themeCurrent.buttonYText, YText, sizeof(themeCurrent.buttonYText)-1);
             strncpy(themeCurrent.buttonPText, PText, sizeof(themeCurrent.buttonPText)-1);
             strncpy(themeCurrent.buttonMText, MText, sizeof(themeCurrent.buttonMText)-1);
         } else {
