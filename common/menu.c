@@ -484,6 +484,13 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
 
         DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonYText);
         DrawText(interuiregular18, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_NetLoader));
+
+        x_text = GetTextXCoordinate(interuiregular18, x_image - 32, textGetString(StrId_ThemeMenu), 'r');
+        x_image = x_text - 36;
+        *x_image_out = x_image - 40;
+
+        DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonMText);
+        DrawText(interuiregular18, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
     }
 }
 
