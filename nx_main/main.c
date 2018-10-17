@@ -93,7 +93,6 @@ int main(int argc, char **argv)
         #endif
 
         gfxSwapBuffers();
-        gfxWaitForVsync();
     }
 
     #ifdef ENABLE_AUDIO
