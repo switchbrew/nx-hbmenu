@@ -19,6 +19,7 @@ int main()
     themeStartup(THEME_PRESET_LIGHT);
     textInit();
     fontInitialize();
+    workerInit();
     menuStartup();
 
     while (window.isOpen())
@@ -52,6 +53,7 @@ int main()
         window.display();
     }
 
+    workerExit();
     fontExit();
 
     return 0;

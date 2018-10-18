@@ -10,6 +10,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <threads.h>
 #ifndef __APPLE__
 #include <malloc.h>
 #endif
@@ -24,6 +25,7 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 typedef u32 Result;
 
+typedef void (*workerThreadFunc)(void *);
 
 #ifdef _WIN32
 #define DIRECTORY_SEPARATOR_CHAR '\\'
@@ -54,6 +56,7 @@ typedef union {
 #include "text.h"
 #include "ui.h"
 #include "launch.h"
+#include "worker.h"
 #include <turbojpeg.h>
 #include "math.h"
 #include "theme.h"

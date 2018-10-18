@@ -46,6 +46,7 @@ int main(int argc, char **argv)
     themeStartup((ThemePreset)theme);
     textInit();
     powerInit();
+    workerInit();
     menuStartup();
 
     launchInit();
@@ -101,6 +102,7 @@ int main(int argc, char **argv)
 
     fontExit();
     launchExit();
+    workerExit();
     powerExit();
     plExit();
     setsysExit();
