@@ -1,5 +1,6 @@
 #include "worker.h"
 
+static bool s_workerInitialized = 0;
 static thrd_t s_workerThread;
 static cnd_t s_workerCdn;
 static mtx_t s_workerMtx;
@@ -31,17 +32,32 @@ static int workerThreadProc(void* unused)
     return 0;
 }
 
-void workerInit(void)
+bool workerInit(void)
 {
-    cnd_init(&s_workerCdn);
-    mtx_init(&s_workerMtx, mtx_plain);
+    if (s_workerInitialized) return 1;
 
-    thrd_create(&s_workerThread, workerThreadProc, 0);
+    if (cnd_init(&s_workerCdn) != thrd_success) return 0;
+    if (mtx_init(&s_workerMtx, mtx_plain) != thrd_success) {
+        cnd_destroy(&s_workerCdn);
+        return 0;
+    }
+
+    if (thrd_create(&s_workerThread, workerThreadProc, 0) != thrd_success) {
+        mtx_destroy(&s_workerMtx);
+        cnd_destroy(&s_workerCdn);
+        return 0;
+    }
+
+    s_workerInitialized = 1;
+    return 1;
 }
 
 void workerExit(void)
 {
     int res=0;
+
+    if (!s_workerInitialized) return;
+    s_workerInitialized = 0;
 
     mtx_lock(&s_workerMtx);
     s_workerParam.exit = true;
@@ -55,6 +71,8 @@ void workerExit(void)
 
 void workerSchedule(workerThreadFunc func, void* data)
 {
+    if (!s_workerInitialized) return;
+
     mtx_lock(&s_workerMtx);
     s_workerParam.func = func;
     s_workerParam.data = data;

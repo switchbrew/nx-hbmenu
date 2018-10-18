@@ -221,6 +221,11 @@ const char* const g_strings[StrId_Max][16] =
         STR_TW("程式執行時發生錯誤:"),
     },
 
+    [StrId_AppLaunchError] =
+    {
+        STR_EN("Failed to launch the application:"),
+    },
+
     [StrId_AppInfo_Author] =
     {
         STR_EN("Author"),

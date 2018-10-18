@@ -2,25 +2,27 @@
 
 static const loaderFuncs_s* s_loader;
 
-void launchInit(void) {
+bool launchInit(void) {
 #define ADD_LOADER(_name) do \
     { \
         extern const loaderFuncs_s _name; \
         if (_name.init()) \
         { \
             s_loader = &_name; \
-            return; \
+            return 1; \
         } \
     } while(0)
 
     ADD_LOADER(loader_builtin);
 
     // Shouldn't happen
-    fatalSimple(-1);//TODO: What value should be used for this?
+    s_loader = NULL;
+    return 0;
 }
 
 void launchExit(void) {
-    s_loader->deinit();
+    if (s_loader) s_loader->deinit();
+    s_loader = NULL;
 }
 
 const loaderFuncs_s* launchGetLoader(void) {
@@ -71,5 +73,6 @@ void launchMenuEntry(menuEntry_s* me) {
         descriptorScanFile(&me->descriptor, me->path);*/
 
     // Launch it
+    if (s_loader == NULL) return;
     s_loader->launchFile(me->path, &me->args);
 }

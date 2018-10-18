@@ -16,7 +16,7 @@ typedef struct
     //void (* useTitle)(u64 tid, u8 mediatype);
 } loaderFuncs_s;
 
-void launchInit(void);
+bool launchInit(void);
 void launchExit(void);
 const loaderFuncs_s* launchGetLoader(void);
 size_t launchAddArg(argData_s* ad, const char* arg);

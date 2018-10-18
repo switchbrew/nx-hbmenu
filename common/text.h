@@ -2,7 +2,7 @@
 #include "common.h"
 #include "language.h"
 
-void textInit(void);
+Result textInit(void);
 int textGetLang(void);
 const char* textGetString(StrId id);
 u64 textGetLanguageCode(void);

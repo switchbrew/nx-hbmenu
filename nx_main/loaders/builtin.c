@@ -53,6 +53,7 @@ static void deinit(void)
 
 static void launchFile(const char* path, argData_s* args)
 {
+    char msg[256];
     /*if (strncmp(path, "sdmc:/",6) == 0)
         path += 5;*/
     memset(argBuf, 0, sizeof(argBuf));
@@ -68,9 +69,15 @@ static void launchFile(const char* path, argData_s* args)
     init_args(argBuf, sizeof(argBuf)-1, args->buf, sizeof(args->buf));
 
     Result rc = envSetNextLoad(path, argBuf);
+    if(R_FAILED(rc)) {
+        memset(msg, 0, sizeof(msg));
+        snprintf(msg, sizeof(msg)-1, "%s\n0x%x", textGetString(StrId_AppLaunchError), rc);
 
-    if(R_FAILED(rc)) fatalSimple(rc);//TODO: How should failing be handled?
-    uiExitLoop();
+        menuCreateMsgBox(780, 300, msg);
+    }
+    else {
+        uiExitLoop();
+    }
 }
 
 const loaderFuncs_s loader_builtin =

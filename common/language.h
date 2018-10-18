@@ -15,6 +15,7 @@ typedef enum
     StrId_NoAppsFound_Msg,
 
     StrId_LastLoadResult,
+    StrId_AppLaunchError,
 
     StrId_AppInfo_Author,
     StrId_AppInfo_Version,

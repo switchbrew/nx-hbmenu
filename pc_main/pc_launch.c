@@ -2,8 +2,8 @@
 
 static const loaderFuncs_s* s_loader;
 
-void launchInit(void) {
-    
+bool launchInit(void) {
+    return 1;
 }
 
 void launchExit(void) {
