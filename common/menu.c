@@ -496,7 +496,7 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
 void menuLoop(void) {
     menuEntry_s* me;
     menuEntry_s* netloader_me = NULL;
-    menu_s* menu = menuGetCurrent();
+    menu_s* menu = NULL;
     int i;
     int x, y;
     int menupath_x_endpos = 918 + 40;
@@ -539,7 +539,10 @@ void menuLoop(void) {
         hbmenu_state = HBMENU_NETLOADER_ACTIVE;
     } else if(hbmenu_state == HBMENU_NETLOADER_ACTIVE && !netloader_activated && !netloader_launch_app) {
         hbmenu_state = HBMENU_DEFAULT;
+        menuScan(".");//Reload the menu since netloader may have deleted the NRO if the transfer aborted.
     }
+
+    menu = menuGetCurrent();
 
     if (netloader_errormsg[0]) menuCreateMsgBox(780,300, netloader_errormsg);
 

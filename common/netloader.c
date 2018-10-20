@@ -51,6 +51,8 @@ static bool netloader_activated = 0, netloader_launchapp = 0;
 static menuEntry_s netloader_me;
 static char netloader_errortext[1024];
 
+static bool netloaderGetExit(void);
+
 //---------------------------------------------------------------------------------
 static void netloader_error(const char *func, int err) {
 //---------------------------------------------------------------------------------
@@ -230,6 +232,10 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
     size_t total = 0;
     /* decompress until deflate stream ends or end of file */
     do {
+        if (netloaderGetExit()) {
+            ret = Z_DATA_ERROR;
+            break;
+        }
 
         int len = recvall(sock, &chunksize, 4, 0);
 
@@ -394,6 +400,7 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
         fflush(file);
         fclose(file);
 
+        if (response == -1) unlink(me->path);
     }
 
     return response;
@@ -600,8 +607,7 @@ void netloaderSignalExit(void) {
     mtx_unlock(&netloader_mtx);
 }
 
-bool netloaderInit(void)
-{
+bool netloaderInit(void) {
     if (netloader_initialized) return 1;
 
     if (mtx_init(&netloader_mtx, mtx_plain) != thrd_success) return 0;
@@ -610,17 +616,14 @@ bool netloaderInit(void)
     return 1;
 }
 
-void netloaderExit(void)
-{
+void netloaderExit(void) {
     if (!netloader_initialized) return;
     netloader_initialized = 0;
 
     mtx_destroy(&netloader_mtx);
 }
 
-//---------------------------------------------------------------------------------
 void netloaderTask(void* arg) {
-//---------------------------------------------------------------------------------
     int ret=0;
     menuEntryInit(&netloader_me,ENTRY_TYPE_FILE);
 
@@ -646,7 +649,7 @@ void netloaderTask(void* arg) {
     mtx_lock(&netloader_mtx);
     netloader_exitflag = 0;
     netloader_activated = 0;
-    if (ret==1) netloader_launchapp = 1;
+    if (ret==1 && !netloader_exitflag) netloader_launchapp = 1;//Access netloader_exitflag directly since the mutex is already locked.
     mtx_unlock(&netloader_mtx);
 }
 
