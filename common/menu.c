@@ -43,13 +43,12 @@ static enum
 
 void launchMenuNetloaderTask() {
     if(hbmenu_state == HBMENU_DEFAULT)
-        if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
+        workerSchedule(netloaderTask, NULL);
 }
 
 void launchMenuBackTask() {
     if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
-        netloader_deactivate();
-        hbmenu_state = HBMENU_DEFAULT;
+        netloaderSignalExit();
     }
     else if(hbmenu_state == HBMENU_THEME_MENU) {
         hbmenu_state = HBMENU_DEFAULT;
@@ -496,10 +495,13 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
 
 void menuLoop(void) {
     menuEntry_s* me;
+    menuEntry_s* netloader_me = NULL;
     menu_s* menu = menuGetCurrent();
     int i;
     int x, y;
     int menupath_x_endpos = 918 + 40;
+    bool netloader_activated = 0, netloader_launch_app = 0;
+    char netloader_errormsg[1024];
 
     for (y=0; y<450; y++) {
         for (x=0; x<1280; x+=4) {// don't draw bottom pixels as they are covered by the waves
@@ -531,19 +533,23 @@ void menuLoop(void) {
     drawTime();
     drawCharge();
 
+    netloaderGetState(&netloader_activated, &netloader_launch_app, &netloader_me, netloader_errormsg, sizeof(netloader_errormsg));
+
+    if(hbmenu_state == HBMENU_DEFAULT && netloader_activated) {
+        hbmenu_state = HBMENU_NETLOADER_ACTIVE;
+    } else if(hbmenu_state == HBMENU_NETLOADER_ACTIVE && !netloader_activated && !netloader_launch_app) {
+        hbmenu_state = HBMENU_DEFAULT;
+    }
+
+    if (netloader_errormsg[0]) menuCreateMsgBox(780,300, netloader_errormsg);
+
     if (menu->nEntries==0 || hbmenu_state == HBMENU_NETLOADER_ACTIVE)
     {
         if (hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
-            menuEntry_s me;
-            menuEntryInit(&me,ENTRY_TYPE_FILE);
-
-            int netloader_result = netloader_loop(&me);
-            if( netloader_result != 0) {
+            if (netloader_launch_app) {
                 hbmenu_state = HBMENU_DEFAULT;
-                if (netloader_result == 1) {
-                    menuCreateMsgBox(240,240,  textGetString(StrId_Loading));
-                    launchMenuEntryTask(&me);
-                }
+                menuCreateMsgBox(240,240,  textGetString(StrId_Loading));
+                launchMenuEntryTask(netloader_me);
             }
         } else {
             DrawText(interuiregular14, 64, 128 + 18, themeCurrent.textColor, textGetString(StrId_NoAppsFound_Msg));

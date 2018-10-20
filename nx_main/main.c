@@ -83,6 +83,11 @@ int main(int argc, char **argv)
         snprintf(errormsg, sizeof(errormsg)-1, "Error: fontInitialize() failed.");
     }
 
+    if (R_SUCCEEDED(rc) && !netloaderInit()) {
+        rc = 4;
+        snprintf(errormsg, sizeof(errormsg)-1, "Error: netloaderInit() failed.");
+    }
+
     #ifdef ENABLE_AUDIO
     if (R_SUCCEEDED(rc)) audio_initialize();
     #endif
@@ -164,6 +169,7 @@ int main(int argc, char **argv)
     audio_exit();
     #endif
 
+    netloaderExit();
     fontExit();
     launchExit();
     workerExit();

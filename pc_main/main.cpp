@@ -21,6 +21,7 @@ int main()
     fontInitialize();
     workerInit();
     menuStartup();
+    netloaderInit();
 
     while (window.isOpen())
     {
@@ -53,6 +54,7 @@ int main()
         window.display();
     }
 
+    netloaderExit();
     workerExit();
     fontExit();
 

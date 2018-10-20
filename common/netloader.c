@@ -40,20 +40,22 @@ static int netloader_datafd   = -1;
 #if PING_ENABLED
 static int netloader_udpfd = -1;
 #endif
-unsigned char in[ZLIB_CHUNK];
-unsigned char out[ZLIB_CHUNK];
+static unsigned char in[ZLIB_CHUNK];
+static unsigned char out[ZLIB_CHUNK];
+
+static mtx_t netloader_mtx;
+
+static bool netloader_initialized = 0;
+static bool netloader_exitflag = 0;
+static bool netloader_activated = 0, netloader_launchapp = 0;
+static menuEntry_s netloader_me;
+static char netloader_errortext[1024];
 
 //---------------------------------------------------------------------------------
 static void netloader_error(const char *func, int err) {
 //---------------------------------------------------------------------------------
-    char errortext[1024];
-
-    memset(errortext, 0, sizeof(errortext));
-    snprintf(errortext, sizeof(errortext)-1, "%s: err=%d\n %s\n", func, err, strerror(errno));
-
-    menuCreateMsgBox(780,300, errortext);
-
-    netloader_deactivate();
+    memset(netloader_errortext, 0, sizeof(netloader_errortext));
+    snprintf(netloader_errortext, sizeof(netloader_errortext)-1, "%s: err=%d\n %s\n", func, err, strerror(errno));
 }
 
 //---------------------------------------------------------------------------------
@@ -558,7 +560,6 @@ int netloader_loop(menuEntry_s *me) {
     if(netloader_datafd >= 0)
     {
         int result = loadnro(me, netloader_datafd,sa_remote.sin_addr);
-        netloader_deactivate();
         if (result== 0) {
             return 1;
         } else {
@@ -568,3 +569,84 @@ int netloader_loop(menuEntry_s *me) {
 
     return 0;
 }
+
+void netloaderGetState(bool *activated, bool *launch_app, menuEntry_s **me, char *errormsg, size_t errormsg_size) {
+    mtx_lock(&netloader_mtx);
+
+    *activated = netloader_activated;
+    *launch_app = netloader_launchapp;
+    *me = &netloader_me;
+
+    memset(errormsg, 0, errormsg_size);
+    if(netloader_errortext[0]) {
+        strncpy(errormsg, netloader_errortext, errormsg_size-1);
+        memset(netloader_errortext, 0, sizeof(netloader_errortext));
+    }
+
+    mtx_unlock(&netloader_mtx);
+}
+
+static bool netloaderGetExit(void) {
+    bool flag;
+    mtx_lock(&netloader_mtx);
+    flag = netloader_exitflag;
+    mtx_unlock(&netloader_mtx);
+    return flag;
+}
+
+void netloaderSignalExit(void) {
+    mtx_lock(&netloader_mtx);
+    netloader_exitflag = 1;
+    mtx_unlock(&netloader_mtx);
+}
+
+bool netloaderInit(void)
+{
+    if (netloader_initialized) return 1;
+
+    if (mtx_init(&netloader_mtx, mtx_plain) != thrd_success) return 0;
+
+    netloader_initialized = 1;
+    return 1;
+}
+
+void netloaderExit(void)
+{
+    if (!netloader_initialized) return;
+    netloader_initialized = 0;
+
+    mtx_destroy(&netloader_mtx);
+}
+
+//---------------------------------------------------------------------------------
+void netloaderTask(void* arg) {
+//---------------------------------------------------------------------------------
+    int ret=0;
+    menuEntryInit(&netloader_me,ENTRY_TYPE_FILE);
+
+    mtx_lock(&netloader_mtx);
+    netloader_exitflag = 0;
+    netloader_activated = 0;
+    netloader_launchapp = 0;
+    mtx_unlock(&netloader_mtx);
+
+    if(netloader_activate() == 0) {
+        mtx_lock(&netloader_mtx);
+        netloader_activated = 1;
+        mtx_unlock(&netloader_mtx);
+    }
+    else {
+        netloader_deactivate();
+        return;
+    }
+
+    while((ret = netloader_loop(&netloader_me)) == 0 && !netloaderGetExit());
+
+    netloader_deactivate();
+    mtx_lock(&netloader_mtx);
+    netloader_exitflag = 0;
+    netloader_activated = 0;
+    if (ret==1) netloader_launchapp = 1;
+    mtx_unlock(&netloader_mtx);
+}
+
