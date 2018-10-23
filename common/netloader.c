@@ -602,6 +602,8 @@ static bool netloaderGetExit(void) {
 }
 
 void netloaderSignalExit(void) {
+    if (!netloader_initialized) return;
+
     mtx_lock(&netloader_mtx);
     netloader_exitflag = 1;
     mtx_unlock(&netloader_mtx);

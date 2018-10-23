@@ -64,8 +64,13 @@ int main(int argc, char **argv)
 
     if (R_SUCCEEDED(rc)) powerInit();
 
-    if (R_SUCCEEDED(rc) && !workerInit()) {
+    if (R_SUCCEEDED(rc) && !netloaderInit()) {
         rc = 1;
+        snprintf(errormsg, sizeof(errormsg)-1, "Error: netloaderInit() failed.");
+    }
+
+    if (R_SUCCEEDED(rc) && !workerInit()) {
+        rc = 2;
         snprintf(errormsg, sizeof(errormsg)-1, "Error: workerInit() failed.");
     }
 
@@ -73,19 +78,14 @@ int main(int argc, char **argv)
 
     if (R_SUCCEEDED(rc)) {
         if (!launchInit()) {
-            rc = 2;
+            rc = 3;
             snprintf(errormsg, sizeof(errormsg)-1, "Error: launchInit() failed.");
         }
     }
 
     if (R_SUCCEEDED(rc) && !fontInitialize()) {
-        rc = 3;
-        snprintf(errormsg, sizeof(errormsg)-1, "Error: fontInitialize() failed.");
-    }
-
-    if (R_SUCCEEDED(rc) && !netloaderInit()) {
         rc = 4;
-        snprintf(errormsg, sizeof(errormsg)-1, "Error: netloaderInit() failed.");
+        snprintf(errormsg, sizeof(errormsg)-1, "Error: fontInitialize() failed.");
     }
 
     #ifdef ENABLE_AUDIO
@@ -169,10 +169,11 @@ int main(int argc, char **argv)
     audio_exit();
     #endif
 
-    netloaderExit();
     fontExit();
     launchExit();
+    netloaderSignalExit();
     workerExit();
+    netloaderExit();
     powerExit();
     plExit();
     setsysExit();
