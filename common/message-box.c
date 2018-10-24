@@ -3,6 +3,9 @@
 
 MessageBox currMsgBox;
 
+static bool msgboxNetloaderEnabled;
+static char msgboxNetloaderText[256];
+
 void drawMsgBoxBgToBuff(color_t *buff, int width, int height) {
     int x, y;
     int off;
@@ -90,6 +93,8 @@ void menuDrawMsgBox() {
     color_t shadow_color;
     uint8_t shadow_alpha_base = 80;
 
+    const char* textptr = currMsgBox.text;
+
     border_color = MakeColor(themeCurrent.highlightColor.r + (255 - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (255 - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (255 - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
 
     // Darken the background
@@ -105,22 +110,26 @@ void menuDrawMsgBox() {
             off = (y * currMsgBox.width + x);
             curr_color = currMsgBox.bg[off];
 
-            if (((x<border_thickness || x>=currMsgBox.width-border_thickness) && y>sep_start_y) || 
-                (y>sep_start_y && y<=sep_start_y+border_thickness) || (y>=currMsgBox.height-border_thickness)) {
-                curr_color = border_color;
+            if (!msgboxNetloaderEnabled) {
+                if (((x<border_thickness || x>=currMsgBox.width-border_thickness) && y>sep_start_y) || 
+                    (y>sep_start_y && y<=sep_start_y+border_thickness) || (y>=currMsgBox.height-border_thickness)) {
+                    curr_color = border_color;
+                }
             }
 
             DrawPixel(start_x+x, start_y+y, curr_color);
         }
     }
 
-    GetTextDimensions(interuimedium20, currMsgBox.text, &text_width, &text_height);
+    if (msgboxNetloaderEnabled) textptr = msgboxNetloaderText;
+
+    GetTextDimensions(interuimedium20, textptr, &text_width, &text_height);
     
     if (text_width < currMsgBox.width && text_height < sep_start_y) {
-        DrawText(interuiregular18, start_x + (currMsgBox.width - text_width) / 2, start_y + (currMsgBox.height - text_height - 80) / 2, MakeColor(0, 0, 0, 255), currMsgBox.text);
+        DrawText(interuiregular18, start_x + (currMsgBox.width - text_width) / 2, start_y + (currMsgBox.height - text_height - 80) / 2, MakeColor(0, 0, 0, 255), textptr);
     }
 
-    DrawText(interuimedium20, start_x + 365, start_y + 245 + 26, MakeColor(0, 0, 0, 255), textGetString(StrId_MsgBox_OK));
+    if (!msgboxNetloaderEnabled) DrawText(interuimedium20, start_x + 365, start_y + 245 + 26, MakeColor(0, 0, 0, 255), textGetString(StrId_MsgBox_OK));
 
     shadow_start_y = start_y + currMsgBox.height;
 
@@ -173,4 +182,11 @@ void menuCloseMsgBox() {
 
 MessageBox menuGetCurrentMsgBox() {
     return currMsgBox;
+}
+
+void menuMsgBoxSetNetloaderState(bool enabled, const char *text) {
+    msgboxNetloaderEnabled = enabled;
+
+    memset(msgboxNetloaderText, 0, sizeof(msgboxNetloaderText));
+    if (text) strncpy(msgboxNetloaderText, text, sizeof(msgboxNetloaderText)-1);
 }

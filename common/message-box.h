@@ -13,3 +13,4 @@ void menuCloseMsgBox();
 bool menuIsMsgBoxOpen();
 void menuDrawMsgBox(void);
 MessageBox menuGetCurrentMsgBox();
+void menuMsgBoxSetNetloaderState(bool enabled, const char *text);
