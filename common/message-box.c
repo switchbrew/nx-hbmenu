@@ -5,6 +5,8 @@ MessageBox currMsgBox;
 
 static bool msgboxNetloaderEnabled;
 static char msgboxNetloaderText[256];
+static bool msgboxNetloaderProgressEnabled;
+static float msgboxNetloaderProgress;
 
 void drawMsgBoxBgToBuff(color_t *buff, int width, int height) {
     int x, y;
@@ -12,7 +14,7 @@ void drawMsgBoxBgToBuff(color_t *buff, int width, int height) {
     int circle_center_x, circle_center_y;
     int corner_size = 0;
     float rad, alpha;
-    color_t base_color = MakeColor(255, 255, 255, 255);
+    color_t base_color = themeCurrent.backgroundColor;
     color_t color;
 
     for (y=0; y<height; y++) {
@@ -95,6 +97,9 @@ void menuDrawMsgBox() {
 
     const char* textptr = currMsgBox.text;
 
+    int progress_width = (int)(msgboxNetloaderProgress*currMsgBox.width);
+    char progress_text[32];
+
     border_color = MakeColor(themeCurrent.highlightColor.r + (255 - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (255 - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (255 - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
 
     // Darken the background
@@ -116,6 +121,9 @@ void menuDrawMsgBox() {
                     curr_color = border_color;
                 }
             }
+            else if (msgboxNetloaderProgressEnabled && y > currMsgBox.height - 80 && x < progress_width) {
+                curr_color = themeCurrent.progressBarColor;
+            }
 
             DrawPixel(start_x+x, start_y+y, curr_color);
         }
@@ -123,13 +131,26 @@ void menuDrawMsgBox() {
 
     if (msgboxNetloaderEnabled) textptr = msgboxNetloaderText;
 
-    GetTextDimensions(interuimedium20, textptr, &text_width, &text_height);
-    
+    GetTextDimensions(interuiregular18, textptr, &text_width, &text_height);
+    x = GetTextXCoordinate(interuiregular18, start_x + (currMsgBox.width / 2), textptr, 'c');
+
     if (text_width < currMsgBox.width && text_height < sep_start_y) {
-        DrawText(interuiregular18, start_x + (currMsgBox.width - text_width) / 2, start_y + (currMsgBox.height - text_height - 80) / 2, MakeColor(0, 0, 0, 255), textptr);
+        DrawText(interuiregular18, x, start_y + (currMsgBox.height - text_height - 80) / 2, themeCurrent.textColor, textptr);
     }
 
-    if (!msgboxNetloaderEnabled) DrawText(interuimedium20, start_x + 365, start_y + 245 + 26, MakeColor(0, 0, 0, 255), textGetString(StrId_MsgBox_OK));
+    y = start_y + 245 + 26;
+
+    if (!msgboxNetloaderEnabled) {
+        x = GetTextXCoordinate(interuimedium20, start_x + (currMsgBox.width / 2), textGetString(StrId_MsgBox_OK), 'c');
+        DrawText(interuimedium20, x, y, themeCurrent.textColor, textGetString(StrId_MsgBox_OK));
+    }
+
+    if (msgboxNetloaderEnabled && msgboxNetloaderProgressEnabled) {
+        memset(progress_text, 0, sizeof(progress_text));
+        snprintf(progress_text, sizeof(progress_text)-1, "%.02f%%", msgboxNetloaderProgress*100);
+        x = GetTextXCoordinate(interuiregular18, start_x + (currMsgBox.width / 2), progress_text, 'c');
+        DrawText(interuiregular18, x, y, themeCurrent.textColor, progress_text);
+    }
 
     shadow_start_y = start_y + currMsgBox.height;
 
@@ -184,9 +205,12 @@ MessageBox menuGetCurrentMsgBox() {
     return currMsgBox;
 }
 
-void menuMsgBoxSetNetloaderState(bool enabled, const char *text) {
+void menuMsgBoxSetNetloaderState(bool enabled, const char *text, bool enable_progress, float progress) {
     msgboxNetloaderEnabled = enabled;
 
     memset(msgboxNetloaderText, 0, sizeof(msgboxNetloaderText));
     if (text) strncpy(msgboxNetloaderText, text, sizeof(msgboxNetloaderText)-1);
+
+    msgboxNetloaderProgressEnabled = enable_progress;
+    msgboxNetloaderProgress = progress;
 }

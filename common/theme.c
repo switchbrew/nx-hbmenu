@@ -28,6 +28,7 @@ void themeStartup(ThemePreset preset) {
         .separatorColor = MakeColor(219, 218, 219, 255),
         .borderColor = MakeColor(255,255,255,255),
         .borderTextColor = MakeColor(64,64,64,255),
+        .progressBarColor = MakeColor(0,224,0,255),
         .enableWaveBlending = 0,
         .buttonAText = "\uE0E0",
         .buttonBText = "\uE0E1",
@@ -47,6 +48,7 @@ void themeStartup(ThemePreset preset) {
         .separatorColor = MakeColor(219, 218, 219, 255),
         .borderColor = MakeColor(255,255,255,255),
         .borderTextColor = MakeColor(64,64,64,255),
+        .progressBarColor = MakeColor(0,224,0,255),
         .enableWaveBlending = 0,
         .buttonAText = "\uE0A0",
         .buttonBText = "\uE0A1",
@@ -63,7 +65,7 @@ void themeStartup(ThemePreset preset) {
     config_t cfg = {0};
     config_init(&cfg);
     config_setting_t *theme = NULL;
-    color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor;
+    color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
     int waveBlending;
     const char *AText, *BText, *YText, *PText, *MText;
     bool good_cfg = false;
@@ -106,6 +108,8 @@ void themeStartup(ThemePreset preset) {
                 borderColor = themeDefault->borderColor;
             if (!colorFromSetting(config_setting_lookup(theme, "borderTextColor"), &borderTextColor))
                 borderTextColor = themeDefault->borderTextColor;
+            if (!colorFromSetting(config_setting_lookup(theme, "progressBarColor"), &progressBarColor))
+                progressBarColor = themeDefault->progressBarColor;
             if (!config_setting_lookup_int(theme, "enableWaveBlending", &waveBlending))
                 waveBlending = themeDefault->enableWaveBlending;
             if (!config_setting_lookup_string(theme, "buttonAText", &AText))
@@ -128,6 +132,7 @@ void themeStartup(ThemePreset preset) {
                 .separatorColor = separator,
                 .borderColor = borderColor,
                 .borderTextColor = borderTextColor,
+                .progressBarColor = progressBarColor,
                 .enableWaveBlending = waveBlending,
                 .hbmenuLogoImage = themeDefault->hbmenuLogoImage
             };

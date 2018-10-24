@@ -418,7 +418,7 @@ uint32_t GetTextXCoordinate(u32 font, uint32_t rX, const char* text, const char 
             if(fC<0) return 0;
             else return fC;
         case 'c':
-            return (rX+(width_o>>1));//>>1 is a bitwise shift for dividing by 2
+            return (rX-(width_o>>1));//>>1 is a bitwise shift for dividing by 2
         case 'l':
         default:
             return rX;

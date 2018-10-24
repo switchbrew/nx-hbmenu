@@ -14,6 +14,7 @@ typedef struct
     color_t separatorColor;
     color_t borderColor;
     color_t borderTextColor;
+    color_t progressBarColor;
     bool enableWaveBlending;
     char buttonAText[32];
     char buttonBText[32];

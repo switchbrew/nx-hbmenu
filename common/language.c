@@ -786,64 +786,64 @@ const char* const g_strings[StrId_Max][16] =
 
     [StrId_NetLoaderOffline] =
     {
-        STR_EN("Offline, waiting for network…\n\n\n"),
-        STR_FR("Hors-ligne, en attente d'une connection...\n\n\n"),
-        STR_IT("Disconnesso, in attesa della connessione…\n\n\n"),
-        STR_JP("オフラインです。ネットワーク接続を待っています…\n\n\n"),
-        STR_KO("연결 끊김, 네트워크 기다리는 중…\n\n\n"),
-        STR_ZH("无法连接网络，等待网络连接…\n\n\n"),
-        STR_TW("當前離線，等待網路連線…\n\n\n"),
+        STR_EN("Offline, waiting for network…"),
+        STR_FR("Hors-ligne, en attente d'une connection..."),
+        STR_IT("Disconnesso, in attesa della connessione…"),
+        STR_JP("オフラインです。ネットワーク接続を待っています…"),
+        STR_KO("연결 끊김, 네트워크 기다리는 중…"),
+        STR_ZH("无法连接网络，等待网络连接…"),
+        STR_TW("當前離線，等待網路連線…"),
     },
 
     [StrId_NetLoaderActive] =
     {
         STR_EN(
             "Waiting for nxlink to connect…\n"
-            "IP Addr: %lu.%lu.%lu.%lu, Port: %d\n\n"
+            "IP Addr: %lu.%lu.%lu.%lu, Port: %d"
         ),
         STR_ES(
             "Esperando a que se conecte nxlink…\n"
-            "Dir.IP: %lu.%lu.%lu.%lu, Puerto: %d\n\n"
+            "Dir.IP: %lu.%lu.%lu.%lu, Puerto: %d"
         ),
         STR_DE(
             "Warte auf Verbindung von 3dslink…\n"
-            "IP Addr: %lu.%lu.%lu.%lu, Port: %d\n\n"
+            "IP Addr: %lu.%lu.%lu.%lu, Port: %d"
         ),
         STR_FR(
             "En attente de la connexion de nxlink…\n"
-            "Adr. IP : %lu.%lu.%lu.%lu, Port : %d\n\n"
+            "Adr. IP : %lu.%lu.%lu.%lu, Port : %d"
         ),
         STR_IT(
             "In attesa della connessione di nxlink…\n"
-            "Ind. IP : %lu.%lu.%lu.%lu, Porta : %d\n\n"
+            "Ind. IP : %lu.%lu.%lu.%lu, Porta : %d"
         ),
         STR_JP(
             "nxlinkが接続されるのを待っています…\n"
-            "IPアドレス：%lu.%lu.%lu.%lu, ポート番号：%d\n\n"
+            "IPアドレス：%lu.%lu.%lu.%lu, ポート番号：%d"
         ),
         STR_PT(
             "A aguardar pela conexão do nxlink…\n"
-            "End. IP: %lu.%lu.%lu.%lu, Porta: %d\n\n"
+            "End. IP: %lu.%lu.%lu.%lu, Porta: %d"
         ),
         STR_NL(
             "Wachten op nxlink verbinding…\n"
-            "IP Addr: %lu.%lu.%lu.%lu, Poort: %d\n\n"
+            "IP Addr: %lu.%lu.%lu.%lu, Poort: %d"
         ),
         STR_KO(
             "nxlink의 연결을 대기중…\n"
-            "IP 주소: %lu.%lu.%lu.%lu, 포트: %d\n\n"
+            "IP 주소: %lu.%lu.%lu.%lu, 포트: %d"
         ),
         STR_RU(
             "Ожидание подключения nxlink…\n"
-            "айпи адрес: %lu.%lu.%lu.%lu, Порт: %d\n\n"
+            "айпи адрес: %lu.%lu.%lu.%lu, Порт: %d"
         ),
         STR_ZH(
             "等待 nxlink 连接…\n"
-            "IP 地址：%lu.%lu.%lu.%lu，端口：%d\n\n"
+            "IP 地址：%lu.%lu.%lu.%lu，端口：%d"
         ),
         STR_TW(
             "等待 nxlink 連接…\n"
-            "IP 位址：%lu.%lu.%lu.%lu，連接埠：%d\n\n"
+            "IP 位址：%lu.%lu.%lu.%lu，連接埠：%d"
         ),
     },
 

@@ -493,9 +493,13 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
     }
 }
 
-void menuUpdateNetloader(char* netloader_displaytext, size_t netloader_displaytext_size, netloaderState *netloader_state) {
+void menuUpdateNetloader(netloaderState *netloader_state) {
+    bool enable_progress = 0;
+    float progress = 0;
+    char netloader_displaytext[260];
     char textbody[256];
 
+    memset(netloader_displaytext, 0, sizeof(netloader_displaytext));
     memset(textbody, 0, sizeof(textbody));
 
     u32 ip = gethostid();
@@ -505,11 +509,16 @@ void menuUpdateNetloader(char* netloader_displaytext, size_t netloader_displayte
     else {
         if (!netloader_state->sock_connected)
             snprintf(textbody, sizeof(textbody)-1, textGetString(StrId_NetLoaderActive), ip&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, NXLINK_SERVER_PORT);
-        else
+        else {
+            enable_progress = 1;
+            progress = (float)netloader_state->filetotal / netloader_state->filelen;
             snprintf(textbody, sizeof(textbody)-1, textGetString(StrId_NetLoaderTransferring), netloader_state->filetotal/1024, netloader_state->filelen/1024);
+        }
     }
 
-    snprintf(netloader_displaytext, netloader_displaytext_size-1, "%s\n\n\n%s", textGetString(StrId_NetLoader), textbody);
+    snprintf(netloader_displaytext, sizeof(netloader_displaytext)-1, "%s\n\n\n%s", textGetString(StrId_NetLoader), textbody);
+
+    menuMsgBoxSetNetloaderState(1, netloader_displaytext, enable_progress, progress);
 }
 
 void menuLoop(void) {
@@ -519,7 +528,6 @@ void menuLoop(void) {
     int x, y;
     int menupath_x_endpos = 918 + 40;
     netloaderState netloader_state;
-    char netloader_displaytext[256];
 
     for (y=0; y<450; y++) {
         for (x=0; x<1280; x+=4) {// don't draw bottom pixels as they are covered by the waves
@@ -564,17 +572,13 @@ void menuLoop(void) {
         menuScan(".");//Reload the menu since netloader may have deleted the NRO if the transfer aborted.
 
         menuCloseMsgBox();
-        menuMsgBoxSetNetloaderState(0, NULL);
+        menuMsgBoxSetNetloaderState(0, NULL, 0, 0);
 
         if (netloader_state.errormsg[0]) menuCreateMsgBox(780,300, netloader_state.errormsg);
     }
 
     if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
-        memset(netloader_displaytext, 0, sizeof(netloader_displaytext));
-
-        menuUpdateNetloader(netloader_displaytext, sizeof(netloader_displaytext), &netloader_state);
-
-        menuMsgBoxSetNetloaderState(1, netloader_displaytext);
+        menuUpdateNetloader(&netloader_state);
     }
 
     menu = menuGetCurrent();
@@ -585,7 +589,7 @@ void menuLoop(void) {
             if (netloader_state.launch_app) {
                 hbmenu_state = HBMENU_DEFAULT;
                 menuCloseMsgBox();
-                menuMsgBoxSetNetloaderState(0, NULL);
+                menuMsgBoxSetNetloaderState(0, NULL, 0, 0);
                 menuCreateMsgBox(240,240,  textGetString(StrId_Loading));
                 launchMenuEntryTask(netloader_state.me);
             }
