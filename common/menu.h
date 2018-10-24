@@ -110,6 +110,8 @@ char *menuGetRootBasePath(void);
 
 void menuHandleAButton(void);
 
+bool menuIsNetloaderActive(void);
+
 #ifdef __cplusplus
 }
 #endif

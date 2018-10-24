@@ -83,6 +83,10 @@ void launchApplyThemeTask(menuEntry_s* arg) {
     computeFrontGradient(themeCurrent.frontWaveColor, 280); 
 }
 
+bool menuIsNetloaderActive(void) {
+    return hbmenu_state == HBMENU_NETLOADER_ACTIVE;
+}
+
 //Draws an RGB888 or RGBA8888 image.
 static void drawImage(int x, int y, int width, int height, const uint8_t *image, ImageMode mode) {
     int tmpx, tmpy;

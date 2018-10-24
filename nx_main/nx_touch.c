@@ -93,7 +93,9 @@ void handleTouch(menu_s* menu) {
         int x2 = touchInfo.prevTouch.px;
         int y2 = touchInfo.prevTouch.py;
 
-        if (menuIsMsgBoxOpen()) {
+        bool netloader_active = menuIsNetloaderActive();
+
+        if (menuIsMsgBoxOpen() && !netloader_active) {
             MessageBox currMsgBox = menuGetCurrentMsgBox();
             int start_x = 1280 / 2 - currMsgBox.width / 2;
             int start_y = (720 / 2 - currMsgBox.height / 2) + (currMsgBox.height - 80);
@@ -103,7 +105,7 @@ void handleTouch(menu_s* menu) {
             if (x1 > start_x && x1 < end_x && y1 > start_y && y1 < end_y && touchInfo.isTap) {
                 menuCloseMsgBox();
             }
-        } else if (touchInfo.isTap) {
+        } else if (touchInfo.isTap && !netloader_active) {
             // App Icons
             if (y1 > LISTING_START_Y && y1 < LISTING_END_Y) {
                 handleTappingOnApp(menu, touchInfo.prevTouch.px);
