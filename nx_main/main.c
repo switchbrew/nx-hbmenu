@@ -36,6 +36,7 @@ int main(int argc, char **argv)
 
     memset(errormsg, 0, sizeof(errormsg));
 
+    appletLockExit();
     appletSetScreenShotPermission(1);
 
     ColorSetId theme;
@@ -179,6 +180,8 @@ int main(int argc, char **argv)
     powerExit();
     plExit();
     setsysExit();
+
+    appletUnlockExit();
 
     return 0;
 }
