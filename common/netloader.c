@@ -57,8 +57,14 @@ static bool netloaderGetExit(void);
 //---------------------------------------------------------------------------------
 static void netloader_error(const char *func, int err) {
 //---------------------------------------------------------------------------------
-    memset((char*)netloader_errortext, 0, sizeof(netloader_errortext));
-    snprintf((char*)netloader_errortext, sizeof(netloader_errortext)-1, "%s: err=%d\n %s\n", func, err, strerror(errno));
+    if (!netloader_initialized || netloaderGetExit()) return;
+
+    mtx_lock(&netloader_mtx);
+    if (netloader_errortext[0] == 0) {
+        memset((char*)netloader_errortext, 0, sizeof(netloader_errortext));
+        snprintf((char*)netloader_errortext, sizeof(netloader_errortext)-1, "%s: err=%d\n %s\n", func, err, strerror(errno));
+    }
+    mtx_unlock(&netloader_mtx);
 }
 
 //---------------------------------------------------------------------------------
@@ -178,6 +184,7 @@ static int set_socket_nonblocking(int sock) {
 static int recvall(int sock, void *buffer, int size, int flags) {
 //---------------------------------------------------------------------------------
     int len, sizeleft = size;
+    bool blockflag=0;
 
     while (sizeleft) {
 
@@ -198,17 +205,68 @@ static int recvall(int sock, void *buffer, int size, int flags) {
                 netloader_error("win socket error",errcode);
                 break;
             }
+            else {
+                blockflag = 1;
+            }
 #else
             if ( errno != EWOULDBLOCK && errno != EAGAIN) {
-                perror(NULL);
+                netloader_socket_error("recv");
                 break;
             }
+            else {
+                blockflag = 1;
+            }
 #endif
+
+            if (blockflag && netloaderGetExit()) return 0;
         }
     }
     return size;
 }
 
+//---------------------------------------------------------------------------------
+static int sendall(int sock, void *buffer, int size, int flags) {
+//---------------------------------------------------------------------------------
+    int len, sizeleft = size;
+    bool blockflag=0;
+
+    while (sizeleft) {
+
+        len = send(sock,buffer,sizeleft,flags);
+
+        if (len == 0) {
+            size = 0;
+            break;
+        };
+
+        if (len != -1) {
+            sizeleft -=len;
+            buffer +=len;
+        } else {
+#ifdef _WIN32
+            int errcode = WSAGetLastError();
+            if (errcode != WSAEWOULDBLOCK) {
+                netloader_error("win socket error",errcode);
+                break;
+            }
+            else {
+                blockflag = 1;
+            }
+#else
+            if ( errno != EWOULDBLOCK && errno != EAGAIN) {
+                netloader_socket_error("recv");
+                break;
+            }
+            else {
+                blockflag = 1;
+            }
+#endif
+
+            if (blockflag && netloaderGetExit()) return 0;
+        }
+    }
+    return size;
+}
 
 //---------------------------------------------------------------------------------
 static int decompress(int sock, FILE *fh, size_t filesize) {
@@ -387,17 +445,40 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
 
         if (decompress(sock,file,filelen)==Z_OK) {
             int netloaded_cmdlen = 0;
-            send(sock,(char *)&response,sizeof(response),0);
+            len = sendall(sock,(char *)&response,sizeof(response),0);
+
+            if (len != sizeof(response)) {
+                netloader_error("Error sending response",errno);
+                response = -1;
+            }
+
             //printf("\ntransferring command line\n");
-            len = recvall(sock,(char*)&netloaded_cmdlen,4,0);
 
-            len = recvall(sock,me->args.dst, netloaded_cmdlen,0);
+            if (response == 0 ) {
+                len = recvall(sock,(char*)&netloaded_cmdlen,4,0);
 
-            while(netloaded_cmdlen) {
-                size_t len = strlen(me->args.dst) + 1;
-                ad->dst += len;
-                ad->buf[0]++;
-                netloaded_cmdlen -= len;
+                if (len != 4) {
+                    netloader_error("Error getting netloaded_cmdlen",errno);
+                    response = -1;
+                }
+            }
+
+            if (response == 0 ) {
+                len = recvall(sock,me->args.dst, netloaded_cmdlen,0);
+
+                if (len != netloaded_cmdlen) {
+                    netloader_error("Error getting args",errno);
+                    response = -1;
+                }
+            }
+
+            if (response == 0 ) {
+                while(netloaded_cmdlen) {
+                    size_t len = strlen(me->args.dst) + 1;
+                    ad->dst += len;
+                    ad->buf[0]++;
+                    netloaded_cmdlen -= len;
+                }
             }
 
         } else {
@@ -544,6 +625,12 @@ int netloader_loop(struct sockaddr_in *sa_remote) {
         }
         else
         {
+            if (set_socket_nonblocking(netloader_datafd) == -1)
+            {
+                netloader_socket_error("set_socket_nonblocking(netloader_datafd)");
+                return -1;
+            }
+
             close(netloader_listenfd);
             netloader_listenfd = -1;
             return 1;
