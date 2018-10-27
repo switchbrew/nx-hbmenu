@@ -3,6 +3,8 @@
 #define TAP_MOVEMENT_GAP 20
 #define VERTICAL_SWIPE_HORIZONTAL_PLAY 250
 #define VERTICAL_SWIPE_MINIMUM_DISTANCE 300
+#define HORIZONTAL_SWIPE_VERTICAL_PLAY 250
+#define HORIZONTAL_SWIPE_MINIMUM_DISTANCE 300
 #define LISTING_START_Y 475
 #define LISTING_END_Y 647
 #define BUTTON_START_Y 672
@@ -135,6 +137,13 @@ void handleTouch(menu_s* menu) {
             // Swipe down to go into netloader
             else if (y1 - y2 < 0) {
                 launchMenuNetloaderTask();
+            }
+        }
+        // Horizontal Swipe
+        else if (abs(y1 - y2) < HORIZONTAL_SWIPE_VERTICAL_PLAY && distance(x1, y1, x2, y2) > HORIZONTAL_SWIPE_MINIMUM_DISTANCE) {
+            // Swipe left to go into theme-menu
+            if (x1 - x2 > 0) {
+                themeMenuStartup();
             }
         }
 
