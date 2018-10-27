@@ -2,7 +2,7 @@
 
 size_t launchAddArg(argData_s* ad, const char* arg) {
     size_t len = strlen(arg)+1;
-    if ((ad->dst+len) >= (char*)(ad+1)) return len; // Overflow
+    if ((ad->dst+len) >= (char*)(ad->buf + sizeof(ad->buf))) return len; // Overflow
     ad->buf[0]++;
     strcpy(ad->dst, arg);
     ad->dst += len;
