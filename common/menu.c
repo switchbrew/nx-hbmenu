@@ -2,6 +2,10 @@
 #include "common.h"
 #include "netloader.h"
 
+#ifndef __SWITCH__
+#include "switch/runtime/nxlink.h"
+#endif
+
 #include "invalid_icon_bin.h"
 #include "folder_icon_bin.h"
 #include "theme_icon_dark_bin.h"

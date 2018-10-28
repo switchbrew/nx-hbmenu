@@ -28,7 +28,7 @@ test : pc_main/main.cpp pc_main/pc_launch.c pc_main/pc_power.c \
 	build_pc/theme_icon_dark.bin.o build_pc/theme_icon_light.bin.o \
 	build_pc/charging_icon.bin.o build_pc/battery_icon.bin.o \
 	#build_pc/tahoma24.o build_pc/tahoma12.o build_pc/interuimedium20.o build_pc/interuimedium30.o build_pc/interuiregular14.o build_pc/interuiregular18.o
-	gcc -Wall -O2 -g -DVERSION=\"v$(APP_VERSION)\" $(EXTRA_CFLAGS)  `pkg-config freetype2 --cflags` $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ `pkg-config freetype2 --libs` -lm -lz -lconfig -lturbojpeg $(EXTRA_LDFLAGS) -I. -iquote $(DEVKITPRO)/libnx/include -Ibuild_pc -g -o $@
+	gcc -Wall -O2 -g -DVERSION=\"v$(APP_VERSION)\" $(EXTRA_CFLAGS)  `pkg-config freetype2 --cflags` $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -lpthread `pkg-config freetype2 --libs` -lm -lz -lconfig -lturbojpeg $(EXTRA_LDFLAGS) -I. -iquote $(DEVKITPRO)/libnx/include -Ibuild_pc -g -o $@
 
 build_pc/tahoma12.o	:	data/tahoma12.nxfnt
 	mkdir -p $(dir $@)
