@@ -14,7 +14,7 @@
 #define LAUNCH_BUTTON_START_X 1092
 #define LAUNCH_BUTTON_END_X 1200
 
-#define distance(x1, y1, x2, y2) (int) sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
+#define distance(x1, y1, x2, y2) (int) sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)))
 
 struct touchInfo_s touchInfo;
 
