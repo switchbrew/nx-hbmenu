@@ -9,97 +9,12 @@ EXTRA_CFLAGS="-D__USE_MINGW_ANSI_STDIO"
 EXTRA_LDFLAGS="-lws2_32"
 endif
 
-# canned command sequence for binary data
-#---------------------------------------------------------------------------------
-define bin2o
-	bin2s $(BIN2S_FLAGS) $< | $(AS) -o $(@)
-	echo "extern const u8" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(<F) | tr . _)`.h
-	echo "extern const u8" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(<F) | tr . _)`.h
-	echo "extern const u32" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(<F) | tr . _)`.h
-endef
-
 test : pc_main/main.cpp pc_main/pc_launch.c pc_main/pc_power.c \
 	common/menu.c common/font.c common/language.c common/launch.c common/worker.c \
 	common/menu-entry.c common/menu-list.c common/message-box.c common/text.c \
-	common/ui.c common/math.c common/theme.c \
-	common/netloader.c \
-	build_pc/invalid_icon.bin.o build_pc/folder_icon.bin.o \
-	build_pc/hbmenu_logo_light.bin.o build_pc/hbmenu_logo_dark.bin.o \
-	build_pc/theme_icon_dark.bin.o build_pc/theme_icon_light.bin.o \
-	build_pc/charging_icon.bin.o build_pc/battery_icon.bin.o \
-	#build_pc/tahoma24.o build_pc/tahoma12.o build_pc/interuimedium20.o build_pc/interuimedium30.o build_pc/interuiregular14.o build_pc/interuiregular18.o
-	gcc -Wall -O2 -g -DVERSION=\"v$(APP_VERSION)\" $(EXTRA_CFLAGS)  `pkg-config freetype2 --cflags` $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -lpthread `pkg-config freetype2 --libs` -lm -lz -lconfig -lturbojpeg $(EXTRA_LDFLAGS) -I. -iquote $(DEVKITPRO)/libnx/include -Ibuild_pc -g -o $@
-
-build_pc/tahoma12.o	:	data/tahoma12.nxfnt
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/tahoma24.o	:	data/tahoma24.nxfnt
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/interuimedium20.o	:	data/interuimedium20.nxfnt
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/interuimedium30.o	:	data/interuimedium30.nxfnt
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/interuiregular14.o	:	data/interuiregular14.nxfnt
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/interuiregular18.o	:	data/interuiregular18.nxfnt
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/invalid_icon.bin.o	:	data/invalid_icon.bin
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/folder_icon.bin.o	:	data/folder_icon.bin
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/hbmenu_logo_light.bin.o	:	data/hbmenu_logo_light.bin
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/hbmenu_logo_dark.bin.o	:	data/hbmenu_logo_dark.bin
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/theme_icon_light.bin.o	:	data/theme_icon_light.bin
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/theme_icon_dark.bin.o	:	data/theme_icon_dark.bin
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/charging_icon.bin.o	:	data/charging_icon.bin
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
-build_pc/battery_icon.bin.o	:	data/battery_icon.bin
-	mkdir -p $(dir $@)
-	@echo $(notdir $<)
-	@$(bin2o)
-
+	common/ui.c common/assets.c common/math.c common/theme.c \
+	common/netloader.c
+	gcc -Wall -O2 -g -DVERSION=\"v$(APP_VERSION)\" $(EXTRA_CFLAGS)  `pkg-config freetype2 --cflags` $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -lpthread `pkg-config freetype2 --libs` -lm -lminizip -lz -lconfig -lturbojpeg $(EXTRA_LDFLAGS) -I. -iquote $(DEVKITPRO)/libnx/include -Ibuild_pc -g -o $@
 
 clean:
 	rm -rf build_pc/ test test.*

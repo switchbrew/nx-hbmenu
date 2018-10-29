@@ -5,8 +5,7 @@
 #include "../common/common.h"
 
 #ifdef ENABLE_AUDIO
-#include "audio_intro_bin.h"//When using this, you must manually add these under data/ since they're not included in .git.
-#include "audio_loop_bin.h"
+#error "Audio is not supported currently."
 
 #define SAMPLERATE 48000
 #define BYTESPERSAMPLE 2

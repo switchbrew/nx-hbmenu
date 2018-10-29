@@ -57,11 +57,16 @@ int main(int argc, char **argv)
         }
     }
 
-    if (R_SUCCEEDED(rc)) {
-        menuStartupPath();
+    if (R_SUCCEEDED(rc)) menuStartupPath();
 
-        themeStartup((ThemePreset)theme);
+    if (R_SUCCEEDED(rc)) {
+        rc = assetsInit();
+        if (R_FAILED(rc)) {
+            snprintf(errormsg, sizeof(errormsg)-1, "Error: assetsInit() failed: 0x%x.", rc);
+        }
     }
+
+    if (R_SUCCEEDED(rc)) themeStartup((ThemePreset)theme);
 
     if (R_SUCCEEDED(rc)) powerInit();
 
@@ -178,6 +183,7 @@ int main(int argc, char **argv)
     workerExit();
     netloaderExit();
     powerExit();
+    assetsExit();
     plExit();
     setsysExit();
 

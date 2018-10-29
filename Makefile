@@ -8,15 +8,21 @@ endif
 
 all: nx pc
 
-dist-bin:
+romfs	:	assets
+	@mkdir -p romfs
+	@rm -f romfs/assets.zip
+	@zip -rj romfs/assets.zip assets
+
+dist-bin:	romfs
 	$(MAKE) -f Makefile.nx dist-bin
 
-nx:
+nx:	romfs
 	$(MAKE) -f Makefile.nx
 
-pc:
+pc:	romfs
 	$(MAKE) -f Makefile.pc
 
 clean:
+	@rm -Rf romfs
 	$(MAKE) -f Makefile.pc clean
 	$(MAKE) -f Makefile.nx clean

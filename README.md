@@ -7,7 +7,7 @@ The latest release is available from the [releases](https://github.com/switchbre
 #### Building
 Build with ```make nx``` or just run ```make```.
 
-The following is required to build: libfreetype (switch-freetype), libconfig (switch-libconfig), and libjpeg-turbo (switch-libjpeg-turbo). Where "({name})" is the pacman package.
+The following is required to build: libfreetype (switch-freetype), libconfig (switch-libconfig), and libjpeg-turbo (switch-libjpeg-turbo). Where "({name})" is the pacman package. For the pc-build libminizip is required (for the Switch build, the switch-zlib package includes this).
 
 C11-threads are used, hence building for the pc-build may fail if C11-threads are not available.
 

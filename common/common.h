@@ -55,6 +55,7 @@ typedef union {
 #include "menu.h"
 #include "text.h"
 #include "ui.h"
+#include "assets.h"
 #include "launch.h"
 #include "worker.h"
 #include <turbojpeg.h>

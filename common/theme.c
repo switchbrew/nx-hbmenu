@@ -1,10 +1,4 @@
 #include "theme.h"
-/*#include "button_a_light_bin.h"
-#include "button_a_dark_bin.h"    
-#include "button_b_light_bin.h"
-#include "button_b_dark_bin.h"*/
-#include "hbmenu_logo_light_bin.h"
-#include "hbmenu_logo_dark_bin.h"
 
 theme_t themeCurrent;
 ThemePreset themeGlobalPreset;
@@ -35,7 +29,7 @@ void themeStartup(ThemePreset preset) {
         .buttonYText = "\uE0E3",
         .buttonPText = "\uE0EF",
         .buttonMText = "\uE0F0",
-        .hbmenuLogoImage = hbmenu_logo_light_bin
+        .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_light)
     };
     
     theme_t themeDark = (theme_t) { 
@@ -55,7 +49,7 @@ void themeStartup(ThemePreset preset) {
         .buttonYText = "\uE0A3",
         .buttonPText = "\uE0B3",
         .buttonMText = "\uE0B4",
-        .hbmenuLogoImage = hbmenu_logo_dark_bin
+        .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_dark)
     };
 
     char themePath[PATH_MAX] = {0};

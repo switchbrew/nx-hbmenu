@@ -6,13 +6,6 @@
 #include "switch/runtime/nxlink.h"
 #endif
 
-#include "invalid_icon_bin.h"
-#include "folder_icon_bin.h"
-#include "theme_icon_dark_bin.h"
-#include "theme_icon_light_bin.h"
-#include "charging_icon_bin.h"
-#include "battery_icon_bin.h"
-
 char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
 void computeFrontGradient(color_t baseColor, int height);
@@ -238,17 +231,17 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
     else if (me->type == ENTRY_TYPE_FOLDER) {
         smallimg = folder_icon_small;
-        largeimg = folder_icon_bin;
+        largeimg = assetsGetDataBuffer(AssetId_folder_icon);
     }
     else if (me->type == ENTRY_TYPE_THEME){
         smallimg = theme_icon_small;
         if(themeGlobalPreset == THEME_PRESET_DARK)
-            largeimg = theme_icon_dark_bin;
-        else largeimg = theme_icon_light_bin;
+            largeimg = assetsGetDataBuffer(AssetId_theme_icon_dark);
+        else largeimg = assetsGetDataBuffer(AssetId_theme_icon_light);
     }
     else {
         smallimg = invalid_icon_small;
-        largeimg = invalid_icon_bin;
+        largeimg = assetsGetDataBuffer(AssetId_invalid_icon);
     }
 
     if (smallimg) {
@@ -357,12 +350,12 @@ void menuStartup(void) {
 
     menuScan(rootPath);
 
-    folder_icon_small = downscaleImg(folder_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    invalid_icon_small = downscaleImg(invalid_icon_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    folder_icon_small = downscaleImg(assetsGetDataBuffer(AssetId_folder_icon), 256, 256, 140, 140, IMAGE_MODE_RGB24);
+    invalid_icon_small = downscaleImg(assetsGetDataBuffer(AssetId_invalid_icon), 256, 256, 140, 140, IMAGE_MODE_RGB24);
     if(themeGlobalPreset == THEME_PRESET_DARK)
-        theme_icon_small = downscaleImg(theme_icon_dark_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+        theme_icon_small = downscaleImg(assetsGetDataBuffer(AssetId_theme_icon_dark), 256, 256, 140, 140, IMAGE_MODE_RGB24);
     else
-        theme_icon_small = downscaleImg(theme_icon_light_bin, 256, 256, 140, 140, IMAGE_MODE_RGB24);
+        theme_icon_small = downscaleImg(assetsGetDataBuffer(AssetId_theme_icon_light), 256, 256, 140, 140, IMAGE_MODE_RGB24);
     computeFrontGradient(themeCurrent.frontWaveColor, 280);
     //menuCreateMsgBox(780, 300, "This is a test");
 }
@@ -457,9 +450,9 @@ void drawCharge() {
         int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
 
         DrawText(interuiregular14, tmpX - 15, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
-        drawIcon(1180 - 11, 0 + 47 + 10 + 6, 10, 15, battery_icon_bin, themeCurrent.textColor);
+        drawIcon(1180 - 11, 0 + 47 + 10 + 6, 10, 15, assetsGetDataBuffer(AssetId_battery_icon), themeCurrent.textColor);
         if (isCharging)
-            drawIcon(tmpX - 32, 0 + 47 + 10 + 6, 9, 15, charging_icon_bin, themeCurrent.textColor);
+            drawIcon(tmpX - 32, 0 + 47 + 10 + 6, 9, 15, assetsGetDataBuffer(AssetId_charging_icon), themeCurrent.textColor);
     }
 }
 

@@ -16,6 +16,7 @@ int main()
     window.setFramerateLimit(60);
 
     menuStartupPath();
+    assetsInit();
     themeStartup(THEME_PRESET_LIGHT);
     textInit();
     fontInitialize();
@@ -58,6 +59,7 @@ int main()
     workerExit();
     netloaderExit();
     fontExit();
+    assetsExit();
 
     return 0;
 }
