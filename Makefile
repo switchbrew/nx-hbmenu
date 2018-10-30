@@ -1,4 +1,4 @@
-export APP_VERSION	:=	2.0.0
+export APP_VERSION	:=	3.0.0
 
 ifeq ($(RELEASE),)
 	export APP_VERSION	:=	$(APP_VERSION)-$(shell git describe --dirty --always)
