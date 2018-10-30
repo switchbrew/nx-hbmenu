@@ -140,10 +140,12 @@ void handleTouch(menu_s* menu) {
             }
         }
         // Horizontal Swipe
-        else if (abs(y1 - y2) < HORIZONTAL_SWIPE_VERTICAL_PLAY && distance(x1, y1, x2, y2) > HORIZONTAL_SWIPE_MINIMUM_DISTANCE) {
-            // Swipe left to go into theme-menu
-            if (x1 - x2 > 0) {
-                themeMenuStartup();
+        else if (y1 < LISTING_START_Y && y2 < LISTING_START_Y) {
+            if (abs(y1 - y2) < HORIZONTAL_SWIPE_VERTICAL_PLAY && distance(x1, y1, x2, y2) > HORIZONTAL_SWIPE_MINIMUM_DISTANCE) {
+                // Swipe left to go into theme-menu
+                if (x1 - x2 > 0) {
+                    themeMenuStartup();
+                }
             }
         }
 
