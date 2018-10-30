@@ -1,5 +1,5 @@
 #### Usage
-See [Homebrew_Applications](http://switchbrew.org/index.php?title=Homebrew_Applications) for SD layout and applications, etc. See [Switchbrew](http://switchbrew.org/index.php?title=Homebrew_Menu) for hbmenu docs.
+See [Homebrew_Applications](https://switchbrew.org/wiki/Homebrew_Applications) for SD layout and applications, etc. See [Switchbrew](https://switchbrew.org/wiki/Homebrew_Menu) for hbmenu docs.
 
 #### Download
 The latest release is available from the [releases](https://github.com/switchbrew/nx-hbmenu/releases/latest) page.
