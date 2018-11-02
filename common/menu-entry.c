@@ -183,7 +183,7 @@ static bool menuEntryLoadEmbeddedNacp(menuEntry_s* me) {
 }*/
 
 bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
-    int i=0;
+    int i=0, tmplen;
     menu_s *menu_fileassoc = menuFileassocGetCurrent();
     menuEntry_s* fileassoc_me = NULL;
     char *strptr = NULL;
@@ -203,7 +203,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         bool fileassoc_flag = 0;
 
         //Use the first .nro found in the directory, if there's only 1 NRO in the directory. Only used for paths starting with "sdmc:/switch/".
-        if (!found && strncmp(me->path, menuGetRootPath(), strlen(menuGetRootPath()))==0) {
+        tmplen = strlen(menuGetRootPath());
+        if (!found && strncmp(me->path, menuGetRootPath(), tmplen)==0 && me->path[tmplen]=='/') {
             DIR* dir;
             struct dirent* dp;
             u32 nro_count=0;

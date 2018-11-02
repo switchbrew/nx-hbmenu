@@ -120,9 +120,21 @@ static void menuSort(void) {
 }
 
 int menuScan(const char* target) {
+    int pos;
+    char dirsep[8];
+
     if (chdir(target) < 0) return 1;
     if (getcwd(s_menu[!s_curMenu].dirname, PATH_MAX+1) == NULL)
         return 1;
+
+    memset(dirsep, 0, sizeof(dirsep));
+    dirsep[0] = '/';
+
+    //While cwd will not have '/' at the end normally, it will have it when cwd is the root dir ("sdmc:/"). Don't add '/' to the path below when it's already present.
+    pos = strlen(s_menu[!s_curMenu].dirname);
+    if (pos > 0) {
+        if (s_menu[!s_curMenu].dirname[pos-1] == '/') dirsep[0] = 0;
+    }
 
     DIR* dir;
     struct dirent* dp;
@@ -140,7 +152,7 @@ int menuScan(const char* target) {
         bool entrytype=0;
 
         memset(tmp_path, 0, sizeof(tmp_path));
-        snprintf(tmp_path, sizeof(tmp_path)-1, "%s/%s", s_menu[!s_curMenu].dirname, dp->d_name);
+        snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s", s_menu[!s_curMenu].dirname, dirsep, dp->d_name);
 
         #ifdef __SWITCH__
         fsdev_dir_t* dirSt = (fsdev_dir_t*)dir->dirData->dirStruct;
