@@ -224,6 +224,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_AppLaunchError] =
     {
         STR_EN("Failed to launch the application:"),
+        STR_FR("Erreur au lancement de l'application"),
     },
 
     [StrId_AppInfo_Author] =
