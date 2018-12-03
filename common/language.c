@@ -98,7 +98,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("I/O Error"),
         STR_ES("Error de E/S"),
-        STR_DE("E/A-Fehler"),
+        STR_DE("I/O-Fehler"),
         STR_FR("Erreur d'E/S"),
         STR_IT("Errore di I/O"),
         STR_JP("入出力エラー"),
@@ -157,7 +157,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_DE(
             "Auf der SD-Karte wurden keine Anwendungen\n"
             "gefunden. Stelle sicher, dass ein Verzeichnis\n"
-            "namens /switch im Wurzelverzeichnis der SD-Karte\n"
+            "namens /switch im Hauptverzeichnis der SD-Karte\n"
             "existiert und Anwendungen enthält!"
         ),
         STR_FR(
@@ -215,6 +215,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("The last application returned an error:"),
         STR_ES("La última aplicación devolvió un error:"),
+        STR_DE("Die letzte Anwendung erzeugte einen Fehler:"),
         STR_FR("La dernière application a retourné une erreur:"),
         STR_JP("直前に実行したアプリでエラーが発生しました:"),
         STR_KO("최근 애플리케이션에서 오류가 발생했습니다:"),
@@ -224,6 +225,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_AppLaunchError] =
     {
         STR_EN("Failed to launch the application:"),
+        STR_DE("Konnte die Anwendung nicht starten:"),
         STR_FR("Erreur au lancement de l'application"),
     },
 
@@ -310,6 +312,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_MsgBox_OK] =
     {
         STR_EN("OK"),
+        STR_DE("OK"),
         STR_FR("OK"),
         STR_ES("Aceptar"),
         STR_JP("了解"),
@@ -321,6 +324,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("Apply"),
         STR_FR("Appliquer"),
+        STR_DE("Anwenden"),
         STR_ES("Aplicar"),
         STR_JP("適用"),
         STR_KO("적용"),
@@ -331,6 +335,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("Theme Menu"),
         STR_FR("Menu Thème"),
+        STR_DE("Theme Menü"),
         STR_ES("Menú temático"),
         STR_JP("テーマメニュー"),
         STR_KO("테마 메뉴"),
@@ -340,6 +345,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_ThemeNotApplied] =
     {
         STR_EN("Theme cannot be applied because an error occurred."),
+        STR_EN("Das Theme konnte nicht geladen werden, da ein Fehler aufgetreten ist."),
         STR_FR("Le thème ne peut pas être appliqué car une erreur est survenue."),
         STR_ES("El tema no se pudo aplicar porque se ha producido un error."),
         STR_JP("エラーが発生したため、テーマを適用できませんでした。"),
@@ -351,6 +357,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("Default Theme"),
         STR_FR("Thème par défaut"),
+        STR_DE("Standard Theme"),
     },
 
     /*[StrId_Reboot] =
@@ -510,7 +517,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("Title selector"),
         STR_ES("Selector de título"),
-        STR_DE("Titel-Selektor"),
+        STR_DE("Titel-Auswahl"),
         STR_FR("Sélecteur de titre"),
         STR_IT("Selettore del titolo"),
         STR_JP("タイトルセレクタ"),
@@ -526,7 +533,7 @@ const char* const g_strings[StrId_Max][16] =
     {
         STR_EN("Error reading title metadata.\n%08lX%08lX@%d"),
         STR_ES("Error leyendo los metadatos de los títulos.\n%08lX%08lX@%d"),
-        STR_DE("Fehler beim lesen der Titel-Metadaten.\n%08lX%08lX@%d"),
+        STR_DE("Fehler beim Lesen der Titel-Metadaten.\n%08lX%08lX@%d"),
         STR_FR(
             "Erreur lors de la lecture des métadonnées\n"
             "de titre.\n%08lX%08lX@%d"
@@ -697,7 +704,7 @@ const char* const g_strings[StrId_Max][16] =
         ),
         STR_DE(
             "Die ausgewählte Anwendung benötigt einen\n"
-            "Titel der nicht installiert ist"
+            "Titel der nicht installiert ist."
         ),
         STR_FR(
             "L'application sélectionnée requiert un titre\n"
@@ -788,6 +795,7 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_NetLoaderOffline] =
     {
         STR_EN("Offline, waiting for network…"),
+        STR_DE("Offline, warte auf Netzwerk…"),
         STR_FR("Hors-ligne, en attente d'une connection..."),
         STR_IT("Disconnesso, in attesa della connessione…"),
         STR_JP("オフラインです。ネットワーク接続を待っています…"),
@@ -807,7 +815,7 @@ const char* const g_strings[StrId_Max][16] =
             "Dir.IP: %lu.%lu.%lu.%lu, Puerto: %d"
         ),
         STR_DE(
-            "Warte auf Verbindung von 3dslink…\n"
+            "Warte auf Verbindung von nxlink…\n"
             "IP Addr: %lu.%lu.%lu.%lu, Port: %d"
         ),
         STR_FR(
