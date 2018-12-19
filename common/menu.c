@@ -545,13 +545,9 @@ void menuLoop(void) {
     DrawText(interuiregular14, 180, 46 + 18, themeCurrent.textColor, VERSION);
 
     #ifdef PERF_LOG_DRAW//Seperate from the PERF_LOG define since this might affect perf.
-    extern u64 g_tickdiff_vsync;
     extern u64 g_tickdiff_frame;
 
     char tmpstr[64];
-
-    snprintf(tmpstr, sizeof(tmpstr)-1, "%lu", g_tickdiff_vsync);
-    DrawText(interuiregular14, 180 + 256, 46 + 18, themeCurrent.textColor, tmpstr);
 
     snprintf(tmpstr, sizeof(tmpstr)-1, "%lu", g_tickdiff_frame);
     DrawText(interuiregular14, 180 + 256, 46 + 16 + 18, themeCurrent.textColor, tmpstr);

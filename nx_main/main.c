@@ -5,13 +5,18 @@
 #include "../common/common.h"
 #include "nx_touch.h"
 
+// Define the desired framebuffer resolution (here we set it to 720p).
+#define FB_WIDTH  1280
+#define FB_HEIGHT 720
+
+Framebuffer g_framebufObj;
+
 uint8_t* g_framebuf;
 u32 g_framebuf_width;
 
 bool menuUpdateErrorScreen(void);
 
 #ifdef PERF_LOG
-u64 g_tickdiff_vsync=0;
 u64 g_tickdiff_frame=0;
 #endif
 
@@ -114,7 +119,8 @@ int main(int argc, char **argv)
     if (errormsg[0]) error_screen = 1;
 
     if (!error_screen) {
-        gfxInitDefault();
+        framebufferCreate(&g_framebufObj, nwindowGetDefault(), FB_WIDTH, FB_HEIGHT, PIXEL_FORMAT_RGBA_8888, 2);
+        framebufferMakeLinear(&g_framebufObj);
     }
     else {
         consoleInit(NULL);
@@ -122,29 +128,20 @@ int main(int argc, char **argv)
         printf("Press the + button to exit.\n");
     }
 
-    #ifdef PERF_LOG
-        if (!error_screen) {
-        gfxWaitForVsync();
-
-        start_tick = svcGetSystemTick();
-        gfxWaitForVsync();
-        g_tickdiff_vsync = svcGetSystemTick() - start_tick;
-    }
-    #endif
-
     while (appletMainLoop())
     {
-        #ifdef PERF_LOG
-        if (!error_screen) start_tick = svcGetSystemTick();
-        #endif
+
 
         //Scan all the inputs. This should be done once for each frame
         hidScanInput();
 
         if (!error_screen) {
-            g_framebuf = gfxGetFramebuffer(&g_framebuf_width, NULL);
-            memset(g_framebuf, 237, gfxGetFramebufferSize());
             if (!uiUpdate()) break;
+            g_framebuf = framebufferBegin(&g_framebufObj, &g_framebuf_width);
+            #ifdef PERF_LOG
+            start_tick = svcGetSystemTick();
+            #endif
+            memset(g_framebuf, 237, g_framebuf_width * FB_HEIGHT);
             menuLoop();
         }
         else {
@@ -152,13 +149,11 @@ int main(int argc, char **argv)
         }
 
         if (!error_screen) {
-            gfxFlushBuffers();
+            framebufferEnd(&g_framebufObj);
 
             #ifdef PERF_LOG
             g_tickdiff_frame = svcGetSystemTick() - start_tick;
             #endif
-
-            gfxSwapBuffers();
         }
         else {
             consoleUpdate(NULL);
@@ -166,7 +161,7 @@ int main(int argc, char **argv)
     }
 
     if (!error_screen) {
-        gfxExit();
+        framebufferClose(&g_framebufObj);
     }
     else {
         consoleExit(NULL);
