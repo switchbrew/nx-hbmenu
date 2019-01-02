@@ -1,10 +1,11 @@
 #include <switch.h>
 #include "../common/common.h"
 
-static bool psmInitialized;
-static bool psmCacheInitialized;
-static uint32_t psmCacheCharge;
-static bool psmCacheIsCharging;
+static bool powerInitialized;
+static bool powerCacheInitialized;
+static uint32_t powerCacheCharge;
+static bool powerCacheIsCharging;
+static PsmSession powerSession;
 
 bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
     ChargerType charger = ChargerType_None;
@@ -15,9 +16,9 @@ bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
     *isCharging = false;
     *batteryCharge = 0;
 
-    if (psmInitialized) {
-        if (psmCacheInitialized) {
-            rc = psmWaitStateChangeEvent(0);
+    if (powerInitialized) {
+        if (powerCacheInitialized) {
+            rc = psmWaitStateChangeEvent(&powerSession, 0);
 
             if (R_FAILED(rc)) use_cache = true;
         }
@@ -25,7 +26,7 @@ bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
         rc = psmGetBatteryChargePercentage(batteryCharge);
         hwReadsSucceeded = R_SUCCEEDED(rc);
         if (use_cache) {
-            *isCharging = psmCacheIsCharging;
+            *isCharging = powerCacheIsCharging;
         }
         else {
             rc = psmGetChargerType(&charger);
@@ -33,9 +34,9 @@ bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
             *isCharging = (charger > ChargerType_None);
         }
 
-        psmCacheCharge = *batteryCharge;
-        psmCacheIsCharging = *isCharging;
-        psmCacheInitialized = true;
+        powerCacheCharge = *batteryCharge;
+        powerCacheIsCharging = *isCharging;
+        powerCacheInitialized = true;
     }
 
     return hwReadsSucceeded;
@@ -45,18 +46,18 @@ void powerInit(void) {
     uint32_t charge=0;
     bool isCharging=0;
 
-    psmCacheInitialized = false;
-    psmCacheCharge = 0;
-    psmCacheIsCharging = false;
+    powerCacheInitialized = false;
+    powerCacheCharge = 0;
+    powerCacheIsCharging = false;
 
-    if (!psmInitialized) {
+    if (!powerInitialized) {
         Result rc = psmInitialize();
         if (R_SUCCEEDED(rc)) {
-            rc = psmBindStateChangeEvent(1, 1, 1);
+            rc = psmBindStateChangeEvent(&powerSession, 1, 1, 1);
 
             if (R_FAILED(rc)) psmExit();
             if (R_SUCCEEDED(rc)) {
-                psmInitialized = true;
+                powerInitialized = true;
                 powerGetDetails(&charge, &isCharging);//Init the cache.
             }
         }
@@ -64,9 +65,10 @@ void powerInit(void) {
 }
 
 void powerExit(void) {
-    if (psmInitialized) {
+    if (powerInitialized) {
+        psmUnbindStateChangeEvent(&powerSession);
         psmExit();
-        psmInitialized = false;
-        psmCacheInitialized = false;
+        powerInitialized = false;
+        powerCacheInitialized = false;
     }
 }
