@@ -614,6 +614,7 @@ void menuLoop(void) {
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
             int entry_start_x = 29 + i * (140 + 30);
+            int entry_draw_x = entry_start_x + menu->xPos;
 
             int screen_width = 1280;
             if (entry_start_x >= (screen_width - menu->xPos))
@@ -624,7 +625,10 @@ void menuLoop(void) {
             if (is_active)
                 active_entry = me;
 
-            drawEntry(me, entry_start_x + menu->xPos, is_active);
+            if (entry_draw_x < -(29 + 140 + 30))
+                continue;
+
+            drawEntry(me, entry_draw_x, is_active);
         }
 
         int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
