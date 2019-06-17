@@ -625,7 +625,7 @@ void menuLoop(void) {
             if (is_active)
                 active_entry = me;
 
-            if (entry_draw_x < -(29 + 140 + 30))
+            if (!is_active && entry_draw_x < -(29 + 140 + 30))
                 continue;
 
             drawEntry(me, entry_draw_x, is_active);
