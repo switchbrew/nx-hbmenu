@@ -9,7 +9,7 @@ EXTRA_CFLAGS="-D__USE_MINGW_ANSI_STDIO"
 EXTRA_LDFLAGS="-lws2_32"
 endif
 
-test : pc_main/main.cpp pc_main/pc_launch.c pc_main/pc_power.c \
+test : pc_main/main.cpp pc_main/pc_launch.c pc_main/pc_power.c pc_main/pc_netstatus.c \
 	common/menu.c common/font.c common/language.c common/launch.c common/worker.c \
 	common/menu-entry.c common/menu-list.c common/message-box.c common/text.c \
 	common/ui.c common/assets.c common/math.c common/theme.c \

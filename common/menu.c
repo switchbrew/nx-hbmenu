@@ -414,7 +414,36 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
     }
 }
 
-void drawTime() {
+void drawCharge() {
+    char chargeString[5];
+    uint32_t batteryCharge;
+    bool isCharging;
+    bool validPower;
+
+    validPower = powerGetDetails(&batteryCharge, &isCharging);
+    
+    if (validPower)
+    {
+        batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
+
+        sprintf(chargeString, "%d%%", batteryCharge);
+        
+        int tmpX = GetTextXCoordinate(interuiregular14, 1180 - 10, chargeString, 'r');
+
+        DrawText(interuiregular14, tmpX - 17, 0 + 47 + 10 + 21 + 4, themeCurrent.textColor, chargeString);
+        drawIcon(1180 - 16 - 8, 0 + 47 + 10 + 6, 24, 24, assetsGetDataBuffer(AssetId_battery_icon), themeCurrent.textColor);
+        if (isCharging)
+            drawIcon(tmpX - 32 - 10, 0 + 47 + 10 + 6, 24, 24, assetsGetDataBuffer(AssetId_charging_icon), themeCurrent.textColor);
+    }
+}
+
+void drawNetwork(int tmpX) {
+    AssetId id;
+    if (netstatusGetDetails(&id))
+        drawIcon(tmpX + 5, 0 + 47 + 10 + 3, 24, 24, assetsGetDataBuffer(id), themeCurrent.textColor);
+}
+
+void drawStatus() {
 
     char timeString[9];
 
@@ -431,29 +460,8 @@ void drawTime() {
 
     DrawText(interuimedium20, tmpX, 0 + 47 + 10, themeCurrent.textColor, timeString);
 
-}
-
-void drawCharge() {
-    char chargeString[5];
-    uint32_t batteryCharge;
-    bool isCharging;
-    bool validPower;
-
-    validPower = powerGetDetails(&batteryCharge, &isCharging);
-    
-    if (validPower)
-    {
-        batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
-
-        sprintf(chargeString, "%d%%", batteryCharge);
-        
-        int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
-
-        DrawText(interuiregular14, tmpX - 15, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
-        drawIcon(1180 - 11, 0 + 47 + 10 + 6, 10, 15, assetsGetDataBuffer(AssetId_battery_icon), themeCurrent.textColor);
-        if (isCharging)
-            drawIcon(tmpX - 32, 0 + 47 + 10 + 6, 9, 15, assetsGetDataBuffer(AssetId_charging_icon), themeCurrent.textColor);
-    }
+    drawCharge();
+    drawNetwork(tmpX);
 }
 
 void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
@@ -553,8 +561,7 @@ void menuLoop(void) {
     DrawText(interuiregular14, 180 + 256, 46 + 16 + 18, themeCurrent.textColor, tmpstr);
     #endif
 
-    drawTime();
-    drawCharge();
+    drawStatus();
 
     memset(&netloader_state, 0, sizeof(netloader_state));
     netloaderGetState(&netloader_state);
