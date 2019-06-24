@@ -430,17 +430,17 @@ void drawCharge() {
         
         int tmpX = GetTextXCoordinate(interuiregular14, 1180 - 10, chargeString, 'r');
 
-        DrawText(interuiregular14, tmpX - 17, 0 + 47 + 10 + 21 + 4, themeCurrent.textColor, chargeString);
-        drawIcon(1180 - 16 - 8, 0 + 47 + 10 + 6, 24, 24, assetsGetDataBuffer(AssetId_battery_icon), themeCurrent.textColor);
+        DrawText(interuiregular14, tmpX - 24 - 8, 0 + 47 + 10 + 21 + 4, themeCurrent.textColor, chargeString);
+        drawIcon(1180 - 8 - 24 - 8, 0 + 47 + 10 + 6, 24, 24, assetsGetDataBuffer(AssetId_battery_icon), themeCurrent.textColor);
         if (isCharging)
-            drawIcon(tmpX - 32 - 10, 0 + 47 + 10 + 6, 24, 24, assetsGetDataBuffer(AssetId_charging_icon), themeCurrent.textColor);
+            drawIcon(1180 - 20, 0 + 47 + 10 + 6, 24, 24, assetsGetDataBuffer(AssetId_charging_icon), themeCurrent.textColor);
     }
 }
 
 void drawNetwork(int tmpX) {
     AssetId id;
     if (netstatusGetDetails(&id))
-        drawIcon(tmpX + 5, 0 + 47 + 10 + 3, 24, 24, assetsGetDataBuffer(id), themeCurrent.textColor);
+        drawIcon(tmpX, 0 + 47 + 10 + 3, 24, 24, assetsGetDataBuffer(id), themeCurrent.textColor);
 }
 
 void drawStatus() {
