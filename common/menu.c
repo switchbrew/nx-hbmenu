@@ -438,9 +438,12 @@ void drawCharge() {
 }
 
 void drawNetwork(int tmpX) {
+    bool netstatusFlag=0;
     AssetId id;
-    if (netstatusGetDetails(&id))
-        drawIcon(tmpX, 0 + 47 + 10 + 3, 24, 24, assetsGetDataBuffer(id), themeCurrent.textColor);
+    if (statusGet(&netstatusFlag, &id)) {
+        if (netstatusFlag)
+            drawIcon(tmpX, 0 + 47 + 10 + 3, 24, 24, assetsGetDataBuffer(id), themeCurrent.textColor);
+    }
 }
 
 void drawStatus() {

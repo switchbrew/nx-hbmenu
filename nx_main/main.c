@@ -87,6 +87,11 @@ int main(int argc, char **argv)
         snprintf(errormsg, sizeof(errormsg)-1, "Error: workerInit() failed.");
     }
 
+    if (R_SUCCEEDED(rc) && !statusInit()) {
+        rc = 1;
+        snprintf(errormsg, sizeof(errormsg)-1, "Error: statusInit() failed.");
+    }
+
     if (R_SUCCEEDED(rc)) menuStartup();
 
     if (R_SUCCEEDED(rc)) {
@@ -175,6 +180,7 @@ int main(int argc, char **argv)
     fontExit();
     launchExit();
     netloaderSignalExit();
+    statusExit();
     workerExit();
     netloaderExit();
     powerExit();

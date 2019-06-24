@@ -65,6 +65,7 @@ typedef union {
 #include "power.h"
 #include "netloader.h"
 #include "netstatus.h"
+#include "status.h"
 
 void menuStartupPath(void);
 void menuStartup(void);
