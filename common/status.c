@@ -18,6 +18,8 @@ static int statusThreadProc(void* unused)
     mtx_lock(&s_statusMtx);
 
     struct timespec timeout = {0};
+    bool tmpflag;
+    AssetId tmpid;
 
     clock_gettime(CLOCK_MONOTONIC, &timeout);
     timeout.tv_sec++;
@@ -29,9 +31,12 @@ static int statusThreadProc(void* unused)
         if (s_statusExit)
             break;
 
+        tmpflag = netstatusGetDetails(&tmpid);
+
         mtx_lock(&s_statusAccessMtx);
 
-        s_statusNetFlag = netstatusGetDetails(&s_statusNetAssetId);
+        s_statusNetFlag = tmpflag;
+        s_statusNetAssetId = tmpid;
 
         s_statusReady = 1;
 
