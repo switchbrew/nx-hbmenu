@@ -1,6 +1,7 @@
 #include <time.h>
 #include "common.h"
 #include "netloader.h"
+#include <fcntl.h>
 
 #ifndef __SWITCH__
 #include "switch/runtime/nxlink.h"
@@ -27,6 +28,39 @@ void launchMenuEntryTask(menuEntry_s* arg) {
         launchApplyThemeTask(me);
     else
         launchMenuEntry(me);
+}
+
+void toggleStarState(menuEntry_s* arg) {
+    menuEntry_s* me = arg;
+    if (me->starred)
+    {
+        if (fileExists(me->starpath))
+            remove(me->starpath);
+    } else {
+        if (!fileExists(me->starpath))
+        {
+            int fd = open(me->starpath,O_CREAT|O_WRONLY, ACCESSPERMS);
+            close(fd);
+        }
+    }
+    me->starred = fileExists(me->starpath);
+    //todo: error handling/message?
+
+    menuReSort();
+    menu_s* menu = menuGetCurrent();
+    menuEntry_s* meSearch = menu->firstEntry;
+    menu->curEntry = -1;
+    int i = 0;
+    while (menu->curEntry == -1)
+    {
+        if (me == meSearch)
+        {
+            menu->curEntry = i;
+        } else {
+            meSearch = meSearch->next;
+            i++;
+        }
+    }
 }
 
 static enum
@@ -72,6 +106,19 @@ void menuHandleAButton(void) {
         //workerSchedule(launchMenuEntryTask, me);
     }
 }
+
+void menuHandleXButton(void) {
+    menu_s* menu = menuGetCurrent();
+    
+    if (menu->nEntries > 0 && hbmenu_state == HBMENU_DEFAULT)
+    {
+        int i;
+        menuEntry_s* me;
+        for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
+        toggleStarState(me);
+    }
+}
+
 
 void launchApplyThemeTask(menuEntry_s* arg) {
     const char* themePath = arg->path;
@@ -246,6 +293,8 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     if (smallimg) {
         drawImage(start_x, start_y + 32, 140, 140, smallimg, IMAGE_MODE_RGB24);
+        if (me->starred)
+            drawImage(start_x + 105 + 12, start_y - 12, 35, 33, themeCurrent.starSmallImage, IMAGE_MODE_RGBA32);
     }
 
     if (is_active && largeimg) {
@@ -282,6 +331,14 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             memset(tmpstr, 0, sizeof(tmpstr));
             snprintf(tmpstr, sizeof(tmpstr)-1, "%s: %s", textGetString(StrId_AppInfo_Version), me->version);
             DrawText(interuiregular14, start_x, start_y + 28 + 30 + 18 + 6 + 18, themeCurrent.textColor, tmpstr);
+        }
+        
+        if (me->starred)
+        {
+            drawImage(start_x - 64, 100, 64, 61, themeCurrent.starOnImage, IMAGE_MODE_RGBA32);
+        } else {
+            if (smallimg != theme_icon_small)//if (me->type != ENTRY_TYPE_THEME) <- why this crash?
+                drawImage(start_x - 64, 100, 64, 61, themeCurrent.starOffImage, IMAGE_MODE_RGBA32);
         }
     }
 }
@@ -666,6 +723,18 @@ void menuLoop(void) {
         }
 
         drawButtons(menu, false, &menupath_x_endpos);
+
+        if(active_entry != NULL && active_entry->type != ENTRY_TYPE_THEME) {
+            getX = GetTextXCoordinate(interuiregular18, menupath_x_endpos - 32, textGetString(StrId_Actions_UnStar), 'r');
+            DrawText(fontscale7, getX - 36, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonXText);
+            if (active_entry->starred) {
+                DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_UnStar));
+            } else {
+                DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Star));
+            }
+            menupath_x_endpos = getX - 36 - 40;
+        }
+
     }
 
     DrawTextTruncate(interuiregular18, 40, 720 - 47 + 24, themeCurrent.textColor, menu->dirname, menupath_x_endpos - 40, "...");

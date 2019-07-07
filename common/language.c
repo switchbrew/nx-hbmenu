@@ -1,4 +1,4 @@
-﻿#include "language.h"
+#include "language.h"
 
 #ifdef __SWITCH__
 #define STR_JP(_str) [SetLanguage_JA] = _str
@@ -331,6 +331,28 @@ const char* const g_strings[StrId_Max][16] =
         STR_TW("应用"),
     },
 
+    [StrId_Actions_Star] =
+    {
+        STR_EN("Star"),
+        STR_FR("Star"),
+        STR_DE("Star"),
+        STR_ES("Star"),
+        STR_JP("Star"),
+        STR_KO("Star"),
+        STR_TW("Star"),
+    },
+    
+    [StrId_Actions_UnStar] =
+    {
+        STR_EN("UnStar"),
+        STR_FR("UnStar"),
+        STR_DE("UnStar"),
+        STR_ES("UnStar"),
+        STR_JP("UnStar"),
+        STR_KO("UnStar"),
+        STR_TW("UnStar"),
+    },
+    
     [StrId_ThemeMenu] =
     {
         STR_EN("Theme Menu"),

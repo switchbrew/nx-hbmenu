@@ -17,6 +17,9 @@ typedef enum {
     AssetId_wifi3_icon,
     AssetId_eth_icon,
     AssetId_eth_none_icon,
+    AssetId_star_small,
+    AssetId_star_on,
+    AssetId_star_off,
 
     AssetId_Max
 } AssetId;

@@ -204,6 +204,10 @@ bool menuUpdate(void) {
     {
         launchMenuNetloaderTask();
     }
+    else if (down & KEY_X)
+    {
+        menuHandleXButton();
+    }
     else if (down & KEY_A)
     {
         menuHandleAButton();

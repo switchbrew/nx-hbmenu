@@ -18,10 +18,14 @@ typedef struct
     bool enableWaveBlending;
     char buttonAText[32];
     char buttonBText[32];
+    char buttonXText[32];
     char buttonYText[32];
     char buttonPText[32];
     char buttonMText[32];
     const uint8_t *hbmenuLogoImage;
+    const uint8_t *starSmallImage;
+    const uint8_t *starOnImage;
+    const uint8_t *starOffImage;
 } theme_t;
 
 typedef enum
