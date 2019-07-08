@@ -27,9 +27,6 @@ assetsDataEntry g_assetsDataList[AssetId_Max] = {
     GENASSET("wifi3_icon.bin"),
     GENASSET("eth_icon.bin"),
     GENASSET("eth_none_icon.bin"),
-    GENASSET("star_small.bin"),
-    GENASSET("star_on.bin"),
-    GENASSET("star_off.bin"),
 };
 
 static void assetsClearEntry(assetsDataEntry *entry) {

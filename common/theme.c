@@ -30,10 +30,9 @@ void themeStartup(ThemePreset preset) {
         .buttonYText = "\uE0E3",
         .buttonPText = "\uE0EF",
         .buttonMText = "\uE0F0",
+        .labelStarOnText = "\u2605",
+        .labelStarOffText = "\u2606",
         .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_light),
-        .starSmallImage = assetsGetDataBuffer(AssetId_star_small),
-        .starOnImage = assetsGetDataBuffer(AssetId_star_on),
-        .starOffImage = assetsGetDataBuffer(AssetId_star_off)
     };
     
     theme_t themeDark = (theme_t) { 
@@ -54,10 +53,9 @@ void themeStartup(ThemePreset preset) {
         .buttonYText = "\uE0A3",
         .buttonPText = "\uE0B3",
         .buttonMText = "\uE0B4",
+        .labelStarOnText = "\u2605",
+        .labelStarOffText = "\u2606",
         .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_dark),
-        .starSmallImage = assetsGetDataBuffer(AssetId_star_small),
-        .starOnImage = assetsGetDataBuffer(AssetId_star_on),
-        .starOffImage = assetsGetDataBuffer(AssetId_star_off)
     };
 
     char themePath[PATH_MAX] = {0};
@@ -69,7 +67,7 @@ void themeStartup(ThemePreset preset) {
     config_setting_t *theme = NULL;
     color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
     int waveBlending;
-    const char *AText, *BText, *XText, *YText, *PText, *MText;
+    const char *AText, *BText, *XText, *YText, *PText, *MText, *starOnText, *starOffText;
     bool good_cfg = false;
 
     if(themePath[0]!=0)
@@ -126,7 +124,11 @@ void themeStartup(ThemePreset preset) {
                 PText = themeDefault->buttonPText;
             if (!config_setting_lookup_string(theme, "buttonMText", &MText))
                 MText = themeDefault->buttonMText;
-            themeCurrent = (theme_t) { 
+            if (!config_setting_lookup_string(theme, "labelStarOnText", &starOnText))
+                starOnText = themeDefault->labelStarOnText;
+            if (!config_setting_lookup_string(theme, "labelStarOffText", &starOffText))
+                starOffText = themeDefault->labelStarOffText;
+            themeCurrent = (theme_t) {
                 .textColor = text,
                 .frontWaveColor = frontWave,
                 .middleWaveColor = middleWave,

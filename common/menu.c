@@ -294,7 +294,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     if (smallimg) {
         drawImage(start_x, start_y + 32, 140, 140, smallimg, IMAGE_MODE_RGB24);
         if (me->starred)
-            drawImage(start_x + 105 + 12, start_y - 12, 35, 33, themeCurrent.starSmallImage, IMAGE_MODE_RGBA32);
+            DrawText(interuimedium30, start_x + 105 + 16, start_y + 16, themeCurrent.borderTextColor, themeCurrent.labelStarOnText);
     }
 
     if (is_active && largeimg) {
@@ -335,10 +335,10 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         
         if (me->starred)
         {
-            drawImage(start_x - 64, 100, 64, 61, themeCurrent.starOnImage, IMAGE_MODE_RGBA32);
+            DrawText(largestar, start_x - 68, 160, themeCurrent.textColor, themeCurrent.labelStarOnText);
         } else {
             if (smallimg != theme_icon_small)//if (me->type != ENTRY_TYPE_THEME) <- why this crash?
-                drawImage(start_x - 64, 100, 64, 61, themeCurrent.starOffImage, IMAGE_MODE_RGBA32);
+                DrawText(largestar, start_x - 68, 160, themeCurrent.textColor, themeCurrent.labelStarOffText);
         }
     }
 }

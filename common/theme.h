@@ -22,10 +22,9 @@ typedef struct
     char buttonYText[32];
     char buttonPText[32];
     char buttonMText[32];
+    char labelStarOnText[32];
+    char labelStarOffText[32];
     const uint8_t *hbmenuLogoImage;
-    const uint8_t *starSmallImage;
-    const uint8_t *starOnImage;
-    const uint8_t *starOffImage;
 } theme_t;
 
 typedef enum
