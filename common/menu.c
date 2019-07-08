@@ -725,10 +725,10 @@ void menuLoop(void) {
         drawButtons(menu, false, &menupath_x_endpos);
 
         if(active_entry != NULL && active_entry->type != ENTRY_TYPE_THEME) {
-            getX = GetTextXCoordinate(interuiregular18, menupath_x_endpos - 32, textGetString(StrId_Actions_UnStar), 'r');
+            getX = GetTextXCoordinate(interuiregular18, menupath_x_endpos - 32, textGetString(StrId_Actions_Unstar), 'r');
             DrawText(fontscale7, getX - 36, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonXText);
             if (active_entry->starred) {
-                DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_UnStar));
+                DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Unstar));
             } else {
                 DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Star));
             }
