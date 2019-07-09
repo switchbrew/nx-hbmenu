@@ -148,6 +148,8 @@ void themeStartup(ThemePreset preset) {
             strncpy(themeCurrent.buttonYText, YText, sizeof(themeCurrent.buttonYText)-1);
             strncpy(themeCurrent.buttonPText, PText, sizeof(themeCurrent.buttonPText)-1);
             strncpy(themeCurrent.buttonMText, MText, sizeof(themeCurrent.buttonMText)-1);
+            strncpy(themeCurrent.labelStarOffText, starOffText, sizeof(themeCurrent.labelStarOffText)-1);
+            strncpy(themeCurrent.labelStarOnText, starOnText, sizeof(themeCurrent.labelStarOnText)-1);
         } else {
             themeCurrent = *themeDefault;
         }
