@@ -74,6 +74,8 @@ extern "C" bool menuUpdate(void) {
     int new_esc_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
     static int return_state = 0;
     int new_return_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
+    static int x_state = 0;
+    int new_x_state = sf::Keyboard::isKeyPressed(sf::Keyboard::X);
     static int y_state = 0;
     int new_y_state = sf::Keyboard::isKeyPressed(sf::Keyboard::Y);
     static int t_state = 0;
@@ -82,7 +84,11 @@ extern "C" bool menuUpdate(void) {
     if(!new_y_state && y_state)
     {
         launchMenuNetloaderTask();
+    }
 
+    if(!new_x_state && x_state)
+    {
+        menuHandleXButton();
     }
 
     if (!new_esc_state && esc_state)

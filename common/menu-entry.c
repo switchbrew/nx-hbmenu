@@ -490,6 +490,13 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         return false;
     }
 
+    //check for .filename.star in same path
+    strptr = getSlash(me->path);
+    if (strptr[0] == '/') strptr++;
+    int strptrLen = strlen(strptr);
+    snprintf(me->starpath, sizeof(me->starpath)-1, "%.*s.%.*s.star", (int)(strlen(me->path) - strptrLen), me->path, (int)strptrLen, strptr);
+    me->starred = fileExists(me->starpath);
+    
     return true;
 }
 

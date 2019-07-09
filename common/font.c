@@ -43,6 +43,10 @@ static bool FontSetType(u32 font)
         case interuimedium30:
             scale = 8;
         break;
+            
+        case largestar:
+            scale = 18;
+        break;
 
         default:
             return false;

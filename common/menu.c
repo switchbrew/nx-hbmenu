@@ -29,6 +29,35 @@ void launchMenuEntryTask(menuEntry_s* arg) {
         launchMenuEntry(me);
 }
 
+void toggleStarState(menuEntry_s* arg) {
+    menuEntry_s* me = arg;
+    if (me->starred) {
+        if (fileExists(me->starpath))
+            remove(me->starpath);
+    } else {
+        if (!fileExists(me->starpath)) {
+            FILE* f  = fopen(me->starpath, "w");
+            if (f) fclose(f);
+        }
+    }
+    me->starred = fileExists(me->starpath);
+    //todo: error handling/message?
+
+    menuReorder();
+    menu_s* menu = menuGetCurrent();
+    menuEntry_s* meSearch = menu->firstEntry;
+    menu->curEntry = -1;
+    int i = 0;
+    while (menu->curEntry < 0) {
+        if (me == meSearch)
+            menu->curEntry = i;
+        else {
+            meSearch = meSearch->next;
+            i++;
+        }
+    }
+}
+
 static enum
 {
     HBMENU_DEFAULT,
@@ -72,6 +101,18 @@ void menuHandleAButton(void) {
         //workerSchedule(launchMenuEntryTask, me);
     }
 }
+
+void menuHandleXButton(void) {
+    menu_s* menu = menuGetCurrent();
+    
+    if (menu->nEntries > 0 && hbmenu_state == HBMENU_DEFAULT) {
+        int i;
+        menuEntry_s* me;
+        for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
+        toggleStarState(me);
+    }
+}
+
 
 void launchApplyThemeTask(menuEntry_s* arg) {
     const char* themePath = arg->path;
@@ -246,6 +287,8 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     if (smallimg) {
         drawImage(start_x, start_y + 32, 140, 140, smallimg, IMAGE_MODE_RGB24);
+        if (me->starred)
+            DrawText(interuimedium30, start_x + 105 + 16, start_y + 16, themeCurrent.borderTextColor, themeCurrent.labelStarOnText);
     }
 
     if (is_active && largeimg) {
@@ -283,6 +326,12 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             snprintf(tmpstr, sizeof(tmpstr)-1, "%s: %s", textGetString(StrId_AppInfo_Version), me->version);
             DrawText(interuiregular14, start_x, start_y + 28 + 30 + 18 + 6 + 18, themeCurrent.textColor, tmpstr);
         }
+        
+        if (me->starred)
+            DrawText(largestar, start_x - 68, 160, themeCurrent.textColor, themeCurrent.labelStarOnText);
+        else
+            if (me->type != ENTRY_TYPE_THEME)
+                DrawText(largestar, start_x - 68, 160, themeCurrent.textColor, themeCurrent.labelStarOffText);
     }
 }
 
@@ -483,8 +532,8 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
     #endif
     {
         //drawImage(x_image, 720 - 48, 32, 32, themeCurrent.buttonBImage, IMAGE_MODE_RGBA32);
-        DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonBText);//Display the 'B' button from SharedFont.
-        DrawText(interuimedium20, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_Actions_Back));
+        DrawText(fontscale7, x_image, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonBText);//Display the 'B' button from SharedFont.
+        DrawText(interuimedium20, x_text, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Back));
     }
 
     if(hbmenu_state == HBMENU_DEFAULT)
@@ -666,6 +715,20 @@ void menuLoop(void) {
         }
 
         drawButtons(menu, false, &menupath_x_endpos);
+
+        if (active_entry && active_entry->type != ENTRY_TYPE_THEME) {
+            if (active_entry->starred) {
+                getX = GetTextXCoordinate(interuiregular18, menupath_x_endpos + 8, textGetString(StrId_Actions_Unstar), 'r');
+                DrawText(fontscale7, getX - 36, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonXText);
+                DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Unstar));
+            } else {
+                getX = GetTextXCoordinate(interuiregular18, menupath_x_endpos + 8, textGetString(StrId_Actions_Star), 'r');
+                DrawText(fontscale7, getX - 36, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonXText);
+                DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Star));
+            }
+            menupath_x_endpos = getX - 36 - 40;
+        }
+
     }
 
     DrawTextTruncate(interuiregular18, 40, 720 - 47 + 24, themeCurrent.textColor, menu->dirname, menupath_x_endpos - 40, "...");
