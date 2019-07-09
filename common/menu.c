@@ -1,7 +1,6 @@
 #include <time.h>
 #include "common.h"
 #include "netloader.h"
-#include <fcntl.h>
 
 #ifndef __SWITCH__
 #include "switch/runtime/nxlink.h"
