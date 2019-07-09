@@ -84,13 +84,11 @@ extern "C" bool menuUpdate(void) {
     if(!new_y_state && y_state)
     {
         launchMenuNetloaderTask();
-
     }
 
     if(!new_x_state && x_state)
     {
         menuHandleXButton();
-        
     }
 
     if (!new_esc_state && esc_state)

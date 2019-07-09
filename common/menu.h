@@ -100,7 +100,7 @@ void menuDeleteEntry(menuEntry_s* me, bool skip_icongfx);
 
 menu_s* menuGetCurrent(void);
 menu_s* menuFileassocGetCurrent(void);
-void menuReSort (void);
+void menuReorder (void);
 int menuScan(const char* target);
 int themeMenuScan(const char* target);
 int menuFileassocScan(const char* target);

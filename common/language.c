@@ -334,11 +334,13 @@ const char* const g_strings[StrId_Max][16] =
     [StrId_Actions_Star] =
     {
         STR_EN("Star"),
+        STR_ES("Agregar a favoritos"),
     },
     
     [StrId_Actions_Unstar] =
     {
         STR_EN("Unstar"),
+        STR_ES("Borrar de favoritos"),
     },
     
     [StrId_ThemeMenu] =

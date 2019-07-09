@@ -105,11 +105,10 @@ static void menuSort(void) {
 
     menuEntry_s* p = m->firstEntry;
     for(i = 0; i < nEntries; ++i) {
-        if (p->starred) {
+        if (p->starred)
             listStar[nEntriesStar++] = p;
-        } else {
+        else
             list[nEntriesNoStar++] = p;
-        }
         p = p->next;
     }
 
@@ -132,7 +131,7 @@ static void menuSort(void) {
     free(listStar);
 }
 
-void menuReSort (void) {
+void menuReorder (void) {
     s_curMenu = !s_curMenu;
     menuSort();
     s_curMenu = !s_curMenu;

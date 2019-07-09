@@ -493,7 +493,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
     //check for .filename.star in same path
     strptr = getSlash(me->path);
     if (strptr[0] == '/') strptr++;
-    snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s.%.*s.star", (int)((strlen(me->path)) - (strlen(strptr))), me->path, (int)(strlen(strptr)), strptr);
+    int strptrLen = strlen(strptr);
+    snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s.%.*s.star", (int)(strlen(me->path) - strptrLen), me->path, (int)strptrLen, strptr);
     strcpy(me->starpath, tempbuf);
     me->starred = fileExists(me->starpath);
     
