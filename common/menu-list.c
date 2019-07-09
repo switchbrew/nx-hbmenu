@@ -101,7 +101,10 @@ static void menuSort(void) {
     menuEntry_s** list = (menuEntry_s**)calloc(nEntries, sizeof(menuEntry_s*));
     if(list == NULL) return;
     menuEntry_s** listStar = (menuEntry_s**)calloc(nEntries, sizeof(menuEntry_s*));
-    if(listStar == NULL) return;
+    if(listStar == NULL) {
+        free(list);
+        return;
+    }
 
     menuEntry_s* p = m->firstEntry;
     for(i = 0; i < nEntries; ++i) {

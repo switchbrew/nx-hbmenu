@@ -38,7 +38,7 @@ void toggleStarState(menuEntry_s* arg) {
     } else {
         if (!fileExists(me->starpath)) {
             FILE* f  = fopen(me->starpath, "w");
-            fclose(f);
+            if (f) fclose(f);
         }
     }
     me->starred = fileExists(me->starpath);
