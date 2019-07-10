@@ -533,7 +533,7 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
     {
         //drawImage(x_image, 720 - 48, 32, 32, themeCurrent.buttonBImage, IMAGE_MODE_RGBA32);
         DrawText(fontscale7, x_image, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonBText);//Display the 'B' button from SharedFont.
-        DrawText(interuimedium20, x_text, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Back));
+        DrawText(interuiregular18, x_text, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Back));
     }
 
     if(hbmenu_state == HBMENU_DEFAULT)
