@@ -542,15 +542,15 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
         x_image = x_text - 36;
         *x_image_out = x_image - 40;
 
-        DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonYText);
-        DrawText(interuiregular18, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_NetLoader));
+        DrawText(fontscale7, x_image, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonYText);
+        DrawText(interuiregular18, x_text, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_NetLoader));
 
         x_text = GetTextXCoordinate(interuiregular18, x_image - 32, textGetString(StrId_ThemeMenu), 'r');
         x_image = x_text - 36;
         *x_image_out = x_image - 40;
 
-        DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonMText);
-        DrawText(interuiregular18, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+        DrawText(fontscale7, x_image, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonMText);
+        DrawText(interuiregular18, x_text, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
     }
 }
 
@@ -693,7 +693,7 @@ void menuLoop(void) {
         int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
 
         if(hbmenu_state == HBMENU_THEME_MENU) {
-            DrawText(interuiregular18, getX, 30 + 26 + 32 + 10, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+            DrawText(interuiregular18, getX, 30 + 26 + 32 + 20, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
         } else {
             //DrawText(interuiregular18, getX, 30 + 26 + 32 + 10, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
             //DrawText(fontscale7, getX - 40,  30 + 26 + 32 + 10, themeCurrent.textColor, themeCurrent.buttonMText);
