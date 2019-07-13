@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     memset(errormsg, 0, sizeof(errormsg));
 
     appletLockExit();
-    appletSetScreenShotPermission(1);
+    appletSetScreenShotPermission(AppletScreenShotPermission_Enable);
 
     ColorSetId theme;
     rc = setsysInitialize();
