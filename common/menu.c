@@ -179,6 +179,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     const uint8_t *smallimg = NULL;
     const uint8_t *largeimg = NULL;
+    char *strptr = NULL;
     char tmpstr[1024];
 
     int border_start_x, border_end_x;
@@ -287,8 +288,6 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     if (smallimg) {
         drawImage(start_x, start_y + 32, 140, 140, smallimg, IMAGE_MODE_RGB24);
-        if (me->starred)
-            DrawText(interuimedium30, start_x + 105 + 16, start_y + 16, themeCurrent.borderTextColor, themeCurrent.labelStarOnText);
     }
 
     if (is_active && largeimg) {
@@ -310,13 +309,21 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         }
     }
 
-    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, themeCurrent.borderTextColor, me->name, 140 - 32, "...");
+    if (me->type != ENTRY_TYPE_THEME)
+        strptr = me->starred ? themeCurrent.labelStarOnText : "";
+    else
+        strptr = "";
+
+    memset(tmpstr, 0, sizeof(tmpstr));
+    snprintf(tmpstr, sizeof(tmpstr)-1, "%s%s", strptr, me->name);
+
+    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, themeCurrent.borderTextColor, tmpstr, 140 - 32, "...");
 
     if (is_active) {
         start_x = 1280 - 790;
         start_y = 135;
 
-        DrawTextTruncate(interuimedium30, start_x, start_y + 39, themeCurrent.textColor, me->name, 1280 - start_x - 120 ,"...");
+        DrawTextTruncate(interuimedium30, start_x, start_y + 39, themeCurrent.textColor, tmpstr, 1280 - start_x - 120 ,"...");
 
         if (me->type != ENTRY_TYPE_FOLDER) {
             memset(tmpstr, 0, sizeof(tmpstr));
@@ -326,12 +333,6 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             snprintf(tmpstr, sizeof(tmpstr)-1, "%s: %s", textGetString(StrId_AppInfo_Version), me->version);
             DrawText(interuiregular14, start_x, start_y + 28 + 30 + 18 + 6 + 18, themeCurrent.textColor, tmpstr);
         }
-        
-        if (me->starred)
-            DrawText(largestar, start_x - 68, 160, themeCurrent.textColor, themeCurrent.labelStarOnText);
-        else
-            if (me->type != ENTRY_TYPE_THEME)
-                DrawText(largestar, start_x - 68, 160, themeCurrent.textColor, themeCurrent.labelStarOffText);
     }
 }
 
