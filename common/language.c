@@ -46,6 +46,12 @@ const char* const g_strings[StrId_Max][16] =
         STR_TW("加載中…"),
     },
 
+    [StrId_AppletMode] =
+    {
+        STR_EN("● Applet Mode ●"),
+        STR_ES("● Modo Applet ●"),
+    },
+
     [StrId_Directory] =
     {
         STR_EN("Directory"),
@@ -292,7 +298,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_ZH("打开"),
         STR_TW("開啟"),
     },
-    
+
     [StrId_Actions_Back] =
     {
         STR_EN("Back"),
@@ -336,13 +342,13 @@ const char* const g_strings[StrId_Max][16] =
         STR_EN("Star"),
         STR_ES("Agregar a favoritos"),
     },
-    
+
     [StrId_Actions_Unstar] =
     {
         STR_EN("Unstar"),
         STR_ES("Borrar de favoritos"),
     },
-    
+
     [StrId_ThemeMenu] =
     {
         STR_EN("Theme Menu"),

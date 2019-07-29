@@ -6,6 +6,7 @@
 typedef struct
 {
     color_t textColor;
+    color_t attentionTextColor;
     color_t frontWaveColor;
     color_t middleWaveColor;
     color_t backWaveColor;

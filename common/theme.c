@@ -12,8 +12,9 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col) {
 
 void themeStartup(ThemePreset preset) {
     themeGlobalPreset = preset;
-    theme_t themeLight = (theme_t) { 
+    theme_t themeLight = (theme_t) {
         .textColor = MakeColor(0, 0, 0, 255),
+        .attentionTextColor = MakeColor(255, 0, 0, 255),
         .frontWaveColor = MakeColor(100, 212, 250, 255),
         .middleWaveColor = MakeColor(100, 153, 255, 255),
         .backWaveColor = MakeColor(154, 171, 255, 255),
@@ -34,9 +35,10 @@ void themeStartup(ThemePreset preset) {
         .labelStarOffText = "\u2606",
         .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_light),
     };
-    
-    theme_t themeDark = (theme_t) { 
+
+    theme_t themeDark = (theme_t) {
         .textColor = MakeColor(255, 255, 255, 255),
+        .attentionTextColor = MakeColor(255, 0, 0, 255),
         .frontWaveColor = MakeColor(96, 204, 204, 255),
         .middleWaveColor = MakeColor(66, 154, 159, 255),
         .backWaveColor = MakeColor(73, 103, 169, 255),
@@ -65,7 +67,7 @@ void themeStartup(ThemePreset preset) {
     config_t cfg = {0};
     config_init(&cfg);
     config_setting_t *theme = NULL;
-    color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
+    color_t text, attentionText, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
     int waveBlending;
     const char *AText, *BText, *XText, *YText, *PText, *MText, *starOnText, *starOffText;
     bool good_cfg = false;
@@ -92,6 +94,8 @@ void themeStartup(ThemePreset preset) {
         if (theme != NULL) {
             if (!colorFromSetting(config_setting_lookup(theme, "textColor"), &text))
                 text = themeDefault->textColor;
+            if (!colorFromSetting(config_setting_lookup(theme, "attentionTextColor"), &attentionText))
+                attentionText = themeDefault->attentionTextColor;
             if (!colorFromSetting(config_setting_lookup(theme, "frontWaveColor"), &frontWave))
                 frontWave = themeDefault->frontWaveColor;
             if (!colorFromSetting(config_setting_lookup(theme, "middleWaveColor"), &middleWave))
@@ -130,6 +134,7 @@ void themeStartup(ThemePreset preset) {
                 starOffText = themeDefault->labelStarOffText;
             themeCurrent = (theme_t) {
                 .textColor = text,
+                .attentionTextColor = attentionText,
                 .frontWaveColor = frontWave,
                 .middleWaveColor = middleWave,
                 .backWaveColor = backWave,
@@ -169,7 +174,7 @@ void GetThemePathFromConfig(char* themePath, size_t size) {
     snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/settings.cfg", menuGetRootBasePath());
     snprintf(tmp_path_theme, sizeof(tmp_path_theme)-1, "%s/config/nx-hbmenu/themes/", menuGetRootBasePath());
     bool good_cfg = config_read_file(&cfg, tmp_path);
-    
+
     if(good_cfg) {
         settings = config_lookup(&cfg, "settings");
         if(settings != NULL) {
@@ -187,7 +192,7 @@ void SetThemePathToConfig(const char* themePath) {
 
     char settingPath[PATH_MAX] = {0};
     config_setting_t *root = NULL,
-                     *group = NULL, 
+                     *group = NULL,
                      *settings = NULL;
 
     themePath = getSlash(themePath);
@@ -199,7 +204,7 @@ void SetThemePathToConfig(const char* themePath) {
 
     snprintf(settingPath, sizeof(settingPath)-1, "%s/config/nx-hbmenu/settings.cfg", menuGetRootBasePath());
     bool good_cfg = config_read_file(&cfg, settingPath);
-    
+
     if(good_cfg) {
         group = config_lookup(&cfg, "settings");
         if(group != NULL)
@@ -210,9 +215,9 @@ void SetThemePathToConfig(const char* themePath) {
         root = config_root_setting(&cfg);
         if(root != NULL)
             group = config_setting_add(root, "settings", CONFIG_TYPE_GROUP);
-        if(group != NULL)    
+        if(group != NULL)
             settings = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
-        if(settings != NULL)    
+        if(settings != NULL)
             config_setting_set_string(settings, themePath);
     }
 

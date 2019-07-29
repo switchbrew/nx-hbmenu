@@ -104,7 +104,7 @@ void menuHandleAButton(void) {
 
 void menuHandleXButton(void) {
     menu_s* menu = menuGetCurrent();
-    
+
     if (menu->nEntries > 0 && hbmenu_state == HBMENU_DEFAULT) {
         int i;
         menuEntry_s* me;
@@ -118,7 +118,7 @@ void launchApplyThemeTask(menuEntry_s* arg) {
     const char* themePath = arg->path;
     SetThemePathToConfig(themePath);
     themeStartup(themeGlobalPreset);
-    computeFrontGradient(themeCurrent.frontWaveColor, 280); 
+    computeFrontGradient(themeCurrent.frontWaveColor, 280);
 }
 
 bool menuIsNetloaderActive(void) {
@@ -471,13 +471,13 @@ void drawCharge() {
     bool validPower;
 
     validPower = powerGetDetails(&batteryCharge, &isCharging);
-    
+
     if (validPower)
     {
         batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
 
         sprintf(chargeString, "%d%%", batteryCharge);
-        
+
         int tmpX = GetTextXCoordinate(interuiregular14, 1180 - 10, chargeString, 'r');
 
         DrawText(interuiregular14, tmpX - 24 - 8, 0 + 47 + 10 + 21 + 4, themeCurrent.textColor, chargeString);
@@ -604,6 +604,12 @@ void menuLoop(void) {
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
     DrawText(interuiregular14, 180, 46 + 18, themeCurrent.textColor, VERSION);
+    #ifdef __SWITCH__
+    AppletType at = appletGetAppletType();
+    if (at != AppletType_Application && at != AppletType_SystemApplication) {
+        DrawText(interuimedium30, 640-32, 46 + 18, themeCurrent.attentionTextColor, textGetString(StrId_AppletMode));
+    }
+    #endif
 
     #ifdef PERF_LOG_DRAW//Seperate from the PERF_LOG define since this might affect perf.
     extern u64 g_tickdiff_frame;
@@ -699,7 +705,7 @@ void menuLoop(void) {
             //DrawText(interuiregular18, getX, 30 + 26 + 32 + 10, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
             //DrawText(fontscale7, getX - 40,  30 + 26 + 32 + 10, themeCurrent.textColor, themeCurrent.buttonMText);
         }
-        
+
         if(active_entry != NULL) {
             if (active_entry->type == ENTRY_TYPE_THEME) {
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
