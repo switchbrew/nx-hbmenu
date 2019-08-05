@@ -291,9 +291,9 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
 
     if (is_active && largeimg) {
-        drawImage(117, 100, 256, 256, largeimg, IMAGE_MODE_RGB24);
+        drawImage(117, 100+10, 256, 256, largeimg, IMAGE_MODE_RGB24);
 
-        shadow_start_y = 100+256;
+        shadow_start_y = 100+10+256;
         border_start_x = 117;
         border_end_x = 117+256;
 
@@ -321,7 +321,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     if (is_active) {
         start_x = 1280 - 790;
-        start_y = 135;
+        start_y = 135+10;
 
         DrawTextTruncate(interuimedium30, start_x, start_y + 39, themeCurrent.textColor, tmpstr, 1280 - start_x - 120 ,"...");
 
