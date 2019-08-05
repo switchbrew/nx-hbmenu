@@ -304,6 +304,12 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
             return Z_DATA_ERROR;
         }
 
+        if (chunksize > sizeof(in)) {
+            (void)inflateEnd(&strm);
+            netloader_error("Invalid chunk size.",0);
+            return Z_DATA_ERROR;
+        }
+
     strm.avail_in = recvall(sock,in,chunksize,0);
 
     if (strm.avail_in == 0) {
