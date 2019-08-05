@@ -43,7 +43,7 @@ static bool FontSetType(u32 font)
         case interuimedium30:
             scale = 8;
         break;
-            
+
         case largestar:
             scale = 18;
         break;
@@ -313,8 +313,8 @@ void GetTextDimensions(u32 font, const char* text, uint32_t* width_out, uint32_t
             width = x;
     }
 
-    *width_out = width;
-    *height_out = height;
+    if(width_out) *width_out = width;
+    if(height_out) *height_out = height;
 }
 
 bool fontInitialize(void)
@@ -380,11 +380,11 @@ void fontExit()
     if (s_font_libret==0) FT_Done_FreeType(s_font_library);
 }
 
-/*Automatically gives you the desired x-coordinate 
+/*Automatically gives you the desired x-coordinate
  *based on the string length and desired alignment
  *rY=reference point... where to align around
  *align='t','b','c' translates to (top,bottom,center)
- *'t' aligned, top of text aligns with rY, 
+ *'t' aligned, top of text aligns with rY,
  *you get the rest....
  */
 uint32_t GetTextYCoordinate(u32 font, uint32_t rY, const char* text, const char align) {
@@ -405,7 +405,7 @@ uint32_t GetTextYCoordinate(u32 font, uint32_t rY, const char* text, const char 
     }
 }
 
-/*Automatically gives you the desired x-coordinate 
+/*Automatically gives you the desired x-coordinate
  *based on the string length and desired alignment
  *rX=reference point... where to align around
  *text=string you want to display

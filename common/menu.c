@@ -496,7 +496,7 @@ void drawNetwork(int tmpX) {
     }
 }
 
-void drawStatus() {
+u32 drawStatus() {
 
     char timeString[9];
 
@@ -509,12 +509,14 @@ void drawStatus() {
 
     sprintf(timeString, "%02d:%02d:%02d", hours, minutes, seconds);
 
-    int tmpX = GetTextXCoordinate(interuimedium20, 1180, timeString, 'r');
+    u32 tmpX = GetTextXCoordinate(interuimedium20, 1180, timeString, 'r');
 
     DrawText(interuimedium20, tmpX, 0 + 47 + 10, themeCurrent.textColor, timeString);
 
     drawCharge();
     drawNetwork(tmpX);
+
+    return tmpX;
 }
 
 void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
@@ -603,11 +605,28 @@ void menuLoop(void) {
     menuTimer += 0.05;
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
-    DrawText(interuiregular14, 180, 46 + 18, themeCurrent.textColor, VERSION);
+    DrawText(interuiregular14, 184, 46 + 18, themeCurrent.textColor, VERSION);
+    u32 statusXPos = drawStatus();
+
     #ifdef __SWITCH__
     AppletType at = appletGetAppletType();
     if (at != AppletType_Application && at != AppletType_SystemApplication) {
-        DrawText(interuimedium30, 640-32, 46 + 18, themeCurrent.attentionTextColor, textGetString(StrId_AppletMode));
+        const char* appletMode = textGetString(StrId_AppletMode);
+        u32 x_pos = GetTextXCoordinate(interuimedium30, statusXPos, appletMode, 'r');
+        DrawText(interuimedium30, x_pos - 32, 46 + 18, themeCurrent.attentionTextColor, appletMode);
+    }
+    const char* loaderInfo = envGetLoaderInfo();
+    if (loaderInfo) {
+        u32 x_pos = 43;
+        char* spacePos = strchr(loaderInfo, ' ');
+        if (spacePos) {
+            char tempbuf[64] = {0};
+            size_t tempsize = spacePos - loaderInfo + 1;
+            if (tempsize > sizeof(tempbuf)-1) tempsize = sizeof(tempbuf)-1;
+            memcpy(tempbuf, loaderInfo, tempsize);
+            x_pos = GetTextXCoordinate(interuiregular14, 184, tempbuf, 'r');
+        }
+        DrawText(interuiregular14, x_pos, 46 + 18 + 20, themeCurrent.textColor, loaderInfo);
     }
     #endif
 
@@ -619,8 +638,6 @@ void menuLoop(void) {
     snprintf(tmpstr, sizeof(tmpstr)-1, "%lu", g_tickdiff_frame);
     DrawText(interuiregular14, 180 + 256, 46 + 16 + 18, themeCurrent.textColor, tmpstr);
     #endif
-
-    drawStatus();
 
     memset(&netloader_state, 0, sizeof(netloader_state));
     netloaderGetState(&netloader_state);
