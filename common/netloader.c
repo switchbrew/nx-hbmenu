@@ -274,7 +274,7 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
     int ret;
     unsigned have;
     z_stream strm;
-    size_t chunksize;
+    uint32_t chunksize=0;
 
     /* allocate inflate state */
     strm.zalloc = Z_NULL;
@@ -306,7 +306,7 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
 
         if (chunksize > sizeof(in)) {
             (void)inflateEnd(&strm);
-            netloader_error("Invalid chunk size.",0);
+            netloader_error("Invalid chunk size",chunksize);
             return Z_DATA_ERROR;
         }
 
@@ -442,11 +442,18 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
 
     send(sock,(char *)&response,sizeof(response),0);
 
+    char *writebuffer = NULL;
     if (response == 0 ) {
+        writebuffer = malloc(FILE_BUFFER_SIZE);
+        if (writebuffer==NULL) {
+            netloader_error("Failed to allocate memory",ENOMEM);
+            response = -1;
+        }
+        else
+            setvbuf(file,writebuffer,_IOFBF, FILE_BUFFER_SIZE);
+    }
 
-        //char *writebuffer=malloc(FILE_BUFFER_SIZE);
-        //setvbuf(file,writebuffer,_IOFBF, FILE_BUFFER_SIZE);
-
+    if (response == 0 ) {
         //printf("transferring %s\n%d bytes.\n", filename, filelen);
 
         if (decompress(sock,file,filelen)==Z_OK) {
@@ -493,9 +500,9 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
             response = -1;
         }
 
-        //free(writebuffer);
         fflush(file);
         fclose(file);
+        free(writebuffer);
 
         if (response == -1) unlink(me->path);
     }
