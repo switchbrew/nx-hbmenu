@@ -96,20 +96,34 @@ static void menuSort(void) {
     menu_s* m = &s_menu[!s_curMenu];
     int nEntries = m->nEntries;
     if (nEntries==0) return;
+    int nEntriesStar = 0, nEntriesNoStar = 0;
 
     menuEntry_s** list = (menuEntry_s**)calloc(nEntries, sizeof(menuEntry_s*));
     if(list == NULL) return;
+    menuEntry_s** listStar = (menuEntry_s**)calloc(nEntries, sizeof(menuEntry_s*));
+    if(listStar == NULL) {
+        free(list);
+        return;
+    }
 
     menuEntry_s* p = m->firstEntry;
     for(i = 0; i < nEntries; ++i) {
-        list[i] = p;
+        if (p->starred)
+            listStar[nEntriesStar++] = p;
+        else
+            list[nEntriesNoStar++] = p;
         p = p->next;
     }
 
-    qsort(list, nEntries, sizeof(menuEntry_s*), menuEntryCmp);
+    qsort(listStar, nEntriesStar, sizeof(menuEntry_s*), menuEntryCmp);
+    qsort(list, nEntriesNoStar, sizeof(menuEntry_s*), menuEntryCmp);
 
     menuEntry_s** pp = &m->firstEntry;
-    for(i = 0; i < nEntries; ++i) {
+    for(i = 0; i < nEntriesStar; ++i) {
+        *pp = listStar[i];
+        pp = &(*pp)->next;
+    }
+    for(i = 0; i < nEntriesNoStar; ++i) {
         *pp = list[i];
         pp = &(*pp)->next;
     }
@@ -117,6 +131,14 @@ static void menuSort(void) {
     *pp = NULL;
 
     free(list);
+    free(listStar);
+}
+
+void menuReorder (void) {
+    s_curMenu = !s_curMenu;
+    menuSort();
+    s_curMenu = !s_curMenu;
+    menuClear();
 }
 
 int menuScan(const char* target) {

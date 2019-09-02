@@ -1,4 +1,4 @@
-export APP_VERSION	:=	3.0.1
+export APP_VERSION	:=	3.1.0
 
 ifeq ($(RELEASE),)
 	export APP_VERSION	:=	$(APP_VERSION)-$(shell git describe --dirty --always)
@@ -8,18 +8,20 @@ endif
 
 all: nx pc
 
-romfs	:	assets
+romfs:
 	@mkdir -p romfs
+
+romfs/assets.zip	:	romfs assets
 	@rm -f romfs/assets.zip
 	@zip -rj romfs/assets.zip assets
 
-dist-bin:	romfs
+dist-bin:	romfs/assets.zip
 	$(MAKE) -f Makefile.nx dist-bin
 
-nx:	romfs
+nx:	romfs/assets.zip
 	$(MAKE) -f Makefile.nx
 
-pc:	romfs
+pc:	romfs/assets.zip
 	$(MAKE) -f Makefile.pc
 
 clean:

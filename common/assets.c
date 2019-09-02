@@ -20,6 +20,13 @@ assetsDataEntry g_assetsDataList[AssetId_Max] = {
     GENASSET("hbmenu_logo_light.bin"),
     GENASSET("theme_icon_dark.bin"),
     GENASSET("theme_icon_light.bin"),
+    GENASSET("airplane_icon.bin"),
+    GENASSET("wifi_none_icon.bin"),
+    GENASSET("wifi1_icon.bin"),
+    GENASSET("wifi2_icon.bin"),
+    GENASSET("wifi3_icon.bin"),
+    GENASSET("eth_icon.bin"),
+    GENASSET("eth_none_icon.bin"),
 };
 
 static void assetsClearEntry(assetsDataEntry *entry) {

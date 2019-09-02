@@ -168,6 +168,26 @@ static bool menuEntryLoadEmbeddedNacp(menuEntry_s* me) {
     return ok;
 }
 
+static bool menuEntryLoadExternalNacp(menuEntry_s* me, const char* path) {
+    struct stat st;
+
+    if(stat(path, &st)==-1) return false;
+
+    FILE* f = fopen(path, "rb");
+    if (!f) return false;
+
+    me->nacp = (NacpStruct*)malloc(sizeof(NacpStruct));
+    if (me->nacp == NULL) {
+        fclose(f);
+        return false;
+    }
+    memset(me->nacp, 0, sizeof(NacpStruct));
+
+    bool ok = fread(me->nacp, sizeof(NacpStruct), 1, f) == 1;
+    fclose(f);
+    return ok;
+}
+
 /*static void fixSpaceNewLine(char* buf) {
     char *outp = buf, *inp = buf;
     char lastc = 0;
@@ -438,11 +458,23 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
             if (!iconLoaded && fileassoc_me->icon_gfx && fileassoc_me->icon_gfx_small)
                 iconLoaded = menuEntryImportIconGfx(me, fileassoc_me->icon_gfx, fileassoc_me->icon_gfx_small);
 
-            strncpy(me->author, fileassoc_me->author, sizeof(me->author));
-            me->author[sizeof(me->author)-1] = 0;
+            //Attempt to load the nacp from {me->path filepath with extension .nacp}, then on failure use the config from fileassoc_me.
+            memset(tempbuf, 0, sizeof(tempbuf));
+            strncpy(tempbuf, me->path, sizeof(tempbuf));
+            tempbuf[sizeof(tempbuf)-1] = 0;
+            strptr = getExtension(tempbuf);
+            strncpy(strptr, ".nacp", sizeof(tempbuf)-1 - ((ptrdiff_t)strptr - (ptrdiff_t)tempbuf));
 
-            strncpy(me->version, fileassoc_me->version, sizeof(me->version));
-            me->version[sizeof(me->version)-1] = 0;
+            bool nacpLoaded = menuEntryLoadExternalNacp(me, tempbuf);
+
+            if (nacpLoaded) menuEntryParseNacp(me);
+            else {
+                strncpy(me->author, fileassoc_me->author, sizeof(me->author));
+                me->author[sizeof(me->author)-1] = 0;
+
+                strncpy(me->version, fileassoc_me->version, sizeof(me->version));
+                me->version[sizeof(me->version)-1] = 0;
+            }
 
             // Initialize the argument data
             argData_s* ad = &me->args;
@@ -458,6 +490,13 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
         return false;
     }
 
+    //check for .filename.star in same path
+    strptr = getSlash(me->path);
+    if (strptr[0] == '/') strptr++;
+    int strptrLen = strlen(strptr);
+    snprintf(me->starpath, sizeof(me->starpath)-1, "%.*s.%.*s.star", (int)(strlen(me->path) - strptrLen), me->path, (int)strptrLen, strptr);
+    me->starred = fileExists(me->starpath);
+    
     return true;
 }
 

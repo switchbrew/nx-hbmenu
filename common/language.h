@@ -6,6 +6,7 @@
 typedef enum
 {
     StrId_Loading = 0,
+    StrId_AppletMode,
     StrId_Directory,
     StrId_DefaultPublisher,
     StrId_IOError,
@@ -23,6 +24,8 @@ typedef enum
     StrId_Actions_Open,
     StrId_Actions_Back,
     StrId_Actions_Apply,
+    StrId_Actions_Star,
+    StrId_Actions_Unstar,
 
     StrId_MsgBox_OK,
 

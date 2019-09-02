@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     memset(errormsg, 0, sizeof(errormsg));
 
     appletLockExit();
-    appletSetScreenShotPermission(1);
+    appletSetScreenShotPermission(AppletScreenShotPermission_Enable);
 
     ColorSetId theme;
     rc = setsysInitialize();
@@ -85,6 +85,11 @@ int main(int argc, char **argv)
     if (R_SUCCEEDED(rc) && !workerInit()) {
         rc = 1;
         snprintf(errormsg, sizeof(errormsg)-1, "Error: workerInit() failed.");
+    }
+
+    if (R_SUCCEEDED(rc) && !statusInit()) {
+        rc = 1;
+        snprintf(errormsg, sizeof(errormsg)-1, "Error: statusInit() failed.");
     }
 
     if (R_SUCCEEDED(rc)) menuStartup();
@@ -175,6 +180,7 @@ int main(int argc, char **argv)
     fontExit();
     launchExit();
     netloaderSignalExit();
+    statusExit();
     workerExit();
     netloaderExit();
     powerExit();
@@ -197,6 +203,10 @@ bool menuUpdate(void) {
     if (down & KEY_Y)
     {
         launchMenuNetloaderTask();
+    }
+    else if (down & KEY_X)
+    {
+        menuHandleXButton();
     }
     else if (down & KEY_A)
     {

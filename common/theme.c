@@ -12,8 +12,9 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col) {
 
 void themeStartup(ThemePreset preset) {
     themeGlobalPreset = preset;
-    theme_t themeLight = (theme_t) { 
+    theme_t themeLight = (theme_t) {
         .textColor = MakeColor(0, 0, 0, 255),
+        .attentionTextColor = MakeColor(255, 0, 0, 255),
         .frontWaveColor = MakeColor(100, 212, 250, 255),
         .middleWaveColor = MakeColor(100, 153, 255, 255),
         .backWaveColor = MakeColor(154, 171, 255, 255),
@@ -26,14 +27,18 @@ void themeStartup(ThemePreset preset) {
         .enableWaveBlending = 0,
         .buttonAText = "\uE0E0",
         .buttonBText = "\uE0E1",
+        .buttonXText = "\uE0E2",
         .buttonYText = "\uE0E3",
         .buttonPText = "\uE0EF",
         .buttonMText = "\uE0F0",
-        .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_light)
+        .labelStarOnText = "\u2605",
+        .labelStarOffText = "\u2606",
+        .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_light),
     };
-    
-    theme_t themeDark = (theme_t) { 
+
+    theme_t themeDark = (theme_t) {
         .textColor = MakeColor(255, 255, 255, 255),
+        .attentionTextColor = MakeColor(255, 0, 0, 255),
         .frontWaveColor = MakeColor(96, 204, 204, 255),
         .middleWaveColor = MakeColor(66, 154, 159, 255),
         .backWaveColor = MakeColor(73, 103, 169, 255),
@@ -46,10 +51,13 @@ void themeStartup(ThemePreset preset) {
         .enableWaveBlending = 0,
         .buttonAText = "\uE0A0",
         .buttonBText = "\uE0A1",
+        .buttonXText = "\uE0A2",
         .buttonYText = "\uE0A3",
         .buttonPText = "\uE0B3",
         .buttonMText = "\uE0B4",
-        .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_dark)
+        .labelStarOnText = "\u2605",
+        .labelStarOffText = "\u2606",
+        .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_dark),
     };
 
     char themePath[PATH_MAX] = {0};
@@ -59,9 +67,9 @@ void themeStartup(ThemePreset preset) {
     config_t cfg = {0};
     config_init(&cfg);
     config_setting_t *theme = NULL;
-    color_t text, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
+    color_t text, attentionText, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
     int waveBlending;
-    const char *AText, *BText, *YText, *PText, *MText;
+    const char *AText, *BText, *XText, *YText, *PText, *MText, *starOnText, *starOffText;
     bool good_cfg = false;
 
     if(themePath[0]!=0)
@@ -86,6 +94,8 @@ void themeStartup(ThemePreset preset) {
         if (theme != NULL) {
             if (!colorFromSetting(config_setting_lookup(theme, "textColor"), &text))
                 text = themeDefault->textColor;
+            if (!colorFromSetting(config_setting_lookup(theme, "attentionTextColor"), &attentionText))
+                attentionText = themeDefault->attentionTextColor;
             if (!colorFromSetting(config_setting_lookup(theme, "frontWaveColor"), &frontWave))
                 frontWave = themeDefault->frontWaveColor;
             if (!colorFromSetting(config_setting_lookup(theme, "middleWaveColor"), &middleWave))
@@ -110,14 +120,21 @@ void themeStartup(ThemePreset preset) {
                 AText = themeDefault->buttonAText;
             if (!config_setting_lookup_string(theme, "buttonBText", &BText))
                 BText = themeDefault->buttonBText;
+            if (!config_setting_lookup_string(theme, "buttonXText", &XText))
+                XText = themeDefault->buttonXText;
             if (!config_setting_lookup_string(theme, "buttonYText", &YText))
                 YText = themeDefault->buttonYText;
             if (!config_setting_lookup_string(theme, "buttonPText", &PText))
                 PText = themeDefault->buttonPText;
             if (!config_setting_lookup_string(theme, "buttonMText", &MText))
                 MText = themeDefault->buttonMText;
-            themeCurrent = (theme_t) { 
+            if (!config_setting_lookup_string(theme, "labelStarOnText", &starOnText))
+                starOnText = themeDefault->labelStarOnText;
+            if (!config_setting_lookup_string(theme, "labelStarOffText", &starOffText))
+                starOffText = themeDefault->labelStarOffText;
+            themeCurrent = (theme_t) {
                 .textColor = text,
+                .attentionTextColor = attentionText,
                 .frontWaveColor = frontWave,
                 .middleWaveColor = middleWave,
                 .backWaveColor = backWave,
@@ -132,9 +149,12 @@ void themeStartup(ThemePreset preset) {
             };
             strncpy(themeCurrent.buttonAText, AText, sizeof(themeCurrent.buttonAText)-1);
             strncpy(themeCurrent.buttonBText, BText, sizeof(themeCurrent.buttonBText)-1);
+            strncpy(themeCurrent.buttonXText, XText, sizeof(themeCurrent.buttonXText)-1);
             strncpy(themeCurrent.buttonYText, YText, sizeof(themeCurrent.buttonYText)-1);
             strncpy(themeCurrent.buttonPText, PText, sizeof(themeCurrent.buttonPText)-1);
             strncpy(themeCurrent.buttonMText, MText, sizeof(themeCurrent.buttonMText)-1);
+            strncpy(themeCurrent.labelStarOffText, starOffText, sizeof(themeCurrent.labelStarOffText)-1);
+            strncpy(themeCurrent.labelStarOnText, starOnText, sizeof(themeCurrent.labelStarOnText)-1);
         } else {
             themeCurrent = *themeDefault;
         }
@@ -154,7 +174,7 @@ void GetThemePathFromConfig(char* themePath, size_t size) {
     snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/settings.cfg", menuGetRootBasePath());
     snprintf(tmp_path_theme, sizeof(tmp_path_theme)-1, "%s/config/nx-hbmenu/themes/", menuGetRootBasePath());
     bool good_cfg = config_read_file(&cfg, tmp_path);
-    
+
     if(good_cfg) {
         settings = config_lookup(&cfg, "settings");
         if(settings != NULL) {
@@ -172,7 +192,7 @@ void SetThemePathToConfig(const char* themePath) {
 
     char settingPath[PATH_MAX] = {0};
     config_setting_t *root = NULL,
-                     *group = NULL, 
+                     *group = NULL,
                      *settings = NULL;
 
     themePath = getSlash(themePath);
@@ -184,7 +204,7 @@ void SetThemePathToConfig(const char* themePath) {
 
     snprintf(settingPath, sizeof(settingPath)-1, "%s/config/nx-hbmenu/settings.cfg", menuGetRootBasePath());
     bool good_cfg = config_read_file(&cfg, settingPath);
-    
+
     if(good_cfg) {
         group = config_lookup(&cfg, "settings");
         if(group != NULL)
@@ -195,9 +215,9 @@ void SetThemePathToConfig(const char* themePath) {
         root = config_root_setting(&cfg);
         if(root != NULL)
             group = config_setting_add(root, "settings", CONFIG_TYPE_GROUP);
-        if(group != NULL)    
+        if(group != NULL)
             settings = config_setting_add(group, "themePath", CONFIG_TYPE_STRING);
-        if(settings != NULL)    
+        if(settings != NULL)
             config_setting_set_string(settings, themePath);
     }
 

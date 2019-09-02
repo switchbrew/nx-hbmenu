@@ -1,4 +1,4 @@
-﻿#include "language.h"
+#include "language.h"
 
 #ifdef __SWITCH__
 #define STR_JP(_str) [SetLanguage_JA] = _str
@@ -44,6 +44,12 @@ const char* const g_strings[StrId_Max][16] =
         STR_RU("загрузка…"),
         STR_ZH("加载中…"),
         STR_TW("加載中…"),
+    },
+
+    [StrId_AppletMode] =
+    {
+        STR_EN("● Applet Mode ●"),
+        STR_ES("● Modo Applet ●"),
     },
 
     [StrId_Directory] =
@@ -292,7 +298,7 @@ const char* const g_strings[StrId_Max][16] =
         STR_ZH("打开"),
         STR_TW("開啟"),
     },
-    
+
     [StrId_Actions_Back] =
     {
         STR_EN("Back"),
@@ -329,6 +335,18 @@ const char* const g_strings[StrId_Max][16] =
         STR_JP("適用"),
         STR_KO("적용"),
         STR_TW("应用"),
+    },
+
+    [StrId_Actions_Star] =
+    {
+        STR_EN("Star"),
+        STR_ES("Agregar a favoritos"),
+    },
+
+    [StrId_Actions_Unstar] =
+    {
+        STR_EN("Unstar"),
+        STR_ES("Borrar de favoritos"),
     },
 
     [StrId_ThemeMenu] =

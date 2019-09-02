@@ -10,6 +10,13 @@ typedef enum {
     AssetId_hbmenu_logo_light,
     AssetId_theme_icon_dark,
     AssetId_theme_icon_light,
+    AssetId_airplane_icon,
+    AssetId_wifi_none_icon,
+    AssetId_wifi1_icon,
+    AssetId_wifi2_icon,
+    AssetId_wifi3_icon,
+    AssetId_eth_icon,
+    AssetId_eth_none_icon,
 
     AssetId_Max
 } AssetId;

@@ -43,3 +43,4 @@ extern const ffnt_header_t interuiregular18_nxfnt;*/
 #define interuiregular14 0//&interuiregular14_nxfnt
 #define interuiregular18 1//&interuiregular18_nxfnt
 #define fontscale7 4
+#define largestar 5

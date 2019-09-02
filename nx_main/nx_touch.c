@@ -13,6 +13,11 @@
 #define BACK_BUTTON_END_X 1048
 #define LAUNCH_BUTTON_START_X 1092
 #define LAUNCH_BUTTON_END_X 1200
+#define STAR_BUTTON_START_X 426
+#define STAR_BUTTON_END_X 490
+#define STAR_BUTTON_START_Y 100
+#define STAR_BUTTON_END_Y 161
+
 
 #define distance(x1, y1, x2, y2) (int) sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)))
 
@@ -125,6 +130,16 @@ void handleTouch(menu_s* menu) {
                     } else {
                         handleTappingOnOpenLaunch(menu);
                     }
+                }
+            }
+            // Star
+            else {
+                int i;
+                menuEntry_s* me;
+                for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
+                if (me->type != ENTRY_TYPE_THEME && x1 > STAR_BUTTON_START_X && x1 < STAR_BUTTON_END_X
+                    && y1 > STAR_BUTTON_START_Y && y1 < STAR_BUTTON_END_Y) {
+                    menuHandleXButton();
                 }
             }
         }

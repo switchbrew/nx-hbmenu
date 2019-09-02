@@ -29,6 +29,35 @@ void launchMenuEntryTask(menuEntry_s* arg) {
         launchMenuEntry(me);
 }
 
+void toggleStarState(menuEntry_s* arg) {
+    menuEntry_s* me = arg;
+    if (me->starred) {
+        if (fileExists(me->starpath))
+            remove(me->starpath);
+    } else {
+        if (!fileExists(me->starpath)) {
+            FILE* f  = fopen(me->starpath, "w");
+            if (f) fclose(f);
+        }
+    }
+    me->starred = fileExists(me->starpath);
+    //todo: error handling/message?
+
+    menuReorder();
+    menu_s* menu = menuGetCurrent();
+    menuEntry_s* meSearch = menu->firstEntry;
+    menu->curEntry = -1;
+    int i = 0;
+    while (menu->curEntry < 0) {
+        if (me == meSearch)
+            menu->curEntry = i;
+        else {
+            meSearch = meSearch->next;
+            i++;
+        }
+    }
+}
+
 static enum
 {
     HBMENU_DEFAULT,
@@ -73,11 +102,23 @@ void menuHandleAButton(void) {
     }
 }
 
+void menuHandleXButton(void) {
+    menu_s* menu = menuGetCurrent();
+
+    if (menu->nEntries > 0 && hbmenu_state == HBMENU_DEFAULT) {
+        int i;
+        menuEntry_s* me;
+        for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
+        toggleStarState(me);
+    }
+}
+
+
 void launchApplyThemeTask(menuEntry_s* arg) {
     const char* themePath = arg->path;
     SetThemePathToConfig(themePath);
     themeStartup(themeGlobalPreset);
-    computeFrontGradient(themeCurrent.frontWaveColor, 280); 
+    computeFrontGradient(themeCurrent.frontWaveColor, 280);
 }
 
 bool menuIsNetloaderActive(void) {
@@ -138,6 +179,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     const uint8_t *smallimg = NULL;
     const uint8_t *largeimg = NULL;
+    char *strptr = NULL;
     char tmpstr[1024];
 
     int border_start_x, border_end_x;
@@ -249,9 +291,9 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
 
     if (is_active && largeimg) {
-        drawImage(117, 100, 256, 256, largeimg, IMAGE_MODE_RGB24);
+        drawImage(117, 100+10, 256, 256, largeimg, IMAGE_MODE_RGB24);
 
-        shadow_start_y = 100+256;
+        shadow_start_y = 100+10+256;
         border_start_x = 117;
         border_end_x = 117+256;
 
@@ -267,13 +309,21 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
         }
     }
 
-    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, themeCurrent.borderTextColor, me->name, 140 - 32, "...");
+    if (me->type != ENTRY_TYPE_THEME)
+        strptr = me->starred ? themeCurrent.labelStarOnText : "";
+    else
+        strptr = "";
+
+    memset(tmpstr, 0, sizeof(tmpstr));
+    snprintf(tmpstr, sizeof(tmpstr)-1, "%s%s", strptr, me->name);
+
+    DrawTextTruncate(interuiregular14, start_x + 4, start_y + 4 + 18, themeCurrent.borderTextColor, tmpstr, 140 - 32, "...");
 
     if (is_active) {
         start_x = 1280 - 790;
-        start_y = 135;
+        start_y = 135+10;
 
-        DrawTextTruncate(interuimedium30, start_x, start_y + 39, themeCurrent.textColor, me->name, 1280 - start_x - 120 ,"...");
+        DrawTextTruncate(interuimedium30, start_x, start_y + 39, themeCurrent.textColor, tmpstr, 1280 - start_x - 120 ,"...");
 
         if (me->type != ENTRY_TYPE_FOLDER) {
             memset(tmpstr, 0, sizeof(tmpstr));
@@ -414,7 +464,39 @@ void drawWave(int id, float timer, color_t color, int height, float phase, float
     }
 }
 
-void drawTime() {
+void drawCharge() {
+    char chargeString[5];
+    uint32_t batteryCharge;
+    bool isCharging;
+    bool validPower;
+
+    validPower = powerGetDetails(&batteryCharge, &isCharging);
+
+    if (validPower)
+    {
+        batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
+
+        sprintf(chargeString, "%d%%", batteryCharge);
+
+        int tmpX = GetTextXCoordinate(interuiregular14, 1180 - 10, chargeString, 'r');
+
+        DrawText(interuiregular14, tmpX - 24 - 8, 0 + 47 + 10 + 21 + 4, themeCurrent.textColor, chargeString);
+        drawIcon(1180 - 8 - 24 - 8, 0 + 47 + 10 + 6, 24, 24, assetsGetDataBuffer(AssetId_battery_icon), themeCurrent.textColor);
+        if (isCharging)
+            drawIcon(1180 - 20, 0 + 47 + 10 + 6, 24, 24, assetsGetDataBuffer(AssetId_charging_icon), themeCurrent.textColor);
+    }
+}
+
+void drawNetwork(int tmpX) {
+    bool netstatusFlag=0;
+    AssetId id;
+    if (statusGet(&netstatusFlag, &id)) {
+        if (netstatusFlag)
+            drawIcon(tmpX, 0 + 47 + 10 + 3, 24, 24, assetsGetDataBuffer(id), themeCurrent.textColor);
+    }
+}
+
+u32 drawStatus() {
 
     char timeString[9];
 
@@ -427,33 +509,14 @@ void drawTime() {
 
     sprintf(timeString, "%02d:%02d:%02d", hours, minutes, seconds);
 
-    int tmpX = GetTextXCoordinate(interuimedium20, 1180, timeString, 'r');
+    u32 tmpX = GetTextXCoordinate(interuimedium20, 1180, timeString, 'r');
 
     DrawText(interuimedium20, tmpX, 0 + 47 + 10, themeCurrent.textColor, timeString);
 
-}
+    drawCharge();
+    drawNetwork(tmpX);
 
-void drawCharge() {
-    char chargeString[5];
-    uint32_t batteryCharge;
-    bool isCharging;
-    bool validPower;
-
-    validPower = powerGetDetails(&batteryCharge, &isCharging);
-    
-    if (validPower)
-    {
-        batteryCharge = (batteryCharge > 100) ? 100 : batteryCharge;
-
-        sprintf(chargeString, "%d%%", batteryCharge);
-        
-        int tmpX = GetTextXCoordinate(interuiregular14, 1180, chargeString, 'r');
-
-        DrawText(interuiregular14, tmpX - 15, 0 + 47 + 10 + 21, themeCurrent.textColor, chargeString);
-        drawIcon(1180 - 11, 0 + 47 + 10 + 6, 10, 15, assetsGetDataBuffer(AssetId_battery_icon), themeCurrent.textColor);
-        if (isCharging)
-            drawIcon(tmpX - 32, 0 + 47 + 10 + 6, 9, 15, assetsGetDataBuffer(AssetId_charging_icon), themeCurrent.textColor);
-    }
+    return tmpX;
 }
 
 void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
@@ -472,8 +535,8 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
     #endif
     {
         //drawImage(x_image, 720 - 48, 32, 32, themeCurrent.buttonBImage, IMAGE_MODE_RGBA32);
-        DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonBText);//Display the 'B' button from SharedFont.
-        DrawText(interuimedium20, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_Actions_Back));
+        DrawText(fontscale7, x_image, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonBText);//Display the 'B' button from SharedFont.
+        DrawText(interuiregular18, x_text, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Back));
     }
 
     if(hbmenu_state == HBMENU_DEFAULT)
@@ -482,15 +545,15 @@ void drawButtons(menu_s* menu, bool emptyDir, int *x_image_out) {
         x_image = x_text - 36;
         *x_image_out = x_image - 40;
 
-        DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonYText);
-        DrawText(interuiregular18, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_NetLoader));
+        DrawText(fontscale7, x_image, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonYText);
+        DrawText(interuiregular18, x_text, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_NetLoader));
 
         x_text = GetTextXCoordinate(interuiregular18, x_image - 32, textGetString(StrId_ThemeMenu), 'r');
         x_image = x_text - 36;
         *x_image_out = x_image - 40;
 
-        DrawText(fontscale7, x_image, 720 - 47 + 26, themeCurrent.textColor, themeCurrent.buttonMText);
-        DrawText(interuiregular18, x_text, 720 - 47 + 26, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+        DrawText(fontscale7, x_image, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonMText);
+        DrawText(interuiregular18, x_text, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
     }
 }
 
@@ -542,7 +605,30 @@ void menuLoop(void) {
     menuTimer += 0.05;
 
     drawImage(40, 20, 140, 60, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
-    DrawText(interuiregular14, 180, 46 + 18, themeCurrent.textColor, VERSION);
+    DrawText(interuiregular14, 184, 46 + 18, themeCurrent.textColor, VERSION);
+    u32 statusXPos = drawStatus();
+
+    #ifdef __SWITCH__
+    AppletType at = appletGetAppletType();
+    if (at != AppletType_Application && at != AppletType_SystemApplication) {
+        const char* appletMode = textGetString(StrId_AppletMode);
+        u32 x_pos = GetTextXCoordinate(interuimedium30, statusXPos, appletMode, 'r');
+        DrawText(interuimedium30, x_pos - 32, 46 + 18, themeCurrent.attentionTextColor, appletMode);
+    }
+    const char* loaderInfo = envGetLoaderInfo();
+    if (loaderInfo) {
+        u32 x_pos = 43;
+        char* spacePos = strchr(loaderInfo, ' ');
+        if (spacePos) {
+            char tempbuf[64] = {0};
+            size_t tempsize = spacePos - loaderInfo + 1;
+            if (tempsize > sizeof(tempbuf)-1) tempsize = sizeof(tempbuf)-1;
+            memcpy(tempbuf, loaderInfo, tempsize);
+            x_pos = GetTextXCoordinate(interuiregular14, 184, tempbuf, 'r');
+        }
+        DrawText(interuiregular14, x_pos, 46 + 18 + 20, themeCurrent.textColor, loaderInfo);
+    }
+    #endif
 
     #ifdef PERF_LOG_DRAW//Seperate from the PERF_LOG define since this might affect perf.
     extern u64 g_tickdiff_frame;
@@ -552,9 +638,6 @@ void menuLoop(void) {
     snprintf(tmpstr, sizeof(tmpstr)-1, "%lu", g_tickdiff_frame);
     DrawText(interuiregular14, 180 + 256, 46 + 16 + 18, themeCurrent.textColor, tmpstr);
     #endif
-
-    drawTime();
-    drawCharge();
 
     memset(&netloader_state, 0, sizeof(netloader_state));
     netloaderGetState(&netloader_state);
@@ -614,6 +697,7 @@ void menuLoop(void) {
         // Draw menu entries
         for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
             int entry_start_x = 29 + i * (140 + 30);
+            int entry_draw_x = entry_start_x + menu->xPos;
 
             int screen_width = 1280;
             if (entry_start_x >= (screen_width - menu->xPos))
@@ -624,18 +708,21 @@ void menuLoop(void) {
             if (is_active)
                 active_entry = me;
 
-            drawEntry(me, entry_start_x + menu->xPos, is_active);
+            if (!is_active && entry_draw_x < -(29 + 140 + 30))
+                continue;
+
+            drawEntry(me, entry_draw_x, is_active);
         }
 
         int getX = GetTextXCoordinate(interuiregular18, 1180, textGetString(StrId_ThemeMenu), 'r');
 
         if(hbmenu_state == HBMENU_THEME_MENU) {
-            DrawText(interuiregular18, getX, 30 + 26 + 32 + 10, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
+            DrawText(interuiregular18, getX, 30 + 26 + 32 + 20, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
         } else {
             //DrawText(interuiregular18, getX, 30 + 26 + 32 + 10, themeCurrent.textColor, textGetString(StrId_ThemeMenu));
             //DrawText(fontscale7, getX - 40,  30 + 26 + 32 + 10, themeCurrent.textColor, themeCurrent.buttonMText);
         }
-        
+
         if(active_entry != NULL) {
             if (active_entry->type == ENTRY_TYPE_THEME) {
                 DrawText(fontscale7, 1280 - 126 - 30 - 32, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonAText);
@@ -652,6 +739,20 @@ void menuLoop(void) {
         }
 
         drawButtons(menu, false, &menupath_x_endpos);
+
+        if (active_entry && active_entry->type != ENTRY_TYPE_THEME) {
+            if (active_entry->starred) {
+                getX = GetTextXCoordinate(interuiregular18, menupath_x_endpos + 8, textGetString(StrId_Actions_Unstar), 'r');
+                DrawText(fontscale7, getX - 36, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonXText);
+                DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Unstar));
+            } else {
+                getX = GetTextXCoordinate(interuiregular18, menupath_x_endpos + 8, textGetString(StrId_Actions_Star), 'r');
+                DrawText(fontscale7, getX - 36, 720 - 47 + 24, themeCurrent.textColor, themeCurrent.buttonXText);
+                DrawText(interuiregular18, getX, 720 - 47 + 24, themeCurrent.textColor, textGetString(StrId_Actions_Star));
+            }
+            menupath_x_endpos = getX - 36 - 40;
+        }
+
     }
 
     DrawTextTruncate(interuiregular18, 40, 720 - 47 + 24, themeCurrent.textColor, menu->dirname, menupath_x_endpos - 40, "...");
