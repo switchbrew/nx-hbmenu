@@ -8,15 +8,20 @@ The latest release is available from the [releases](https://github.com/switchbre
 Build for the Nintendo Switch with ```make nx``` and for the PC with ```make pc```.
 Running ```make``` builds for both systems.
 
-The following [pacman packages](https://devkitpro.org/wiki/devkitPro_pacman) are required to build:
+The following [pacman packages](https://devkitpro.org/wiki/devkitPro_pacman) are required to build for Switch:
 - `switch-dev`
 - `switch-freetype`
 - `switch-libconfig`
 - `switch-libjpeg-turbo`
 - `switch-zlib`
-- `zip` (on Windows)
 
-For the PC build, `libminizip` is required (for the Switch build, the `switch-zlib` package includes this).
+The following libraries are required to build for PC:
+- `libfreetype`
+- `libconfig`
+- `libjpeg-turbo`
+- `libminizip`
+
+Building for Switch/PC requires `zip`.
 
 Since C11 threads are used, building for the PC may fail if C11 threads are not available.
 
