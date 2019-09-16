@@ -10,6 +10,8 @@ static bool s_statusExit;
 static bool s_statusReady;
 static bool s_statusNetFlag;
 static AssetId s_statusNetAssetId;
+static bool s_statusTemperatureFlag;
+static s32 s_statusTemperature;
 
 // This uses netstatusGetDetails from a dedicated thread, since nifmGetInternetConnectionStatus can block for a few seconds.
 
@@ -18,8 +20,13 @@ static int statusThreadProc(void* unused)
     mtx_lock(&s_statusMtx);
 
     struct timespec timeout = {0};
-    bool tmpflag;
+    bool tmpflag=0;
+    bool thermalflag=0;
+    bool thermal_initialized=0;
     AssetId tmpid;
+    s32 temperature;
+
+    thermal_initialized = thermalstatusInit();
 
     clock_gettime(CLOCK_MONOTONIC, &timeout);
     timeout.tv_sec++;
@@ -32,11 +39,15 @@ static int statusThreadProc(void* unused)
             break;
 
         tmpflag = netstatusGetDetails(&tmpid);
+        if (thermal_initialized) thermalflag = thermalstatusGetDetails(&temperature);
 
         mtx_lock(&s_statusAccessMtx);
 
         s_statusNetFlag = tmpflag;
         s_statusNetAssetId = tmpid;
+
+        s_statusTemperatureFlag = thermalflag;
+        s_statusTemperature = temperature;
 
         s_statusReady = 1;
 
@@ -48,16 +59,21 @@ static int statusThreadProc(void* unused)
 
     mtx_unlock(&s_statusMtx);
 
+    if (thermal_initialized) thermalstatusExit();
+
     return 0;
 }
 
-bool statusGet(bool *netstatusFlag, AssetId *netstatusAssetId) {
+bool statusGet(bool *netstatusFlag, AssetId *netstatusAssetId, bool *temperatureFlag, s32 *temperature) {
     if (!s_statusReady) return 0;
 
     mtx_lock(&s_statusAccessMtx);
 
     *netstatusFlag = s_statusNetFlag;
     *netstatusAssetId = s_statusNetAssetId;
+
+    *temperatureFlag = s_statusTemperatureFlag;
+    *temperature = s_statusTemperature;
 
     mtx_unlock(&s_statusAccessMtx);
 

@@ -487,18 +487,17 @@ void drawCharge() {
     }
 }
 
-void drawNetwork(int tmpX) {
-    bool netstatusFlag=0;
-    AssetId id;
-    if (statusGet(&netstatusFlag, &id)) {
-        if (netstatusFlag)
-            drawIcon(tmpX, 0 + 47 + 10 + 3, 24, 24, assetsGetDataBuffer(id), themeCurrent.textColor);
-    }
+void drawNetwork(int tmpX, AssetId id) {
+    drawIcon(tmpX, 0 + 47 + 10 + 3, 24, 24, assetsGetDataBuffer(id), themeCurrent.textColor);
 }
 
 u32 drawStatus() {
+    bool netstatusFlag=0;
+    bool temperatureFlag=0;
+    s32 temperature=0;
+    AssetId id;
 
-    char timeString[9];
+    char tmpstr[32];
 
     time_t unixTime = time(NULL);
     struct tm* timeStruct = localtime((const time_t *)&unixTime);
@@ -507,14 +506,22 @@ u32 drawStatus() {
     int minutes = timeStruct->tm_min;
     int seconds = timeStruct->tm_sec;
 
-    sprintf(timeString, "%02d:%02d:%02d", hours, minutes, seconds);
+    snprintf(tmpstr, sizeof(tmpstr)-1, "%02d:%02d:%02d", hours, minutes, seconds);
 
-    u32 tmpX = GetTextXCoordinate(interuimedium20, 1180, timeString, 'r');
+    u32 tmpX = GetTextXCoordinate(interuimedium20, 1180, tmpstr, 'r');
 
-    DrawText(interuimedium20, tmpX, 0 + 47 + 10, themeCurrent.textColor, timeString);
+    DrawText(interuimedium20, tmpX, 0 + 47 + 10, themeCurrent.textColor, tmpstr);
 
     drawCharge();
-    drawNetwork(tmpX);
+
+    if (statusGet(&netstatusFlag, &id, &temperatureFlag, &temperature)) {
+        if (netstatusFlag) drawNetwork(tmpX, id);
+        if (temperatureFlag) {
+            snprintf(tmpstr, sizeof(tmpstr)-1, "%.3f °C", ((float)temperature) / 1000);
+            u32 tmpX = GetTextXCoordinate(interuiregular14, 1180, tmpstr, 'r');
+            DrawText(interuiregular14, tmpX, 0 + 47 + 10 + 48, themeCurrent.textColor, tmpstr);
+        }
+    }
 
     return tmpX;
 }

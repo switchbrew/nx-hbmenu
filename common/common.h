@@ -23,6 +23,8 @@
 typedef uint8_t u8;
 typedef uint32_t u32;
 typedef uint64_t u64;
+typedef int8_t s8;
+typedef int32_t s32;
 typedef u32 Result;
 
 typedef void (*workerThreadFunc)(void *);
@@ -65,6 +67,7 @@ typedef union {
 #include "power.h"
 #include "netloader.h"
 #include "netstatus.h"
+#include "thermalstatus.h"
 #include "status.h"
 
 void menuStartupPath(void);
