@@ -517,9 +517,8 @@ u32 drawStatus() {
     if (statusGet(&netstatusFlag, &id, &temperatureFlag, &temperature)) {
         if (netstatusFlag) drawNetwork(tmpX, id);
         if (temperatureFlag) {
-            snprintf(tmpstr, sizeof(tmpstr)-1, "%.1f °C", ((float)temperature) / 1000);
-            u32 tmpX = GetTextXCoordinate(interuiregular14, 1180, tmpstr, 'r');
-            DrawText(interuiregular14, tmpX, 0 + 47 + 10 + 48, themeCurrent.textColor, tmpstr);
+            snprintf(tmpstr, sizeof(tmpstr)-1, "%.1f°C", ((float)temperature) / 1000);
+            DrawText(interuiregular14, 1180 + 4, 0 + 47 + 10 + + 21 + 6, themeCurrent.textColor, tmpstr);
         }
     }
 
