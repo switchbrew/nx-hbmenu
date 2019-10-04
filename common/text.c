@@ -10,14 +10,14 @@ static int s_textLang = 1;
 
 Result textInit(void) {
     #ifdef __SWITCH__
-    s32 Language=0;
+    SetLanguage Language=SetLanguage_ENUS;
 
-    s_textLang = SetLanguage_ENUS;
+    s_textLang = Language;
 
     Result rc = setInitialize();
     if (R_SUCCEEDED(rc)) rc = setGetSystemLanguage(&s_textLanguageCode);
     if (R_SUCCEEDED(rc)) rc = setMakeLanguage(s_textLanguageCode, &Language);
-    //if (R_SUCCEEDED(rc) && Language < 16) s_textLang = Language;//TODO: Re-enable this once language.c supports all used languages.
+    //if (R_SUCCEEDED(rc) && Language < 17) s_textLang = Language;//TODO: Re-enable this once language.c supports all used languages.
     setExit();
     if (R_FAILED(rc)) return rc;
     #else

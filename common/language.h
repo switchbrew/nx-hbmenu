@@ -54,5 +54,5 @@ typedef enum
     StrId_Max,
 } StrId;
 
-extern const char* const g_strings[StrId_Max][16];
+extern const char* const g_strings[StrId_Max][17];
 
