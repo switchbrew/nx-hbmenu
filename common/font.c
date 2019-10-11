@@ -14,11 +14,11 @@ static FT_Error s_font_libret=1, s_font_facesret[FONT_FACES_MAX];
 static FT_Library s_font_library;
 static FT_Face s_font_faces[FONT_FACES_MAX];
 static FT_Face s_font_lastusedface;
-static size_t s_font_faces_total = 0;
+static s32 s_font_faces_total = 0;
 
 static bool FontSetType(u32 font)
 {
-    u32 i=0;
+    s32 i=0;
     u32 scale=0;
     FT_Error ret=0;
 
@@ -80,12 +80,12 @@ static bool FontSetType(u32 font)
 
 static inline bool FontLoadGlyph(glyph_t* glyph, u32 font, uint32_t codepoint)
 {
-    FT_Face face;
+    FT_Face face=0;
     FT_Error ret=0;
     FT_GlyphSlot slot;
     FT_UInt glyph_index;
     FT_Bitmap* bitmap;
-    u32 i=0;
+    s32 i=0;
 
     //__builtin_printf("LoadGlyph %u\n", (unsigned int)codepoint);
     /*const ffnt_page_t* page = FontGetPage(font, codepoint >> 8);
@@ -320,7 +320,7 @@ void GetTextDimensions(u32 font, const char* text, uint32_t* width_out, uint32_t
 bool fontInitialize(void)
 {
     FT_Error ret=0;
-    u32 i;
+    s32 i;
 
     for (i=0; i<FONT_FACES_MAX; i++) s_font_facesret[i] = 1;
 
@@ -372,7 +372,7 @@ bool fontInitialize(void)
 
 void fontExit()
 {
-    u32 i=0;
+    s32 i=0;
 
     for (i=0; i<s_font_faces_total; i++)
         if (s_font_facesret[i]==0) FT_Done_Face(s_font_faces[i]);
