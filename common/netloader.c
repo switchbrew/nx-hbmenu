@@ -701,6 +701,10 @@ Result netloaderInit(void) {
 
 #ifdef __SWITCH__
     rc = socketInitializeDefault();
+    if (R_SUCCEEDED(rc)) {
+        rc = nifmInitialize(NifmServiceType_User);
+        if (R_FAILED(rc)) socketExit();
+    }
 #endif
 
 #ifdef __WIN32__
@@ -727,6 +731,7 @@ void netloaderExit(void) {
     mtx_destroy(&netloader_mtx);
 
 #ifdef __SWITCH__
+    nifmExit();
     socketExit();
 #endif
 
