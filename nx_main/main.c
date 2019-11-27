@@ -197,7 +197,12 @@ int main(int argc, char **argv)
 bool menuUpdate(void) {
     bool exitflag = 0;
     menu_s* menu = menuGetCurrent();
-    u32 down = hidKeysDown(CONTROLLER_P1_AUTO);
+    u64 down = 0;
+
+    for (int controller = 0; controller < 10; controller++) {
+        down |= hidKeysDown((HidControllerID) controller);
+    }
+    
     handleTouch(menu);
 
     if (down & KEY_Y)
@@ -243,7 +248,11 @@ bool menuUpdate(void) {
 
 bool menuUpdateErrorScreen(void) {
     bool exitflag = 0;
-    u32 down = hidKeysDown(CONTROLLER_P1_AUTO);
+    u64 down = 0;
+
+    for (int controller = 0; controller < 10; controller++) {
+        down |= hidKeysDown((HidControllerID) controller);
+    }
 
     if (down & KEY_PLUS)
     {
