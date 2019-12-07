@@ -826,7 +826,7 @@ void menuEntryParseNacp(menuEntry_s* me) {
 
     if (me->nacp==NULL) return;
 
-    strncpy(me->version, me->nacp->version, sizeof(me->version)-1);
+    strncpy(me->version, me->nacp->display_version, sizeof(me->version)-1);
 
     #ifdef __SWITCH__
     Result rc=0;
