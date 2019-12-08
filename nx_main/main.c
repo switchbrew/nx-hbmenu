@@ -193,15 +193,25 @@ int main(int argc, char **argv)
     return 0;
 }
 
+u64 menuGetKeysDown(void) {
+    u64 down = 0;
+
+    if (hidGetHandheldMode())
+        down |= hidKeysDown(CONTROLLER_HANDHELD);
+    else {
+        for (u32 controller=0; controller<8; controller++) {
+            if (hidIsControllerConnected(controller)) down |= hidKeysDown(controller);
+        }
+    }
+
+    return down;
+}
+
 //This is implemented here due to the hid code.
 bool menuUpdate(void) {
     bool exitflag = 0;
     menu_s* menu = menuGetCurrent();
-    u64 down = 0;
-
-    for (int controller = 0; controller < 10; controller++) {
-        down |= hidKeysDown((HidControllerID) controller);
-    }
+    u64 down = menuGetKeysDown();
     
     handleTouch(menu);
 
@@ -248,11 +258,7 @@ bool menuUpdate(void) {
 
 bool menuUpdateErrorScreen(void) {
     bool exitflag = 0;
-    u64 down = 0;
-
-    for (int controller = 0; controller < 10; controller++) {
-        down |= hidKeysDown((HidControllerID) controller);
-    }
+    u64 down = menuGetKeysDown();
 
     if (down & KEY_PLUS)
     {
