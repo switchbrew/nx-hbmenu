@@ -477,7 +477,7 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
             }
 
             if (response == 0 ) {
-                if (netloaded_cmdlen > sizeof(me->args.buf)-1) netloaded_cmdlen = sizeof(me->args.buf)-1;
+                if ((me->args.dst+netloaded_cmdlen) >= (char*)(me->args.buf + sizeof(me->args.buf))) netloaded_cmdlen = (uintptr_t)me->args.buf + sizeof(me->args.buf)-1 - (uintptr_t)me->args.dst;
 
                 len = recvall(sock,me->args.dst, netloaded_cmdlen,0);
 
