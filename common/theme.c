@@ -147,21 +147,21 @@ void themeStartup(ThemePreset preset) {
                 .enableWaveBlending = waveBlending,
                 .hbmenuLogoImage = themeDefault->hbmenuLogoImage
             };
-            strncpy(themeCurrent.buttonAText, AText, sizeof(themeCurrent.buttonAText)-1);
+            strncpy(themeCurrent.buttonAText, AText, sizeof(themeCurrent.buttonAText));
             themeCurrent.buttonAText[sizeof(themeCurrent.buttonAText)-1] = 0;
-            strncpy(themeCurrent.buttonBText, BText, sizeof(themeCurrent.buttonBText)-1);
+            strncpy(themeCurrent.buttonBText, BText, sizeof(themeCurrent.buttonBText));
             themeCurrent.buttonBText[sizeof(themeCurrent.buttonBText)-1] = 0;
-            strncpy(themeCurrent.buttonXText, XText, sizeof(themeCurrent.buttonXText)-1);
+            strncpy(themeCurrent.buttonXText, XText, sizeof(themeCurrent.buttonXText));
             themeCurrent.buttonXText[sizeof(themeCurrent.buttonXText)-1] = 0;
-            strncpy(themeCurrent.buttonYText, YText, sizeof(themeCurrent.buttonYText)-1);
+            strncpy(themeCurrent.buttonYText, YText, sizeof(themeCurrent.buttonYText));
             themeCurrent.buttonYText[sizeof(themeCurrent.buttonYText)-1] = 0;
-            strncpy(themeCurrent.buttonPText, PText, sizeof(themeCurrent.buttonPText)-1);
+            strncpy(themeCurrent.buttonPText, PText, sizeof(themeCurrent.buttonPText));
             themeCurrent.buttonPText[sizeof(themeCurrent.buttonPText)-1] = 0;
-            strncpy(themeCurrent.buttonMText, MText, sizeof(themeCurrent.buttonMText)-1);
+            strncpy(themeCurrent.buttonMText, MText, sizeof(themeCurrent.buttonMText));
             themeCurrent.buttonMText[sizeof(themeCurrent.buttonMText)-1] = 0;
-            strncpy(themeCurrent.labelStarOnText, starOnText, sizeof(themeCurrent.labelStarOnText)-1);
+            strncpy(themeCurrent.labelStarOnText, starOnText, sizeof(themeCurrent.labelStarOnText));
             themeCurrent.labelStarOnText[sizeof(themeCurrent.labelStarOnText)-1] = 0;
-            strncpy(themeCurrent.labelStarOffText, starOffText, sizeof(themeCurrent.labelStarOffText)-1);
+            strncpy(themeCurrent.labelStarOffText, starOffText, sizeof(themeCurrent.labelStarOffText));
             themeCurrent.labelStarOffText[sizeof(themeCurrent.labelStarOffText)-1] = 0;
         } else {
             themeCurrent = *themeDefault;
