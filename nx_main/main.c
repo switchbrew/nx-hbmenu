@@ -196,13 +196,10 @@ int main(int argc, char **argv)
 u64 menuGetKeysDown(void) {
     u64 down = 0;
 
-    if (hidGetHandheldMode())
-        down |= hidKeysDown(CONTROLLER_HANDHELD);
-    else {
-        for (u32 controller=0; controller<8; controller++) {
-            if (hidIsControllerConnected(controller)) down |= hidKeysDown(controller);
-        }
+    for (u32 controller=0; controller<8; controller++) {
+        if (hidIsControllerConnected(controller)) down |= hidKeysDown(controller);
     }
+    if (hidIsControllerConnected(CONTROLLER_HANDHELD)) down |= hidKeysDown(CONTROLLER_HANDHELD);
 
     return down;
 }
