@@ -16,6 +16,19 @@ u32 g_framebuf_width;
 
 bool menuUpdateErrorScreen(void);
 
+u64 g_prev_keyheld = 0;
+u64 g_curr_keyheld = 0;
+u64 g_tick_prev_keyheld = 0;
+u64 g_tick_keyheld_interval = 0;
+u64 g_tick_keyheld_subsequent_interval = 0;
+bool g_prev_elapsed = false;
+
+void intializeKeyHeldInterval(u16, u16);
+
+// These wait times are idenfied with trial and error
+#define KEY_HELD_INITIAL_WAIT_TIME  400
+#define KEY_HELD_SUBSEQUENT_WAIT_TIME  33
+
 #ifdef PERF_LOG
 u64 g_tickdiff_frame=0;
 #endif
@@ -133,10 +146,10 @@ int main(int argc, char **argv)
         printf("Press the + button to exit.\n");
     }
 
+    intializeKeyHeldInterval(KEY_HELD_INITIAL_WAIT_TIME, KEY_HELD_SUBSEQUENT_WAIT_TIME);
+
     while (appletMainLoop())
     {
-
-
         //Scan all the inputs. This should be done once for each frame
         hidScanInput();
 
@@ -204,12 +217,62 @@ u64 menuGetKeysDown(void) {
     return down;
 }
 
+/**
+    Initializes the initial and susequent wait interval with which the keys is considered to be held for long
+
+    @param msInitialInterval : The interval after which the key is considered as held for long
+    @param msSubsequentInterval : Once the key is found to be held for long, this decides when the key held state
+                                  should be set for susequent calls to keyHeldTimeElapsed()
+    @return nothing
+*/
+void intializeKeyHeldInterval(u16 msInitialInterval, u16 msSubsequentInterval)
+{
+    g_tick_keyheld_interval = armNsToTicks(msInitialInterval * 1000000);
+    g_tick_keyheld_subsequent_interval = armNsToTicks(msSubsequentInterval * 1000000);
+}
+
+/**
+    Initializes the initial and susequent wait interval after which continous key press will be set
+
+    @return true if the key is held for long, false if it is not held
+    bar and "," as the half bar.
+*/
+bool keyHeldTimeElapsed(void)
+{
+    bool elapsed = false;
+    u64 tick_current = svcGetSystemTick();
+    if (g_tick_prev_keyheld == 0 || g_curr_keyheld == 0)
+    {
+        g_tick_prev_keyheld = tick_current;
+    }
+    else if (g_prev_keyheld != g_curr_keyheld)
+    {
+        g_tick_prev_keyheld = tick_current;
+        g_prev_keyheld = g_curr_keyheld;
+    }
+    else
+    {
+        u64 tickdiff_keyheld = tick_current - g_tick_prev_keyheld;
+        if (g_prev_elapsed && (tickdiff_keyheld > g_tick_keyheld_subsequent_interval))
+        {
+            elapsed = true;
+        }
+        else if (tickdiff_keyheld > g_tick_keyheld_interval)
+        {
+            g_tick_prev_keyheld = tick_current;
+            elapsed = true;
+        }
+    }
+    g_prev_elapsed = elapsed;
+    return elapsed;
+}
+
 //This is implemented here due to the hid code.
 bool menuUpdate(void) {
     bool exitflag = 0;
     menu_s* menu = menuGetCurrent();
     u64 down = menuGetKeysDown();
-    
+
     handleTouch(menu);
 
     if (down & KEY_Y)
@@ -243,6 +306,17 @@ bool menuUpdate(void) {
         if (down & KEY_RIGHT) move++;
         if (down & KEY_DOWN) move-=7;
         if (down & KEY_UP) move+=7;
+
+        u64 held = hidKeysHeld(CONTROLLER_P1_AUTO);
+        g_curr_keyheld = held;
+
+        if (keyHeldTimeElapsed())
+        {
+            if (held & KEY_LEFT) move--;
+            if (held & KEY_RIGHT) move++;
+            if (held & KEY_DOWN) move -= 7;
+            if (held & KEY_UP) move += 7;
+        }
 
         int newEntry = menu->curEntry + move;
         if (newEntry < 0) newEntry = 0;
