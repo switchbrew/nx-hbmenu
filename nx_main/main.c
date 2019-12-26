@@ -209,6 +209,8 @@ bool menuUpdate(void) {
     bool exitflag = 0;
     menu_s* menu = menuGetCurrent();
     u64 down = menuGetKeysDown();
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListTiles];
+    int entries_count = layoutobj->posEnd[0];
     
     handleTouch(menu);
 
@@ -241,8 +243,8 @@ bool menuUpdate(void) {
 
         if (down & KEY_LEFT) move--;
         if (down & KEY_RIGHT) move++;
-        if (down & KEY_DOWN) move-=7;
-        if (down & KEY_UP) move+=7;
+        if (down & KEY_DOWN) move-=entries_count;
+        if (down & KEY_UP) move+=entries_count;
 
         int newEntry = menu->curEntry + move;
         if (newEntry < 0) newEntry = 0;

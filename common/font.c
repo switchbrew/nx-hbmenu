@@ -276,6 +276,38 @@ void DrawText(u32 font, uint32_t x, uint32_t y, color_t clr, const char* text)
     DrawText_(font, x, y, clr, text, 0, NULL);
 }
 
+void DrawTextFromLayout(ThemeLayoutId id, color_t clr, const char* text)
+{
+    ThemeLayoutObject *obj = &themeCurrent.layoutObjects[id];
+    if (!obj->visible) return;
+
+    DrawText(obj->font, obj->posStart[0], obj->posStart[1], clr, text);
+}
+
+void DrawTextFromLayoutRelative(ThemeLayoutId id, int base_x, int base_y, int *inPos, int *outPos, color_t clr, const char* text, const char align)
+{
+    ThemeLayoutObject *obj = &themeCurrent.layoutObjects[id];
+
+    base_x = obj->posType ? base_x + inPos[0] : inPos[0];
+    base_y = obj->posType ? base_y + inPos[1] : inPos[1];
+
+    base_x = GetTextXCoordinate(obj->font, base_x, text, align);
+
+    if (outPos) {
+        outPos[0] = base_x;
+        outPos[1] = base_y;
+    }
+
+    obj->posFinal[0] = base_x;
+    obj->posFinal[1] = base_y;
+
+    if (!obj->visible) return;
+
+    GetTextDimensions(obj->font, text, &obj->textSize[0], &obj->textSize[1]);
+
+    DrawText(obj->font, base_x, base_y, clr, text);
+}
+
 void DrawTextTruncate(u32 font, uint32_t x, uint32_t y, color_t clr, const char* text, uint32_t max_width, const char* end_text)
 {
     DrawText_(font, x, y, clr, text, max_width, end_text);

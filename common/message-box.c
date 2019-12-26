@@ -16,6 +16,7 @@ void drawMsgBoxBgToBuff(color_t *buff, int width, int height) {
     float rad, alpha;
     color_t base_color = themeCurrent.backgroundColor;
     color_t color;
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MsgBoxSeparator];
 
     for (y=0; y<height; y++) {
         for (x=0; x<width; x++) {
@@ -62,7 +63,7 @@ void drawMsgBoxBgToBuff(color_t *buff, int width, int height) {
             else
                 color = base_color;
 
-            if (y == height - 80) {
+            if (y == height + layoutobj->posStart[1]) {
                 color = themeCurrent.separatorColor;
             }
 
@@ -76,6 +77,7 @@ void menuDrawMsgBox() {
     if (!menuIsMsgBoxOpen())
         return;
 
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MsgBoxSeparator];
     int off;
     int x, y;
     int start_x = 1280 / 2 - currMsgBox.width / 2;
@@ -85,7 +87,7 @@ void menuDrawMsgBox() {
     color_t curr_color;
 
     color_t border_color;
-    int sep_start_y = currMsgBox.height - 80;
+    int sep_start_y = currMsgBox.height + layoutobj->posStart[1];
     int border_thickness = 6; 
 
     int shadow_start_y, shadow_y;
@@ -121,7 +123,7 @@ void menuDrawMsgBox() {
                     curr_color = border_color;
                 }
             }
-            else if (msgboxNetloaderProgressEnabled && y > currMsgBox.height - 80 && x < progress_width) {
+            else if (msgboxNetloaderProgressEnabled && y > sep_start_y && x < progress_width) {
                 curr_color = themeCurrent.progressBarColor;
             }
 
@@ -135,10 +137,11 @@ void menuDrawMsgBox() {
     x = GetTextXCoordinate(interuiregular18, start_x + (currMsgBox.width / 2), textptr, 'c');
 
     if (text_width < currMsgBox.width && text_height < sep_start_y) {
-        DrawText(interuiregular18, x, start_y + (currMsgBox.height - text_height - 80) / 2, themeCurrent.textColor, textptr);
+        DrawText(interuiregular18, x, start_y + (sep_start_y - text_height) / 2, themeCurrent.textColor, textptr);
     }
 
-    y = start_y + 245 + 26;
+    layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MsgBoxBottomText];
+    y = start_y + currMsgBox.height + layoutobj->posStart[1];
 
     if (!msgboxNetloaderEnabled) {
         x = GetTextXCoordinate(interuimedium20, start_x + (currMsgBox.width / 2), textGetString(StrId_MsgBox_OK), 'c');

@@ -47,6 +47,48 @@ typedef union {
     };
 } color_t;
 
+typedef enum
+{
+    ThemeLayoutId_Logo,
+    ThemeLayoutId_HbmenuVersion,
+    ThemeLayoutId_LoaderInfo,
+    ThemeLayoutId_AttentionText,
+    ThemeLayoutId_LogInfo,
+    ThemeLayoutId_InfoMsg,
+    ThemeLayoutId_MenuPath,
+    ThemeLayoutId_MenuTypeMsg,
+    ThemeLayoutId_MsgBoxSeparator,
+    ThemeLayoutId_MsgBoxBottomText,
+    ThemeLayoutId_BackWave,
+    ThemeLayoutId_MiddleWave,
+    ThemeLayoutId_FrontWave,
+    ThemeLayoutId_ButtonA,
+    ThemeLayoutId_ButtonAText,
+    ThemeLayoutId_ButtonB,
+    ThemeLayoutId_ButtonBText,
+    ThemeLayoutId_ButtonY,
+    ThemeLayoutId_ButtonYText,
+    ThemeLayoutId_ButtonM,
+    ThemeLayoutId_ButtonMText,
+    ThemeLayoutId_ButtonX,
+    ThemeLayoutId_ButtonXText,
+    ThemeLayoutId_NetworkIcon,
+    ThemeLayoutId_BatteryCharge,
+    ThemeLayoutId_BatteryIcon,
+    ThemeLayoutId_ChargingIcon,
+    ThemeLayoutId_Status,
+    ThemeLayoutId_Temperature,
+    ThemeLayoutId_MenuList,
+    ThemeLayoutId_MenuListTiles,
+    ThemeLayoutId_MenuListIcon,
+    ThemeLayoutId_MenuListName,
+    ThemeLayoutId_MenuActiveEntryIcon,
+    ThemeLayoutId_MenuActiveEntryName,
+    ThemeLayoutId_MenuActiveEntryAuthor,
+    ThemeLayoutId_MenuActiveEntryVersion,
+    ThemeLayoutId_Total,
+} ThemeLayoutId;
+
 // when building for pc we need to include these separately
 #ifndef __SWITCH__
 #include "switch/nro.h"
@@ -163,6 +205,8 @@ static inline color_t FetchPixelColor(uint32_t x, uint32_t y)
 
 void DrawPixel(uint32_t x, uint32_t y, color_t clr);
 void DrawText(u32 font, uint32_t x, uint32_t y, color_t clr, const char* text);
+void DrawTextFromLayout(ThemeLayoutId id, color_t clr, const char* text);
+void DrawTextFromLayoutRelative(ThemeLayoutId id, int base_x, int base_y, int *inPos, int *outPos, color_t clr, const char* text, const char align);
 void DrawTextTruncate(u32 font, uint32_t x, uint32_t y, color_t clr, const char* text, uint32_t max_width, const char* end_text);
 void GetTextDimensions(u32 font, const char* text, uint32_t* width_out, uint32_t* height_out);
 uint32_t GetTextXCoordinate(u32 font, uint32_t rX, const char* text, const char align);

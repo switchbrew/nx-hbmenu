@@ -5,19 +5,6 @@
 #define VERTICAL_SWIPE_MINIMUM_DISTANCE 300
 #define HORIZONTAL_SWIPE_VERTICAL_PLAY 250
 #define HORIZONTAL_SWIPE_MINIMUM_DISTANCE 300
-#define LISTING_START_Y 475
-#define LISTING_END_Y 647
-#define BUTTON_START_Y 672
-#define BUTTON_END_Y 704
-#define BACK_BUTTON_START_X 966
-#define BACK_BUTTON_END_X 1048
-#define LAUNCH_BUTTON_START_X 1092
-#define LAUNCH_BUTTON_END_X 1200
-#define STAR_BUTTON_START_X 426
-#define STAR_BUTTON_END_X 490
-#define STAR_BUTTON_START_Y 100
-#define STAR_BUTTON_END_Y 161
-
 
 #define distance(x1, y1, x2, y2) (int) sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)))
 
@@ -33,15 +20,16 @@ void touchInit() {
 void handleTappingOnApp(menu_s* menu, int px) {
     int i = 0;
     menuEntry_s *me = NULL;
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuList];
 
     for (me = menu->firstEntry, i = 0; me; me = me->next, i ++) {
-        int entry_start_x = 29 + i * (140 + 30);
+        int entry_start_x = layoutobj->posStart[0] + i * layoutobj->posEnd[0];
 
         int screen_width = 1280;
         if (entry_start_x >= (screen_width - menu->xPos))
             break;
 
-        if (px >= (entry_start_x + menu->xPos) && px <= (entry_start_x + menu->xPos) + 140 ) {
+        if (px >= (entry_start_x + menu->xPos) && px <= (entry_start_x + menu->xPos) + layoutobj->size[0]) {
             launchMenuEntryTask(me);
             break;
         }
@@ -58,9 +46,21 @@ void handleTappingOnOpenLaunch(menu_s* menu) {
     }
 }
 
+static inline bool checkInsideTextLayoutObject(ThemeLayoutId id, int x, int y) {
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[id];
+    if (!layoutobj->visible) return false;
+
+    return x > layoutobj->posFinal[0] && x < layoutobj->posFinal[0]+(layoutobj->touchSize[0] ? layoutobj->touchSize[0] : layoutobj->textSize[0]) && y > layoutobj->posFinal[1]-layoutobj->touchSize[1] && y < layoutobj->posFinal[1];
+}
+
 void handleTouch(menu_s* menu) {
+    ThemeLayoutObject *layoutobj = NULL;
     touchPosition currentTouch;
     u32 touches = hidTouchCount();
+
+    layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListTiles];
+    int entries_count = layoutobj->posEnd[0];
+    layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuList];
 
     // On touch start.
     if (touches == 1 && !touchInfo.gestureInProgress) {
@@ -82,15 +82,15 @@ void handleTouch(menu_s* menu) {
         if (touchInfo.isTap && (abs(touchInfo.firstTouch.px - currentTouch.px) > TAP_MOVEMENT_GAP || abs(touchInfo.firstTouch.py - currentTouch.py) > TAP_MOVEMENT_GAP)) {
             touchInfo.isTap = false;
         }
-        if (!menuIsMsgBoxOpen() && touchInfo.firstTouch.py > LISTING_START_Y && touchInfo.firstTouch.py < LISTING_END_Y && !touchInfo.isTap && menu->nEntries > 7) {
+        if (!menuIsMsgBoxOpen() && touchInfo.firstTouch.py > layoutobj->posStart[1] && touchInfo.firstTouch.py < layoutobj->posStart[1]+layoutobj->size[1] && !touchInfo.isTap && menu->nEntries > entries_count) {
             menu->xPos = touchInfo.initMenuXPos + (currentTouch.px - touchInfo.firstTouch.px);
-            menu->curEntry = touchInfo.initMenuIndex + ((int) (touchInfo.firstTouch.px - currentTouch.px) / 170);
+            menu->curEntry = touchInfo.initMenuIndex + ((int) (touchInfo.firstTouch.px - currentTouch.px) / layoutobj->posEnd[0]);
 
             if (menu->curEntry < 0)
                 menu->curEntry = 0;
 
-            if (menu->curEntry >= menu->nEntries - 6)
-                menu->curEntry = menu->nEntries - 7;
+            if (menu->curEntry >= menu->nEntries - entries_count - 1)
+                menu->curEntry = menu->nEntries - entries_count;
         }
     }
     // On touch end.
@@ -103,43 +103,40 @@ void handleTouch(menu_s* menu) {
         bool netloader_active = menuIsNetloaderActive();
 
         if (menuIsMsgBoxOpen() && !netloader_active) {
+            layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MsgBoxSeparator];
             MessageBox currMsgBox = menuGetCurrentMsgBox();
             int start_x = 1280 / 2 - currMsgBox.width / 2;
-            int start_y = (720 / 2 - currMsgBox.height / 2) + (currMsgBox.height - 80);
+            int start_y = (720 / 2 - currMsgBox.height / 2) + currMsgBox.height;
             int end_x = start_x + currMsgBox.width;
-            int end_y = start_y + 80;
+            int end_y = start_y;
+            start_y+= layoutobj->posStart[1];
 
             if (x1 > start_x && x1 < end_x && y1 > start_y && y1 < end_y && touchInfo.isTap) {
                 menuCloseMsgBox();
             }
         } else if (touchInfo.isTap && !netloader_active) {
             // App Icons
-            if (y1 > LISTING_START_Y && y1 < LISTING_END_Y) {
+            if (y1 > layoutobj->posStart[1] && y1 < layoutobj->posStart[1]+layoutobj->size[1]) {
                 handleTappingOnApp(menu, touchInfo.prevTouch.px);
             }
             // Bottom Buttons
-            else if (y1 > BUTTON_START_Y && y1 < BUTTON_END_Y) {
-                // Back Button for non-empty directory
-                if (menu->nEntries != 0 && x1 > BACK_BUTTON_START_X && x1 < BACK_BUTTON_END_X) {
+            else {
+                // Back Button
+                if (checkInsideTextLayoutObject(ThemeLayoutId_ButtonB, x1, y1) || checkInsideTextLayoutObject(ThemeLayoutId_ButtonBText, x1, y1)) {
                     launchMenuBackTask();
                 }
-                // Open/Launch Button / Back Button for empty directories
-                else if (x1 > LAUNCH_BUTTON_START_X && x1 < LAUNCH_BUTTON_END_X) {
-                    if (menu->nEntries == 0) {
-                        launchMenuBackTask();
-                    } else {
-                        handleTappingOnOpenLaunch(menu);
-                    }
+                // Open/Launch Button
+                else if (menu->nEntries != 0 && (checkInsideTextLayoutObject(ThemeLayoutId_ButtonA, x1, y1) || checkInsideTextLayoutObject(ThemeLayoutId_ButtonAText, x1, y1))) {
+                    handleTappingOnOpenLaunch(menu);
                 }
-            }
-            // Star
-            else {
-                int i;
-                menuEntry_s* me;
-                for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
-                if (me->type != ENTRY_TYPE_THEME && x1 > STAR_BUTTON_START_X && x1 < STAR_BUTTON_END_X
-                    && y1 > STAR_BUTTON_START_Y && y1 < STAR_BUTTON_END_Y) {
-                    menuHandleXButton();
+                // Star Button
+                else if (menu->nEntries != 0) {
+                    int i;
+                    menuEntry_s* me;
+                    for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
+                    if (me->type != ENTRY_TYPE_THEME && (checkInsideTextLayoutObject(ThemeLayoutId_ButtonX, x1, y1) || checkInsideTextLayoutObject(ThemeLayoutId_ButtonXText, x1, y1))) {
+                        menuHandleXButton();
+                    }
                 }
             }
         }
@@ -155,7 +152,7 @@ void handleTouch(menu_s* menu) {
             }
         }
         // Horizontal Swipe
-        else if (y1 < LISTING_START_Y && y2 < LISTING_START_Y) {
+        else if (y1 < layoutobj->posStart[1] && y2 < layoutobj->posStart[1]) {
             if (abs(y1 - y2) < HORIZONTAL_SWIPE_VERTICAL_PLAY && distance(x1, y1, x2, y2) > HORIZONTAL_SWIPE_MINIMUM_DISTANCE) {
                 // Swipe left to go into theme-menu
                 if (x1 - x2 > 0) {

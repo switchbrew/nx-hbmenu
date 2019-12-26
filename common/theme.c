@@ -10,6 +10,58 @@ bool colorFromSetting(config_setting_t *rgba, color_t *col) {
     return true;
 }
 
+bool intElemFromSetting(config_setting_t *setting, int *out, size_t count) {
+    if (!setting || config_setting_length(setting) < count)
+        return false;
+
+    for (size_t i=0; i<count; i++) {
+        out[i] = config_setting_get_int_elem(setting, i);
+    }
+
+    return true;
+}
+
+bool layoutObjectFromSetting(config_setting_t *layout_setting, ThemeLayoutObject *obj, bool ignore_cfg_visible) {
+    int tmp=0;
+    ThemeLayoutObject tmpobj={0};
+    if (!layout_setting)
+        return false;
+
+    memcpy(tmpobj.posStart, obj->posStart, sizeof(obj->posStart));
+    memcpy(tmpobj.posEnd, obj->posEnd, sizeof(obj->posEnd));
+    memcpy(tmpobj.size, obj->size, sizeof(obj->size));
+
+    if (config_setting_lookup_bool(layout_setting, "visible", &tmp)==CONFIG_TRUE)
+        tmpobj.visible = tmp;
+    else
+        tmpobj.visible = obj->visible;
+    if (config_setting_lookup_bool(layout_setting, "posType", &tmp)==CONFIG_TRUE)
+        tmpobj.posType = tmp;
+    else
+        tmpobj.posType = obj->posType;
+
+    intElemFromSetting(config_setting_lookup(layout_setting, "posStart"), tmpobj.posStart, 2);
+    intElemFromSetting(config_setting_lookup(layout_setting, "posEnd"), tmpobj.posEnd, 2);
+    intElemFromSetting(config_setting_lookup(layout_setting, "size"), tmpobj.size, 2);
+
+    if (!tmpobj.posType && (tmpobj.posStart[0] < 0 || tmpobj.posStart[1] < 0 || tmpobj.posEnd[0] < 0 || tmpobj.posEnd[1] < 0))
+        return false;
+    if (tmpobj.size[0] < 0 || tmpobj.size[1] < 0)
+        return false;
+
+    obj->posStart[0] = tmpobj.posStart[0];
+    obj->posStart[1] = tmpobj.posStart[1];
+    obj->posEnd[0] = tmpobj.posEnd[0];
+    obj->posEnd[1] = tmpobj.posEnd[1];
+
+    if (!ignore_cfg_visible) obj->visible = tmpobj.visible;
+    obj->posType = tmpobj.posType;
+    obj->size[0] = tmpobj.size[0];
+    obj->size[1] = tmpobj.size[1];
+
+    return true;
+}
+
 void themeStartup(ThemePreset preset) {
     themeGlobalPreset = preset;
     theme_t themeLight = (theme_t) {
@@ -60,13 +112,283 @@ void themeStartup(ThemePreset preset) {
         .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_dark),
     };
 
+    theme_t themeCommon = {
+        .layoutObjects = {
+            [ThemeLayoutId_Logo] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {40, 20},
+                .imageSize = {140, 60},
+            },
+
+            [ThemeLayoutId_HbmenuVersion] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {184, 46 + 18},
+                .font = interuiregular14,
+            },
+
+            [ThemeLayoutId_LoaderInfo] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {43, 46 + 18 + 20},
+                .posEnd = {184},
+                .font = interuiregular14,
+            },
+
+            [ThemeLayoutId_AttentionText] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-32, 46 + 18},
+                .font = interuimedium30,
+            },
+
+            [ThemeLayoutId_LogInfo] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {180 + 256, 46 + 16 + 18},
+                .font = interuiregular14,
+            },
+
+            [ThemeLayoutId_InfoMsg] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {64, 128 + 18},
+                .font = interuiregular14,
+            },
+
+            [ThemeLayoutId_MenuPath] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {40, 720 - 47 + 24},
+                .size = {380},
+                .font = interuiregular18,
+            },
+
+            [ThemeLayoutId_MenuTypeMsg] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1180, 30 + 26 + 32 + 20},
+                .font = interuiregular18,
+            },
+
+            [ThemeLayoutId_MsgBoxSeparator] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {0, -80},
+            },
+
+            [ThemeLayoutId_MsgBoxBottomText] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {0, -29},
+            },
+
+            [ThemeLayoutId_BackWave] = {
+                .visible = true,
+                .posType = true,
+                .size = {0, 295},
+            },
+
+            [ThemeLayoutId_MiddleWave] = {
+                .visible = true,
+                .posType = true,
+                .size = {0, 290},
+            },
+
+            [ThemeLayoutId_FrontWave] = {
+                .visible = true,
+                .posType = true,
+                .size = {0, 280},
+            },
+
+            [ThemeLayoutId_ButtonA] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1280 - 126 - 30 - 32, 720 - 47 + 24},
+                .touchSize = {36, 25},
+                .font = fontscale7,
+            },
+
+            [ThemeLayoutId_ButtonAText] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1280 - 90 - 30 - 32, 720 - 47 + 24},
+                .touchSize = {0, 25},
+                .font = interuiregular18,
+            },
+
+            [ThemeLayoutId_ButtonB] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-36, 0},
+                .posEnd = {0},
+                .touchSize = {36, 25},
+                .font = fontscale7,
+            },
+
+            [ThemeLayoutId_ButtonBText] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-90, 0},
+                .touchSize = {0, 32},
+                .font = interuiregular18,
+            },
+
+            [ThemeLayoutId_ButtonY] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-36, 0},
+                .font = fontscale7,
+            },
+
+            [ThemeLayoutId_ButtonYText] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-32, 0},
+                .font = interuiregular18,
+            },
+
+            [ThemeLayoutId_ButtonM] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-36, 0},
+                .font = fontscale7,
+            },
+
+            [ThemeLayoutId_ButtonMText] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-32, 0},
+                .font = interuiregular18,
+            },
+
+            [ThemeLayoutId_ButtonX] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-36, 0},
+                .touchSize = {36, 25},
+                .font = fontscale7,
+            },
+
+            [ThemeLayoutId_ButtonXText] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {-40 + 8, 0},
+                .touchSize = {0, 25},
+                .font = interuiregular18,
+            },
+
+            [ThemeLayoutId_NetworkIcon] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {0, 0 + 47 + 10 + 3},
+                .imageSize = {24, 24},
+            },
+
+            [ThemeLayoutId_BatteryCharge] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1180 - 10 - 24 - 8, 0 + 47 + 10 + 21 + 4},
+                .font = interuiregular14,
+            },
+
+            [ThemeLayoutId_BatteryIcon] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1180 - 8 - 24 - 8, 0 + 47 + 10 + 6},
+                .imageSize = {24, 24},
+            },
+
+            [ThemeLayoutId_ChargingIcon] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1180 - 20, 0 + 47 + 10 + 6},
+                .imageSize = {24, 24},
+            },
+
+            [ThemeLayoutId_Status] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1180, 0 + 47 + 10},
+                .font = interuimedium20,
+            },
+
+            [ThemeLayoutId_Temperature] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1180 + 4, 0 + 47 + 10 + + 21 + 6},
+                .font = interuiregular14,
+            },
+
+            [ThemeLayoutId_MenuList] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {29, 720 - 100 - 145},
+                .posEnd = {140 + 30, 0},
+                .size = {140, 140 + 32},
+            },
+
+            [ThemeLayoutId_MenuListTiles] = {
+                .visible = true,
+                .posType = true,
+                .posEnd = {7, 0},
+                .size = {0, 0},
+            },
+
+            [ThemeLayoutId_MenuListIcon] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {0, 32},
+                .imageSize = {140, 140},
+            },
+
+            [ThemeLayoutId_MenuListName] = {
+                .visible = true,
+                .posType = true,
+                .posStart = {4, 4 + 18},
+                .size = {140 - 32, 0},
+                .font = interuiregular14,
+            },
+
+            [ThemeLayoutId_MenuActiveEntryIcon] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {117, 100+10},
+                .imageSize = {256, 256},
+            },
+
+            [ThemeLayoutId_MenuActiveEntryName] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1280 - 790, 135+10 + 39},
+                .size = {790 - 120, 0},
+                .font = interuimedium30,
+            },
+
+            [ThemeLayoutId_MenuActiveEntryAuthor] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1280 - 790, 135+10 + 28 + 30 + 18},
+                .font = interuiregular14,
+            },
+
+            [ThemeLayoutId_MenuActiveEntryVersion] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1280 - 790, 135+10 + 28 + 30 + 18 + 6 + 18},
+                .font = interuiregular14,
+            },
+        },
+    };
+
     char themePath[PATH_MAX] = {0};
     GetThemePathFromConfig(themePath, PATH_MAX);
 
     theme_t *themeDefault;
     config_t cfg = {0};
     config_init(&cfg);
-    config_setting_t *theme = NULL;
+    config_setting_t *theme = NULL, *layout = NULL;
     color_t text, attentionText, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
     int waveBlending;
     const char *AText, *BText, *XText, *YText, *PText, *MText, *starOnText, *starOffText;
@@ -166,9 +488,58 @@ void themeStartup(ThemePreset preset) {
         } else {
             themeCurrent = *themeDefault;
         }
+
+        memcpy(themeCurrent.layoutObjects, themeCommon.layoutObjects, sizeof(themeCommon.layoutObjects));
+
+        layout = config_lookup(&cfg, "layout");
+
+        if (layout != NULL) {
+            layoutObjectFromSetting(config_setting_lookup(layout, "logo"), &themeCurrent.layoutObjects[ThemeLayoutId_Logo], true);
+            layoutObjectFromSetting(config_setting_lookup(layout, "hbmenuVersion"), &themeCurrent.layoutObjects[ThemeLayoutId_HbmenuVersion], true);
+            layoutObjectFromSetting(config_setting_lookup(layout, "loaderInfo"), &themeCurrent.layoutObjects[ThemeLayoutId_LoaderInfo], true);
+            layoutObjectFromSetting(config_setting_lookup(layout, "attentionText"), &themeCurrent.layoutObjects[ThemeLayoutId_AttentionText], true);
+            layoutObjectFromSetting(config_setting_lookup(layout, "logInfo"), &themeCurrent.layoutObjects[ThemeLayoutId_LogInfo], true);
+            layoutObjectFromSetting(config_setting_lookup(layout, "infoMsg"), &themeCurrent.layoutObjects[ThemeLayoutId_InfoMsg], true);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuPath"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuPath], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuTypeMsg"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuTypeMsg], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "msgBoxSeparator"), &themeCurrent.layoutObjects[ThemeLayoutId_MsgBoxSeparator], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "msgBoxBottomText"), &themeCurrent.layoutObjects[ThemeLayoutId_MsgBoxBottomText], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "backWave"), &themeCurrent.layoutObjects[ThemeLayoutId_BackWave], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "middleWave"), &themeCurrent.layoutObjects[ThemeLayoutId_MiddleWave], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "frontWave"), &themeCurrent.layoutObjects[ThemeLayoutId_FrontWave], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonA"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonA], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonAText"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonAText], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonB"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonB], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonBText"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonBText], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonY"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonY], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonYText"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonYText], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonM"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonM], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonMText"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonMText], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonX"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonX], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "buttonXText"), &themeCurrent.layoutObjects[ThemeLayoutId_ButtonXText], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "networkIcon"), &themeCurrent.layoutObjects[ThemeLayoutId_NetworkIcon], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "batteryCharge"), &themeCurrent.layoutObjects[ThemeLayoutId_BatteryCharge], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "batteryIcon"), &themeCurrent.layoutObjects[ThemeLayoutId_BatteryIcon], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "chargingIcon"), &themeCurrent.layoutObjects[ThemeLayoutId_ChargingIcon], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "status"), &themeCurrent.layoutObjects[ThemeLayoutId_Status], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "temperature"), &themeCurrent.layoutObjects[ThemeLayoutId_Temperature], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuList"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuList], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuListTiles"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuListTiles], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuListIcon"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuListIcon], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuListName"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuListName], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryIcon"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryName"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryName], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryAuthor"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryAuthor], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryVersion"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryVersion], false);
+        }
     } else {
         themeCurrent = *themeDefault;
+        memcpy(themeCurrent.layoutObjects, themeCommon.layoutObjects, sizeof(themeCommon.layoutObjects));
     }
+
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListTiles];
+    if (layoutobj->posEnd[0] < 1) layoutobj->posEnd[0] = 1;
+
     config_destroy(&cfg);
 }
 
