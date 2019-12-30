@@ -368,7 +368,7 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
 int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
 //---------------------------------------------------------------------------------
     int len, namelen, filelen;
-    char filename[PATH_MAX+1];
+    char filepath[PATH_MAX+1];
     len = recvall(sock, &namelen, 4, 0);
 
     if (len != 4) {
@@ -376,19 +376,19 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
         return -1;
     }
 
-    if (namelen >= sizeof(filename)-1) {
-        netloader_error("Filename length is too large",errno);
+    if (namelen >= sizeof(filepath)-1) {
+        netloader_error("File-path length is too large",errno);
         return -1;
     }
 
-    len = recvall(sock, filename, namelen, 0);
+    len = recvall(sock, filepath, namelen, 0);
 
     if (len != namelen) {
-        netloader_error("Error getting filename", errno);
+        netloader_error("Error getting file-path", errno);
         return -1;
     }
 
-    filename[namelen] = 0;
+    filepath[namelen] = 0;
 
     len = recvall(sock, &filelen, 4, 0);
 
@@ -403,41 +403,56 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
 
     int response = 0;
 
-    sanitisePath(filename);
+    sanitisePath(filepath);
 
-    snprintf(me->path, sizeof(me->path)-1, "%s%s%s", menuGetRootPath(), DIRECTORY_SEPARATOR,  filename);
-    me->path[PATH_MAX] = 0;
+    snprintf(me->path, sizeof(me->path)-1, "%s%s%s", menuGetRootPath(), DIRECTORY_SEPARATOR, filepath);
     // make sure it's terminated
-    me->path[PATH_MAX] = 0;
+    me->path[sizeof(me->path)-1] = 0;
+    strncpy(filepath, me->path, sizeof(filepath)-1); // menuEntryLoad() below will overwrite me->path, so copy me->path to filepath and use that instead.
+    filepath[sizeof(filepath)-1] = 0;
 
     argData_s* ad = &me->args;
     ad->dst = (char*)&ad->buf[1];
     ad->nxlink_host = remote;
 
-    launchAddArg(ad, me->path);
+    const char* ext = getExtension(me->path);
+    if (ext && strcasecmp(ext, ".nro")==0)
+        launchAddArg(ad, me->path);
+    else {
+        me->type = ENTRY_TYPE_FILE_OTHER; // Handle fileassoc when extension isn't .nro.
+        if (!menuEntryLoad(me, "", false, false)) {
+            response = -3;
+            errno = EINVAL;
+            netloader_error("File-extension/filename not recognized",0);
+        }
+        menuEntryFree(me, false); // We don't need any of the buffers which may have been allocated.
+    }
 
 #ifndef _WIN32
-    int fd = open(me->path,O_CREAT|O_WRONLY, ACCESSPERMS);
+    if (response == 0) {
+        int fd = open(filepath,O_CREAT|O_WRONLY, ACCESSPERMS);
 
-    if (fd < 0) {
-        response = -1;
-        netloader_error("open", errno);
-    } else {
-        if (ftruncate(fd,filelen) == -1) {
-            response = -2;
-            netloader_error("ftruncate",errno);
+        if (fd < 0) {
+            response = -1;
+            netloader_error("open", errno);
+        } else {
+            if (ftruncate(fd,filelen) == -1) {
+                response = -2;
+                netloader_error("ftruncate",errno);
+            }
+            close(fd);
         }
-        close(fd);
     }
 #endif
 
     FILE *file = NULL;
 
-    if (response == 0) file = fopen(me->path,"wb");
-
-    if(NULL == file) {
-        perror("file");
-        response = -1;
+    if (response == 0) {
+        file = fopen(filepath,"wb");
+        if(file == NULL) {
+            perror("file");
+            response = -1;
+        }
     }
 
     send(sock,(char *)&response,sizeof(response),0);
@@ -449,12 +464,14 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
             netloader_error("Failed to allocate memory",ENOMEM);
             response = -1;
         }
-        else
+        else {
+            memset(writebuffer, 0, FILE_BUFFER_SIZE);
             setvbuf(file,writebuffer,_IOFBF, FILE_BUFFER_SIZE);
+        }
     }
 
     if (response == 0 ) {
-        //printf("transferring %s\n%d bytes.\n", filename, filelen);
+        //printf("transferring %s\n%d bytes.\n", filepath, filelen);
 
         if (decompress(sock,file,filelen)==Z_OK) {
             int netloaded_cmdlen = 0;
@@ -499,13 +516,14 @@ int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
         } else {
             response = -1;
         }
+    }
 
+    if (file) {
         fflush(file);
         fclose(file);
-        free(writebuffer);
-
-        if (response == -1) unlink(me->path);
     }
+    if (response == -1) unlink(filepath);
+    free(writebuffer);
 
     return response;
 }

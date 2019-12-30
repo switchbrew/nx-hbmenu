@@ -202,19 +202,19 @@ static bool menuEntryLoadExternalNacp(menuEntry_s* me, const char* path) {
     } while (lastc);
 }*/
 
-bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
+bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_exists) {
     int i=0, tmplen;
     menu_s *menu_fileassoc = menuFileassocGetCurrent();
     menuEntry_s* fileassoc_me = NULL;
     char *strptr = NULL;
-    static char tempbuf[PATH_MAX+1];
+    char tempbuf[PATH_MAX+1];
     //bool isOldAppFolder = false;
 
-    if (!fsobjExists(me->path)) return false;
+    if (check_exists && !fsobjExists(me->path)) return false;
 
     tempbuf[PATH_MAX] = 0;
-    strcpy(me->name, name);
-    
+    strncpy(me->name, name, sizeof(me->name)-1);
+
     if (me->type == ENTRY_TYPE_FOLDER)
     {
         //Check for <dirpath>/<dirname>.nro
@@ -285,9 +285,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut) {
 
     if (me->type == ENTRY_TYPE_FILE)
     {
-        //strcpy(me->name, name);//This is already done before both if statements
-        strcpy(me->author, textGetString(StrId_DefaultPublisher));
-        strcpy(me->version, "1.0.0");
+        strncpy(me->author, textGetString(StrId_DefaultPublisher), sizeof(me->author)-1);
+        strncpy(me->version, "1.0.0", sizeof(me->version)-1);
 
         //shortcut_s sc;
 
@@ -554,7 +553,7 @@ void menuEntryFileassocLoad(const char* filepath) {
                         strptr = getSlash(app_path);
                         if(strptr[0] == '/') strptr++;
 
-                        if (menuEntryLoad(me, strptr, 0)) {
+                        if (menuEntryLoad(me, strptr, 0, true)) {
                             strncpy(app_author, me->author, sizeof(app_author));
                             app_author[sizeof(app_author)-1] = 0;
                             strncpy(app_version, me->version, sizeof(app_version));
