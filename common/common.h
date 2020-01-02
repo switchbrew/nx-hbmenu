@@ -59,6 +59,7 @@ typedef enum
     ThemeLayoutId_MenuTypeMsg,
     ThemeLayoutId_MsgBoxSeparator,
     ThemeLayoutId_MsgBoxBottomText,
+    ThemeLayoutId_BackgroundImage,
     ThemeLayoutId_BackWave,
     ThemeLayoutId_MiddleWave,
     ThemeLayoutId_FrontWave,

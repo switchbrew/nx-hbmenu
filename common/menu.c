@@ -8,6 +8,11 @@
 
 char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
+
+uint8_t *folder_icon_small;
+uint8_t *invalid_icon_small;
+uint8_t *theme_icon_small;
+
 void computeFrontGradient(color_t baseColor, int height);
 
 char *menuGetRootPath(void) {
@@ -113,12 +118,37 @@ void menuHandleXButton(void) {
     }
 }
 
+void menuStartupCommon(void) {
+    free(folder_icon_small);
+    free(invalid_icon_small);
+    free(theme_icon_small);
+
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon];
+    ThemeLayoutObject *layoutobj2 = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListIcon];
+    assetsDataEntry *data = NULL;
+
+    assetsGetData(AssetId_folder_icon, &data);
+    folder_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], data->imageMode);
+    assetsGetData(AssetId_invalid_icon, &data);
+    invalid_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], data->imageMode);
+    if(themeGlobalPreset == THEME_PRESET_DARK) {
+        assetsGetData(AssetId_theme_icon_dark, &data);
+        theme_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], data->imageMode);
+    }
+    else {
+        assetsGetData(AssetId_theme_icon_light, &data);
+        theme_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], data->imageMode);
+    }
+
+    layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_FrontWave];
+    computeFrontGradient(themeCurrent.frontWaveColor, layoutobj->size[1]);
+}
 
 void launchApplyThemeTask(menuEntry_s* arg) {
     const char* themePath = arg->path;
     SetThemePathToConfig(themePath);
     themeStartup(themeGlobalPreset);
-    computeFrontGradient(themeCurrent.frontWaveColor, 280);
+    menuStartupCommon();
 }
 
 bool menuIsNetloaderActive(void) {
@@ -170,10 +200,6 @@ static void drawIcon(int x, int y, int width, int height, const uint8_t *image, 
         }
     }
 }
-
-uint8_t *folder_icon_small;
-uint8_t *invalid_icon_small;
-uint8_t *theme_icon_small;
 
 static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuList];
@@ -413,14 +439,7 @@ void menuStartup(void) {
 
     menuScan(rootPath);
 
-    folder_icon_small = downscaleImg(assetsGetDataBuffer(AssetId_folder_icon), 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    invalid_icon_small = downscaleImg(assetsGetDataBuffer(AssetId_invalid_icon), 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    if(themeGlobalPreset == THEME_PRESET_DARK)
-        theme_icon_small = downscaleImg(assetsGetDataBuffer(AssetId_theme_icon_dark), 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    else
-        theme_icon_small = downscaleImg(assetsGetDataBuffer(AssetId_theme_icon_light), 256, 256, 140, 140, IMAGE_MODE_RGB24);
-    computeFrontGradient(themeCurrent.frontWaveColor, 280);
-    //menuCreateMsgBox(780, 300, "This is a test");
+    menuStartupCommon();
 }
 
 void themeMenuStartup(void) {
@@ -500,17 +519,22 @@ void drawCharge() {
         }
 
         layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_BatteryIcon];
-        if (layoutobj->visible) drawIcon(layoutobj->posStart[0], layoutobj->posStart[1], layoutobj->imageSize[0], layoutobj->imageSize[1], assetsGetDataBuffer(AssetId_battery_icon), themeCurrent.textColor);
+        assetsDataEntry *data = NULL;
+        assetsGetData(AssetId_battery_icon, &data);
+        if (layoutobj->visible) drawIcon(layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], data->imageSize[1], data->buffer, themeCurrent.textColor);
 
         layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_ChargingIcon];
+        assetsGetData(AssetId_charging_icon, &data);
         if (isCharging && layoutobj->visible)
-            drawIcon(layoutobj->posStart[0], layoutobj->posStart[1], layoutobj->imageSize[0], layoutobj->imageSize[1], assetsGetDataBuffer(AssetId_charging_icon), themeCurrent.textColor);
+            drawIcon(layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], data->imageSize[1], data->buffer, themeCurrent.textColor);
     }
 }
 
 void drawNetwork(int tmpX, AssetId id) {
     ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_NetworkIcon];
-    if (layoutobj->visible) drawIcon(layoutobj->posType ? tmpX + layoutobj->posStart[0] : layoutobj->posStart[0], layoutobj->posStart[1], layoutobj->imageSize[0], layoutobj->imageSize[1], assetsGetDataBuffer(id), themeCurrent.textColor);
+    assetsDataEntry *data = NULL;
+    assetsGetData(id, &data);
+    if (layoutobj->visible) drawIcon(layoutobj->posType ? tmpX + layoutobj->posStart[0] : layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], data->imageSize[1], data->buffer, themeCurrent.textColor);
 }
 
 u32 drawStatus() {
@@ -636,6 +660,11 @@ void menuLoop(void) {
             Draw4PixelsRaw(x, y, themeCurrent.backgroundColor);
         }
     }
+
+    layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_BackgroundImage];
+    assetsDataEntry *data = NULL;
+    assetsGetData(AssetId_background_image, &data);
+    if (layoutobj->visible && data) drawImage(layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], endy < data->imageSize[1] ? endy : data->imageSize[1], data->buffer, data->imageMode);
 
     layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_BackWave];
     if (layoutobj->visible) drawWave(0, menuTimer, themeCurrent.backWaveColor, layoutobj->size[1], 0.0, 3.0);

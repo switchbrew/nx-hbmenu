@@ -106,12 +106,15 @@ static bool menuEntryImportIconGfx(menuEntry_s* me, uint8_t* icon_gfx, uint8_t* 
 
     if (icon_gfx == NULL || icon_gfx_small == NULL) return false;
 
-    tmpsize = 256*256*3;
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon];
+    ThemeLayoutObject *layoutobj2 = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListIcon];
+
+    tmpsize = layoutobj->imageSize[0]*layoutobj->imageSize[1]*3;
     me->icon_gfx = (uint8_t*)malloc(tmpsize);
     if (me->icon_gfx) memcpy(me->icon_gfx, icon_gfx, tmpsize);
 
     if (me->icon_gfx) {
-        tmpsize = 140*140*3;
+        tmpsize = layoutobj2->imageSize[0]*layoutobj2->imageSize[1]*3;
         me->icon_gfx_small = (uint8_t*)malloc(tmpsize);
         if (me->icon_gfx_small) memcpy(me->icon_gfx_small, icon_gfx_small, tmpsize);
 
@@ -403,8 +406,20 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
         const char *name,
                    *author = textGetString(StrId_DefaultPublisher),
                    *version = "1.0.0";
-                   
-        if (config_read_file(&cfg, me->path)) {
+
+        const char* cfg_path = me->path;
+        #ifdef __SWITCH__
+        const char* ext = getExtension(me->path);
+        bool is_romfs = false;
+        if (strcasecmp(ext, ".romfs")==0) {
+            if (R_FAILED(romfsMountFromFsdev(me->path, 0, "themetmp")))
+                return false;
+            is_romfs = true;
+            cfg_path = "themetmp:/theme.cfg";
+        }
+        #endif
+
+        if (config_read_file(&cfg, cfg_path)) {
             themeInfo = config_lookup(&cfg, "themeInfo");
             if (themeInfo != NULL) {
                 if(config_setting_lookup_string(themeInfo, "name", &name))
@@ -417,6 +432,18 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
         strncpy(me->author, author, sizeof(me->author)-1);
         strncpy(me->version, version, sizeof(me->version)-1);
         config_destroy(&cfg);
+
+        #ifdef __SWITCH__
+        if (is_romfs) {
+            bool iconLoaded = false;
+
+            iconLoaded = menuEntryLoadExternalIcon(me, "themetmp:/icon.jpg");
+
+            if (iconLoaded) menuEntryParseIcon(me);
+        }
+
+        if (is_romfs) romfsUnmount("themetmp");
+        #endif
     }
 
     if (me->type == ENTRY_TYPE_FILE_OTHER)
@@ -641,62 +668,24 @@ void menuEntryFileassocLoad(const char* filepath) {
 void menuEntryParseIcon(menuEntry_s* me) {
     if (me->icon_size==0 || me->icon==NULL) return;
 
-    int w,h,samp;
-    size_t imagesize = 256*256*3;
+    ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon];
+    ThemeLayoutObject *layoutobj2 = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListIcon];
+
+    size_t imagesize = layoutobj->imageSize[0]*layoutobj->imageSize[1]*3;
+    bool ret=true;
     me->icon_gfx = (uint8_t*)malloc(imagesize);
 
-    if (me->icon_gfx == NULL) {
-        me->icon_size = 0;
-        free(me->icon);
-        me->icon = NULL;
-        return;
-    }
+    if (me->icon_gfx == NULL) ret = false;
 
-    tjhandle _jpegDecompressor = tjInitDecompress();
-
-    if (_jpegDecompressor == NULL) {
-        free(me->icon_gfx);
-        me->icon_gfx = NULL;
-
-        me->icon_size = 0;
-        free(me->icon);
-        me->icon = NULL;
-        return;
-    }
-
-    if (tjDecompressHeader2(_jpegDecompressor, me->icon, me->icon_size, &w, &h, &samp) == -1) {
-        free(me->icon_gfx);
-        me->icon_gfx = NULL;
-
-        me->icon_size = 0;
-        free(me->icon);
-        me->icon = NULL;
-        tjDestroy(_jpegDecompressor);
-        return;
-    }
-
-    if (w != 256 || h != 256 ) return;
-
-    if (tjDecompress2(_jpegDecompressor, me->icon, me->icon_size, me->icon_gfx, w, 0, h, TJPF_RGB, TJFLAG_ACCURATEDCT) == -1) {
-        free(me->icon_gfx);
-        me->icon_gfx = NULL;
-
-        me->icon_size = 0;
-        free(me->icon);
-        me->icon = NULL;
-        tjDestroy(_jpegDecompressor);
-        return;
-    }
+    if (ret) ret = assetsLoadJpgFromMemory(me->icon, me->icon_size, me->icon_gfx, IMAGE_MODE_RGB24, layoutobj->imageSize[0], layoutobj->imageSize[1]);
 
     me->icon_size = 0;
     free(me->icon);
     me->icon = NULL;
 
-    tjDestroy(_jpegDecompressor);
+    if (ret) me->icon_gfx_small = downscaleImg(me->icon_gfx, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], IMAGE_MODE_RGB24);
 
-    me->icon_gfx_small = downscaleImg(me->icon_gfx, 256, 256, 140, 140, IMAGE_MODE_RGB24);
-
-    if (me->icon_gfx_small == NULL) {
+    if (!ret || me->icon_gfx_small == NULL) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
     }

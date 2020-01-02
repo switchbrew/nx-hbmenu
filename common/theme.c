@@ -62,6 +62,31 @@ bool layoutObjectFromSetting(config_setting_t *layout_setting, ThemeLayoutObject
     return true;
 }
 
+bool assetObjectFromSetting(config_setting_t *asset_setting, AssetId id, ThemeLayoutObject *layoutobj) {
+    int imageSize[2]={0};
+    const char *path = NULL;
+    char tmp_path[PATH_MAX];
+    if (!asset_setting)
+        return false;
+
+    if (config_setting_lookup_string(asset_setting, "path", &path)==CONFIG_FALSE)
+        return false;
+
+    if (!intElemFromSetting(config_setting_lookup(asset_setting, "imageSize"), imageSize, 2))
+        return false;
+
+    if (imageSize[0] <= 0 || imageSize[1] <= 0 || imageSize[0] > 1280 || imageSize[1] > 720)
+        return false;
+
+    if (layoutobj && (imageSize[0] != layoutobj->imageSize[0] || imageSize[1] != layoutobj->imageSize[1]))
+        return false;
+
+    memset(tmp_path, 0, sizeof(tmp_path));
+    snprintf(tmp_path, sizeof(tmp_path)-1, "theme:/%s", path);
+
+    return assetsLoadFromTheme(id, tmp_path, imageSize);
+}
+
 void themeStartup(ThemePreset preset) {
     themeGlobalPreset = preset;
     theme_t themeLight = (theme_t) {
@@ -183,6 +208,8 @@ void themeStartup(ThemePreset preset) {
                 .posType = true,
                 .posStart = {0, -29},
             },
+
+            // ThemeLayoutId_BackgroundImage is not set with the defaults.
 
             [ThemeLayoutId_BackWave] = {
                 .visible = true,
@@ -388,14 +415,31 @@ void themeStartup(ThemePreset preset) {
     theme_t *themeDefault;
     config_t cfg = {0};
     config_init(&cfg);
-    config_setting_t *theme = NULL, *layout = NULL;
+    config_setting_t *theme = NULL, *layout = NULL, *assets = NULL;
     color_t text, attentionText, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
     int waveBlending;
     const char *AText, *BText, *XText, *YText, *PText, *MText, *starOnText, *starOffText;
     bool good_cfg = false;
+    bool is_romfs = false;
 
-    if(themePath[0]!=0)
-        good_cfg = config_read_file(&cfg, themePath);
+    assetsClearTheme();
+
+    if(themePath[0]!=0) {
+        const char* cfg_path = themePath;
+        #ifdef __SWITCH__
+        const char* ext = getExtension(themePath);
+        if (strcasecmp(ext, ".romfs")==0) {
+            if (R_FAILED(romfsMountFromFsdev(themePath, 0, "theme")))
+                cfg_path = NULL;
+            else {
+                is_romfs = true;
+                cfg_path = "theme:/theme.cfg";
+            }
+        }
+        #endif
+
+        if (cfg_path) good_cfg = config_read_file(&cfg, cfg_path);
+    }
 
     switch (preset) {
         case THEME_PRESET_LIGHT:
@@ -504,6 +548,7 @@ void themeStartup(ThemePreset preset) {
             layoutObjectFromSetting(config_setting_lookup(layout, "menuTypeMsg"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuTypeMsg], false);
             layoutObjectFromSetting(config_setting_lookup(layout, "msgBoxSeparator"), &themeCurrent.layoutObjects[ThemeLayoutId_MsgBoxSeparator], false);
             layoutObjectFromSetting(config_setting_lookup(layout, "msgBoxBottomText"), &themeCurrent.layoutObjects[ThemeLayoutId_MsgBoxBottomText], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "backgroundImage"), &themeCurrent.layoutObjects[ThemeLayoutId_BackgroundImage], false);
             layoutObjectFromSetting(config_setting_lookup(layout, "backWave"), &themeCurrent.layoutObjects[ThemeLayoutId_BackWave], false);
             layoutObjectFromSetting(config_setting_lookup(layout, "middleWave"), &themeCurrent.layoutObjects[ThemeLayoutId_MiddleWave], false);
             layoutObjectFromSetting(config_setting_lookup(layout, "frontWave"), &themeCurrent.layoutObjects[ThemeLayoutId_FrontWave], false);
@@ -532,6 +577,24 @@ void themeStartup(ThemePreset preset) {
             layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryAuthor"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryAuthor], false);
             layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryVersion"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryVersion], false);
         }
+
+        if (is_romfs) assets = config_lookup(&cfg, "assets");
+        if (is_romfs && assets) {
+            assetObjectFromSetting(config_setting_lookup(assets, "battery_icon"), AssetId_battery_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "charging_icon"), AssetId_charging_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "folder_icon"), AssetId_folder_icon, &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon]);
+            assetObjectFromSetting(config_setting_lookup(assets, "invalid_icon"), AssetId_invalid_icon, &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon]);
+            assetObjectFromSetting(config_setting_lookup(assets, "theme_icon_dark"), AssetId_theme_icon_dark, &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon]);
+            assetObjectFromSetting(config_setting_lookup(assets, "theme_icon_light"), AssetId_theme_icon_light, &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon]);
+            assetObjectFromSetting(config_setting_lookup(assets, "airplane_icon"), AssetId_airplane_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "wifi_none_icon"), AssetId_wifi_none_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "wifi1_icon"), AssetId_wifi1_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "wifi2_icon"), AssetId_wifi2_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "wifi3_icon"), AssetId_wifi3_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "eth_icon"), AssetId_eth_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "eth_none_icon"), AssetId_eth_none_icon, NULL);
+            assetObjectFromSetting(config_setting_lookup(assets, "background_image"), AssetId_background_image, NULL);
+        }
     } else {
         themeCurrent = *themeDefault;
         memcpy(themeCurrent.layoutObjects, themeCommon.layoutObjects, sizeof(themeCommon.layoutObjects));
@@ -541,6 +604,10 @@ void themeStartup(ThemePreset preset) {
     if (layoutobj->posEnd[0] < 1) layoutobj->posEnd[0] = 1;
 
     config_destroy(&cfg);
+
+    #ifdef __SWITCH__
+    if (is_romfs) romfsUnmount("theme");
+    #endif
 }
 
 void GetThemePathFromConfig(char* themePath, size_t size) {

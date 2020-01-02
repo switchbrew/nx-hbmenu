@@ -245,7 +245,7 @@ int themeMenuScan(const char* target) {
         snprintf(tmp_path, sizeof(tmp_path)-1, "%s/%s", s_menu[!s_curMenu].dirname, dp->d_name);
 
         const char* ext = getExtension(dp->d_name);
-        if (strcasecmp(ext, ".cfg")==0)
+        if (strcasecmp(ext, ".cfg")==0 || strcasecmp(ext, ".romfs")==0)
             me = menuCreateEntry(ENTRY_TYPE_THEME);
 
         if (!me)
