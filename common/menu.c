@@ -180,12 +180,6 @@ static void drawImage(int x, int y, int width, int height, const uint8_t *image,
     }
 }
 
-static void drawImageFromLayout(ThemeLayoutId id, const uint8_t *image, ImageMode mode) {
-    ThemeLayoutObject *obj = &themeCurrent.layoutObjects[id];
-    if (!obj->visible) return;
-    drawImage(obj->posStart[0], obj->posStart[1], obj->imageSize[0], obj->imageSize[1], image, mode);
-}
-
 //Draws an RGBA8888 image masked by the passed color.
 static void drawIcon(int x, int y, int width, int height, const uint8_t *image, color_t color) {
     int tmpx, tmpy;
@@ -674,12 +668,17 @@ void menuLoop(void) {
     if (layoutobj->visible) drawWave(2, menuTimer, themeCurrent.frontWaveColor, layoutobj->size[1], 4.0, -2.5);
     menuTimer += 0.05;
 
-    if (!themeCurrent.logoColor_set)
-        drawImageFromLayout(ThemeLayoutId_Logo, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
-    else {
-        layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_Logo];
-        assetsGetData(AssetId_hbmenu_logo_light, &data);
-        if (layoutobj->visible) drawIcon(layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], data->imageSize[1], data->buffer, themeCurrent.logoColor);
+    layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_Logo];
+    if(themeGlobalPreset == THEME_PRESET_DARK)
+        assetsGetData(AssetId_hbmenu_logo_dark, &data);
+    else assetsGetData(AssetId_hbmenu_logo_light, &data);
+
+    if (layoutobj->visible) {
+        if (!themeCurrent.logoColor_set)
+            drawImage(layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], data->imageSize[1], data->buffer, data->imageMode);
+        else {
+            drawIcon(layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], data->imageSize[1], data->buffer, themeCurrent.logoColor);
+        }
     }
 
     DrawTextFromLayout(ThemeLayoutId_HbmenuVersion, themeCurrent.textColor, VERSION);

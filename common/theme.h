@@ -48,7 +48,6 @@ typedef struct
     char buttonMText[32];
     char labelStarOnText[32];
     char labelStarOffText[32];
-    const uint8_t *hbmenuLogoImage;
 
     ThemeLayoutObject layoutObjects[ThemeLayoutId_Total];
 } theme_t;

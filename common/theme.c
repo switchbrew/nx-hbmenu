@@ -111,7 +111,6 @@ void themeStartup(ThemePreset preset) {
         .buttonMText = "\uE0F0",
         .labelStarOnText = "\u2605",
         .labelStarOffText = "\u2606",
-        .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_light),
     };
 
     theme_t themeDark = (theme_t) {
@@ -136,7 +135,6 @@ void themeStartup(ThemePreset preset) {
         .buttonMText = "\uE0B4",
         .labelStarOnText = "\u2605",
         .labelStarOffText = "\u2606",
-        .hbmenuLogoImage = assetsGetDataBuffer(AssetId_hbmenu_logo_dark),
     };
 
     theme_t themeCommon = {
@@ -145,7 +143,6 @@ void themeStartup(ThemePreset preset) {
                 .visible = true,
                 .posType = false,
                 .posStart = {40, 20},
-                .imageSize = {140, 60},
             },
 
             [ThemeLayoutId_HbmenuVersion] = {
@@ -312,7 +309,6 @@ void themeStartup(ThemePreset preset) {
                 .visible = true,
                 .posType = true,
                 .posStart = {0, 0 + 47 + 10 + 3},
-                .imageSize = {24, 24},
             },
 
             [ThemeLayoutId_BatteryCharge] = {
@@ -326,14 +322,12 @@ void themeStartup(ThemePreset preset) {
                 .visible = true,
                 .posType = false,
                 .posStart = {1180 - 8 - 24 - 8, 0 + 47 + 10 + 6},
-                .imageSize = {24, 24},
             },
 
             [ThemeLayoutId_ChargingIcon] = {
                 .visible = true,
                 .posType = false,
                 .posStart = {1180 - 20, 0 + 47 + 10 + 6},
-                .imageSize = {24, 24},
             },
 
             [ThemeLayoutId_Status] = {
@@ -521,7 +515,6 @@ void themeStartup(ThemePreset preset) {
                 .progressBarColor = progressBarColor,
                 .logoColor_set = logoColor_set,
                 .enableWaveBlending = waveBlending,
-                .hbmenuLogoImage = themeDefault->hbmenuLogoImage
             };
             strncpy(themeCurrent.buttonAText, AText, sizeof(themeCurrent.buttonAText));
             themeCurrent.buttonAText[sizeof(themeCurrent.buttonAText)-1] = 0;
