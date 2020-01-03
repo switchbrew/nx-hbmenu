@@ -416,9 +416,10 @@ void themeStartup(ThemePreset preset) {
     config_t cfg = {0};
     config_init(&cfg);
     config_setting_t *theme = NULL, *layout = NULL, *assets = NULL;
-    color_t text, attentionText, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
+    color_t text, logoColor={0}, attentionText, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
     int waveBlending;
     const char *AText, *BText, *XText, *YText, *PText, *MText, *starOnText, *starOffText;
+    bool logoColor_set = false;
     bool good_cfg = false;
     bool is_romfs = false;
 
@@ -460,6 +461,8 @@ void themeStartup(ThemePreset preset) {
         if (theme != NULL) {
             if (!colorFromSetting(config_setting_lookup(theme, "textColor"), &text))
                 text = themeDefault->textColor;
+            if (colorFromSetting(config_setting_lookup(theme, "logoColor"), &logoColor))
+                logoColor_set = true;
             if (!colorFromSetting(config_setting_lookup(theme, "attentionTextColor"), &attentionText))
                 attentionText = themeDefault->attentionTextColor;
             if (!colorFromSetting(config_setting_lookup(theme, "frontWaveColor"), &frontWave))
@@ -500,6 +503,7 @@ void themeStartup(ThemePreset preset) {
                 starOffText = themeDefault->labelStarOffText;
             themeCurrent = (theme_t) {
                 .textColor = text,
+                .logoColor = logoColor,
                 .attentionTextColor = attentionText,
                 .frontWaveColor = frontWave,
                 .middleWaveColor = middleWave,
@@ -510,6 +514,7 @@ void themeStartup(ThemePreset preset) {
                 .borderColor = borderColor,
                 .borderTextColor = borderTextColor,
                 .progressBarColor = progressBarColor,
+                .logoColor_set = logoColor_set,
                 .enableWaveBlending = waveBlending,
                 .hbmenuLogoImage = themeDefault->hbmenuLogoImage
             };

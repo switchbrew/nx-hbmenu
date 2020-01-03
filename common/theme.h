@@ -26,6 +26,7 @@ typedef struct
 typedef struct
 {
     color_t textColor;
+    color_t logoColor;
     color_t attentionTextColor;
     color_t frontWaveColor;
     color_t middleWaveColor;
@@ -36,6 +37,7 @@ typedef struct
     color_t borderColor;
     color_t borderTextColor;
     color_t progressBarColor;
+    bool logoColor_set;
     bool enableWaveBlending;
     char buttonAText[32];
     char buttonBText[32];

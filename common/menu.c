@@ -674,7 +674,14 @@ void menuLoop(void) {
     if (layoutobj->visible) drawWave(2, menuTimer, themeCurrent.frontWaveColor, layoutobj->size[1], 4.0, -2.5);
     menuTimer += 0.05;
 
-    drawImageFromLayout(ThemeLayoutId_Logo, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
+    if (!themeCurrent.logoColor_set)
+        drawImageFromLayout(ThemeLayoutId_Logo, themeCurrent.hbmenuLogoImage, IMAGE_MODE_RGBA32);
+    else {
+        layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_Logo];
+        assetsGetData(AssetId_hbmenu_logo_light, &data);
+        if (layoutobj->visible) drawIcon(layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], data->imageSize[1], data->buffer, themeCurrent.logoColor);
+    }
+
     DrawTextFromLayout(ThemeLayoutId_HbmenuVersion, themeCurrent.textColor, VERSION);
     u32 statusXPos = drawStatus();
 
