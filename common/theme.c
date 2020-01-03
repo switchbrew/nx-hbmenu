@@ -97,6 +97,7 @@ void themeStartup(ThemePreset preset) {
         .backWaveColor = MakeColor(154, 171, 255, 255),
         .backgroundColor = MakeColor(233, 236, 241, 255),
         .highlightColor = MakeColor(91, 237, 224, 255),
+        .highlightGradientEdgeColor = MakeColor(255,255,255,255),
         .separatorColor = MakeColor(219, 218, 219, 255),
         .borderColor = MakeColor(255,255,255,255),
         .borderTextColor = MakeColor(64,64,64,255),
@@ -121,6 +122,7 @@ void themeStartup(ThemePreset preset) {
         .backWaveColor = MakeColor(73, 103, 169, 255),
         .backgroundColor = MakeColor(45, 45, 50, 255),
         .highlightColor = MakeColor(91, 237, 224, 255),
+        .highlightGradientEdgeColor = MakeColor(255,255,255,255),
         .separatorColor = MakeColor(219, 218, 219, 255),
         .borderColor = MakeColor(255,255,255,255),
         .borderTextColor = MakeColor(64,64,64,255),
@@ -416,7 +418,7 @@ void themeStartup(ThemePreset preset) {
     config_t cfg = {0};
     config_init(&cfg);
     config_setting_t *theme = NULL, *layout = NULL, *assets = NULL;
-    color_t text, logoColor={0}, attentionText, frontWave, middleWave, backWave, background, highlight, separator, borderColor, borderTextColor, progressBarColor;
+    color_t text, logoColor={0}, attentionText, frontWave, middleWave, backWave, background, highlight, highlightGradientEdgeColor, separator, borderColor, borderTextColor, progressBarColor;
     int waveBlending;
     const char *AText, *BText, *XText, *YText, *PText, *MText, *starOnText, *starOffText;
     bool logoColor_set = false;
@@ -475,6 +477,8 @@ void themeStartup(ThemePreset preset) {
                 background = themeDefault->backgroundColor;
             if (!colorFromSetting(config_setting_lookup(theme, "highlightColor"), &highlight))
                 highlight = themeDefault->highlightColor;
+            if (!colorFromSetting(config_setting_lookup(theme, "highlightGradientEdgeColor"), &highlightGradientEdgeColor))
+                highlightGradientEdgeColor = themeDefault->highlightGradientEdgeColor;
             if (!colorFromSetting(config_setting_lookup(theme, "separatorColor"), &separator))
                 separator = themeDefault->separatorColor;
             if (!colorFromSetting(config_setting_lookup(theme, "borderColor"), &borderColor))
@@ -510,6 +514,7 @@ void themeStartup(ThemePreset preset) {
                 .backWaveColor = backWave,
                 .backgroundColor = background,
                 .highlightColor = highlight,
+                .highlightGradientEdgeColor = highlightGradientEdgeColor,
                 .separatorColor = separator,
                 .borderColor = borderColor,
                 .borderTextColor = borderTextColor,

@@ -228,7 +228,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
 
     if (is_active) {
         highlight_multiplier = fmax(0.0, fabs(fmod(menuTimer, 1.0) - 0.5) / 0.5);
-        border_color = MakeColor(themeCurrent.highlightColor.r + (255 - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (255 - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (255 - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
+        border_color = MakeColor(themeCurrent.highlightColor.r + (themeCurrent.highlightGradientEdgeColor.r - themeCurrent.highlightColor.r) * highlight_multiplier, themeCurrent.highlightColor.g + (themeCurrent.highlightGradientEdgeColor.g - themeCurrent.highlightColor.g) * highlight_multiplier, themeCurrent.highlightColor.b + (themeCurrent.highlightGradientEdgeColor.b - themeCurrent.highlightColor.b) * highlight_multiplier, 255);
         border_start_x = start_x-6;
         border_end_x = end_x+6;
         border_start_y = start_y-5;

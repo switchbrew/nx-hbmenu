@@ -33,6 +33,7 @@ typedef struct
     color_t backWaveColor;
     color_t backgroundColor;
     color_t highlightColor;
+    color_t highlightGradientEdgeColor;
     color_t separatorColor;
     color_t borderColor;
     color_t borderTextColor;
