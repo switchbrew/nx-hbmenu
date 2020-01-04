@@ -363,7 +363,8 @@ void themeStartup(ThemePreset preset) {
                 .visible = true,
                 .posType = true,
                 .posStart = {0, 32},
-                .imageSize = {140, 140},
+                .size = {140, 140},
+                .imageSize = {256, 256},
             },
 
             [ThemeLayoutId_MenuListName] = {
@@ -378,6 +379,7 @@ void themeStartup(ThemePreset preset) {
                 .visible = true,
                 .posType = false,
                 .posStart = {117, 100+10},
+                .size = {256, 256},
                 .imageSize = {256, 256},
             },
 
@@ -605,6 +607,18 @@ void themeStartup(ThemePreset preset) {
 
     ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListTiles];
     if (layoutobj->posEnd[0] < 1) layoutobj->posEnd[0] = 1;
+
+    layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListIcon];
+    if (layoutobj->size[0] <= 0 || layoutobj->size[1] <= 0 || layoutobj->size[0] > layoutobj->imageSize[0] || layoutobj->size[1] > layoutobj->imageSize[1]) {
+        layoutobj->size[0] = layoutobj->imageSize[0];
+        layoutobj->size[1] = layoutobj->imageSize[1];
+    }
+
+    layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon];
+    if (layoutobj->size[0] <= 0 || layoutobj->size[1] <= 0 || layoutobj->size[0] > layoutobj->imageSize[0] || layoutobj->size[1] > layoutobj->imageSize[1]) {
+        layoutobj->size[0] = layoutobj->imageSize[0];
+        layoutobj->size[1] = layoutobj->imageSize[1];
+    }
 
     config_destroy(&cfg);
 

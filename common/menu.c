@@ -9,11 +9,13 @@
 char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
 
-uint8_t *folder_icon_small;
-uint8_t *invalid_icon_small;
-uint8_t *theme_icon_small;
+uint8_t *folder_icon_large, *folder_icon_small;
+uint8_t *invalid_icon_large, *invalid_icon_small;
+uint8_t *theme_icon_large, *theme_icon_small;
 
 void computeFrontGradient(color_t baseColor, int height);
+
+void menuLoadFileassoc(void);
 
 char *menuGetRootPath(void) {
     return rootPath;
@@ -119,8 +121,11 @@ void menuHandleXButton(void) {
 }
 
 void menuStartupCommon(void) {
+    free(folder_icon_large);
     free(folder_icon_small);
+    free(invalid_icon_large);
     free(invalid_icon_small);
+    free(theme_icon_large);
     free(theme_icon_small);
 
     ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon];
@@ -128,27 +133,50 @@ void menuStartupCommon(void) {
     assetsDataEntry *data = NULL;
 
     assetsGetData(AssetId_folder_icon, &data);
-    folder_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], data->imageMode);
+    folder_icon_large = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj->size[0], layoutobj->size[1], data->imageMode);
+    folder_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->size[0], layoutobj2->size[1], data->imageMode);
     assetsGetData(AssetId_invalid_icon, &data);
-    invalid_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], data->imageMode);
-    if(themeGlobalPreset == THEME_PRESET_DARK) {
+    invalid_icon_large = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj->size[0], layoutobj->size[1], data->imageMode);
+    invalid_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->size[0], layoutobj2->size[1], data->imageMode);
+    if(themeGlobalPreset == THEME_PRESET_DARK)
         assetsGetData(AssetId_theme_icon_dark, &data);
-        theme_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], data->imageMode);
-    }
-    else {
+    else
         assetsGetData(AssetId_theme_icon_light, &data);
-        theme_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], data->imageMode);
-    }
+    theme_icon_large = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj->size[0], layoutobj->size[1], data->imageMode);
+    theme_icon_small = downscaleImg(data->buffer, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->size[0], layoutobj2->size[1], data->imageMode);
 
     layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_FrontWave];
     computeFrontGradient(themeCurrent.frontWaveColor, layoutobj->size[1]);
 }
 
+void menuThemeSelectCurrentEntry(void) {
+    menu_s* menu = menuGetCurrent();
+    char themePath[PATH_MAX] = {0};
+    GetThemePathFromConfig(themePath, PATH_MAX);
+    if (themePath[0]==0) menu->curEntry = 0;
+    else {
+        int i;
+        menuEntry_s* me;
+        for (i = 0, me = menu->firstEntry; me != NULL; i ++, me = me->next) {
+            if (strcmp(me->path, themePath)==0) {
+                menu->curEntry = i;
+                break;
+            }
+        }
+    }
+}
+
 void launchApplyThemeTask(menuEntry_s* arg) {
     const char* themePath = arg->path;
+    menu_s* menu = menuGetCurrent();
     SetThemePathToConfig(themePath);
     themeStartup(themeGlobalPreset);
     menuStartupCommon();
+    menuLoadFileassoc();
+    if (hbmenu_state == HBMENU_THEME_MENU) { // Normally this should never be used outside of theme-menu.
+        themeMenuScan(menu->dirname);
+        menuThemeSelectCurrentEntry();
+    } else menuScan(menu->dirname);
 }
 
 bool menuIsNetloaderActive(void) {
@@ -300,31 +328,29 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
     }
     else if (me->type == ENTRY_TYPE_FOLDER) {
         smallimg = folder_icon_small;
-        largeimg = assetsGetDataBuffer(AssetId_folder_icon);
+        largeimg = folder_icon_large;
     }
     else if (me->type == ENTRY_TYPE_THEME){
         smallimg = theme_icon_small;
-        if(themeGlobalPreset == THEME_PRESET_DARK)
-            largeimg = assetsGetDataBuffer(AssetId_theme_icon_dark);
-        else largeimg = assetsGetDataBuffer(AssetId_theme_icon_light);
+        largeimg = theme_icon_large;
     }
     else {
         smallimg = invalid_icon_small;
-        largeimg = assetsGetDataBuffer(AssetId_invalid_icon);
+        largeimg = invalid_icon_large;
     }
 
     if (smallimg) {
         layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListIcon];
-        drawImage(start_x + layoutobj->posStart[0], start_y + layoutobj->posStart[1], layoutobj->imageSize[0], layoutobj->imageSize[1], smallimg, IMAGE_MODE_RGB24);
+        drawImage(start_x + layoutobj->posStart[0], start_y + layoutobj->posStart[1], layoutobj->size[0], layoutobj->size[1], smallimg, IMAGE_MODE_RGB24);
     }
 
     layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon];
     if (is_active && largeimg && layoutobj->visible) {
-        drawImage(layoutobj->posStart[0], layoutobj->posStart[1], layoutobj->imageSize[0], layoutobj->imageSize[1], largeimg, IMAGE_MODE_RGB24);
+        drawImage(layoutobj->posStart[0], layoutobj->posStart[1], layoutobj->size[0], layoutobj->size[1], largeimg, IMAGE_MODE_RGB24);
 
-        shadow_start_y = layoutobj->posStart[1]+layoutobj->imageSize[1];
+        shadow_start_y = layoutobj->posStart[1]+layoutobj->size[1];
         border_start_x = layoutobj->posStart[0];
-        border_end_x = layoutobj->posStart[0]+layoutobj->imageSize[0];
+        border_end_x = layoutobj->posStart[0]+layoutobj->size[0];
 
         for (shadow_y=shadow_start_y; shadow_y <shadow_start_y+shadow_size; shadow_y++) {
             for (x=border_start_x; x<border_end_x; x++) {
@@ -425,11 +451,16 @@ void menuStartupPath(void) {
     }
 }
 
-void menuStartup(void) {
+void menuLoadFileassoc(void) {
     char tmp_path[PATH_MAX+28];
 
+    memset(tmp_path, 0, sizeof(tmp_path)-1);
     snprintf(tmp_path, sizeof(tmp_path)-1, "%s/config/nx-hbmenu/fileassoc", rootPathBase);
     menuFileassocScan(tmp_path);
+}
+
+void menuStartup(void) {
+    menuLoadFileassoc();
 
     menuScan(rootPath);
 
@@ -444,6 +475,7 @@ void themeMenuStartup(void) {
     snprintf(tmp_path, sizeof(tmp_path)-1, "%s%s%s%s%s%s%s", rootPathBase, DIRECTORY_SEPARATOR, "config", DIRECTORY_SEPARATOR, "nx-hbmenu" , DIRECTORY_SEPARATOR, "themes");
 
     themeMenuScan(tmp_path);
+    menuThemeSelectCurrentEntry();
 }
 
 color_t waveBlendAdd(color_t a, color_t b, float alpha) {

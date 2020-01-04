@@ -109,12 +109,12 @@ static bool menuEntryImportIconGfx(menuEntry_s* me, uint8_t* icon_gfx, uint8_t* 
     ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon];
     ThemeLayoutObject *layoutobj2 = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListIcon];
 
-    tmpsize = layoutobj->imageSize[0]*layoutobj->imageSize[1]*3;
+    tmpsize = layoutobj->size[0]*layoutobj->size[1]*3;
     me->icon_gfx = (uint8_t*)malloc(tmpsize);
     if (me->icon_gfx) memcpy(me->icon_gfx, icon_gfx, tmpsize);
 
     if (me->icon_gfx) {
-        tmpsize = layoutobj2->imageSize[0]*layoutobj2->imageSize[1]*3;
+        tmpsize = layoutobj2->size[0]*layoutobj2->size[1]*3;
         me->icon_gfx_small = (uint8_t*)malloc(tmpsize);
         if (me->icon_gfx_small) memcpy(me->icon_gfx_small, icon_gfx_small, tmpsize);
 
@@ -673,22 +673,28 @@ void menuEntryParseIcon(menuEntry_s* me) {
 
     size_t imagesize = layoutobj->imageSize[0]*layoutobj->imageSize[1]*3;
     bool ret=true;
-    me->icon_gfx = (uint8_t*)malloc(imagesize);
+    uint8_t *tmp_gfx = (uint8_t*)malloc(imagesize);
 
-    if (me->icon_gfx == NULL) ret = false;
+    if (tmp_gfx == NULL) ret = false;
 
-    if (ret) ret = assetsLoadJpgFromMemory(me->icon, me->icon_size, me->icon_gfx, IMAGE_MODE_RGB24, layoutobj->imageSize[0], layoutobj->imageSize[1]);
+    if (ret) ret = assetsLoadJpgFromMemory(me->icon, me->icon_size, tmp_gfx, IMAGE_MODE_RGB24, layoutobj->imageSize[0], layoutobj->imageSize[1]);
+
+    if (ret) me->icon_gfx = downscaleImg(tmp_gfx, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj->size[0], layoutobj->size[1], IMAGE_MODE_RGB24);
+
+    if (ret && me->icon_gfx==NULL) ret = false;
 
     me->icon_size = 0;
     free(me->icon);
     me->icon = NULL;
 
-    if (ret) me->icon_gfx_small = downscaleImg(me->icon_gfx, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->imageSize[0], layoutobj2->imageSize[1], IMAGE_MODE_RGB24);
+    if (ret) me->icon_gfx_small = downscaleImg(tmp_gfx, layoutobj->imageSize[0], layoutobj->imageSize[1], layoutobj2->size[0], layoutobj2->size[1], IMAGE_MODE_RGB24);
 
     if (!ret || me->icon_gfx_small == NULL) {
         free(me->icon_gfx);
         me->icon_gfx = NULL;
     }
+
+    free(tmp_gfx);
 }
 
 uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int destWidth, int destHeight, ImageMode mode) {
@@ -706,6 +712,11 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
 
     if (out == NULL) {
         return NULL;
+    }
+
+    if (srcWidth == destWidth && srcHeight == destHeight) {
+        memcpy(out, image, destWidth*destHeight*(mode==IMAGE_MODE_RGBA32 ? 4 : 3));
+        return out;
     }
 
     int tmpx, tmpy;
