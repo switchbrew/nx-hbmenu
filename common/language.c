@@ -106,7 +106,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("Error de E/S"),
         STR_DE("I/O-Fehler"),
         STR_FR("Erreur d'E/S"),
-        STR_IT("Errore di I/O"),
+        STR_IT("Errore I/O"),
         STR_JP("入出力エラー"),
         STR_PT("Erro de E/S"),
         STR_NL("I/O Fout"),
@@ -223,6 +223,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("La última aplicación devolvió un error:"),
         STR_DE("Die letzte Anwendung erzeugte einen Fehler:"),
         STR_FR("La dernière application a retourné une erreur:"),
+        STR_IT("L'ultima applicazione ha restituito un errore:"),
         STR_JP("直前に実行したアプリでエラーが発生しました:"),
         STR_KO("최근 애플리케이션에서 오류가 발생했습니다:"),
         STR_ZH_HANT("程式執行時發生錯誤:"),
@@ -233,6 +234,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("Failed to launch the application:"),
         STR_DE("Konnte die Anwendung nicht starten:"),
         STR_FR("Erreur au lancement de l'application"),
+        STR_IT("Errore nell'avvio dell'applicazione:"),
     },
 
     [StrId_AppInfo_Author] =
@@ -273,7 +275,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("Lanzamiento"),
         STR_DE("Starten"),
         STR_FR("Lancement"),
-        STR_IT("Lanciare"),
+        STR_IT("Avvia"),
         STR_JP("起動"),
         STR_PT("Lançamento"),
         STR_NL("Lancering"),
@@ -289,7 +291,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("Abrir"),
         STR_DE("Öffnen"),
         STR_FR("Ouvrir"),
-        STR_IT("Aprire"),
+        STR_IT("Apri"),
         STR_JP("開く"),
         STR_PT("Abrir"),
         STR_NL("Open"),
@@ -320,6 +322,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("OK"),
         STR_DE("OK"),
         STR_FR("OK"),
+        STR_IT("OK"),
         STR_ES("Aceptar"),
         STR_JP("了解"),
         STR_KO("확인"),
@@ -332,6 +335,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Appliquer"),
         STR_DE("Anwenden"),
         STR_ES("Aplicar"),
+        STR_IT("Applica"),
         STR_JP("適用"),
         STR_KO("적용"),
         STR_ZH_HANT("应用"),
@@ -341,12 +345,14 @@ const char* const g_strings[StrId_Max][17] =
     {
         STR_EN("Star"),
         STR_ES("Agregar a favoritos"),
+        STR_IT("Aggiungi ai preferiti"),
     },
 
     [StrId_Actions_Unstar] =
     {
         STR_EN("Unstar"),
         STR_ES("Borrar de favoritos"),
+        STR_IT("Rimuovi dai preferiti"),
     },
 
     [StrId_ThemeMenu] =
@@ -355,6 +361,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Menu Thème"),
         STR_DE("Theme Menü"),
         STR_ES("Menú temático"),
+        STR_IT("Tema Menu"),
         STR_JP("テーマメニュー"),
         STR_KO("테마 메뉴"),
         STR_ZH_HANT("主题菜单"),
@@ -363,9 +370,10 @@ const char* const g_strings[StrId_Max][17] =
     [StrId_ThemeNotApplied] =
     {
         STR_EN("Theme cannot be applied because an error occurred."),
-        STR_EN("Das Theme konnte nicht geladen werden, da ein Fehler aufgetreten ist."),
+        STR_DE("Das Theme konnte nicht geladen werden, da ein Fehler aufgetreten ist."),
         STR_FR("Le thème ne peut pas être appliqué car une erreur est survenue."),
         STR_ES("El tema no se pudo aplicar porque se ha producido un error."),
+        STR_IT("Il tema non è stato applicato a causa di un errore."),
         STR_JP("エラーが発生したため、テーマを適用できませんでした。"),
         STR_KO("오류가 발생 했기 때문에 테마를 적용할 수 없습니다."),
         STR_ZH_HANT("由于发生错误, 无法应用主题。"),
@@ -376,6 +384,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("Default Theme"),
         STR_FR("Thème par défaut"),
         STR_DE("Standard Theme"),
+        STR_IT("Tema di default"),
     },
 
     /*[StrId_Reboot] =
