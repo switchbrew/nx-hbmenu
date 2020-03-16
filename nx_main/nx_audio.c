@@ -72,7 +72,7 @@ static void audio_playback_thread(void* arg)
             playing = 1;
         }
 
-        if (R_SUCCEEDED(audoutWaitPlayFinish(&released_buffer, &released_count, U64_MAX)))
+        if (R_SUCCEEDED(audoutWaitPlayFinish(&released_buffer, &released_count, UINT64_MAX)))
             playing = 0;
     }
 }
