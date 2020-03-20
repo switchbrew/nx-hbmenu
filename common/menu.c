@@ -566,7 +566,7 @@ void drawNetwork(int tmpX, AssetId id) {
 u32 drawStatus() {
     bool netstatusFlag=0;
     bool temperatureFlag=0;
-	s32 temperatureF=0;
+    s32 temperatureF=0;
     s32 temperature=0;
     AssetId id;
 
@@ -591,7 +591,7 @@ u32 drawStatus() {
     if (statusGet(&netstatusFlag, &id, &temperatureFlag, &temperature)) {
         if (netstatusFlag) drawNetwork(tmpX, id);
         if (temperatureFlag) {
-			temperatureF = ((float)temperature / 1000 * 9 / 5) + 32;
+            temperatureF = ((float)temperature / 1000 * 9 / 5) + 32;
             snprintf(tmpstr, sizeof(tmpstr)-1, "%.1f°F (%.1f°C)", (float)temperatureF, (float)temperature / 1000);
             DrawTextFromLayout(ThemeLayoutId_Temperature, themeCurrent.textColor, tmpstr);
         }
