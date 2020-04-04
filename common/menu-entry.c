@@ -527,7 +527,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
 }
 
 void menuEntryFileassocLoad(const char* filepath) {
-    bool success=0, success2=0;
+    bool success=0, iconLoaded=0;
     menuEntry_s* me = NULL;
 
     config_setting_t *fileassoc = NULL, *targets = NULL, *target = NULL;
@@ -615,7 +615,7 @@ void menuEntryFileassocLoad(const char* filepath) {
                             if ((target_file_extension[0]!=0) == (target_filename[0]!=0)) continue;
 
                             me = menuCreateEntry(ENTRY_TYPE_FILEASSOC);
-                            success2 = 0;
+                            iconLoaded = 0;
 
                             if (me) {
                                 strncpy(me->path, app_path, sizeof(me->path));
@@ -634,22 +634,17 @@ void menuEntryFileassocLoad(const char* filepath) {
                                 }
                                 me->fileassoc_str[sizeof(me->fileassoc_str)-1] = 0;
 
-                                if (target_icon_path[0]) success2 = menuEntryLoadExternalIcon(me, target_icon_path);
-                                if (!success2 && main_icon_path[0]) success2 = menuEntryLoadExternalIcon(me, main_icon_path);
+                                if (target_icon_path[0]) iconLoaded = menuEntryLoadExternalIcon(me, target_icon_path);
+                                if (!iconLoaded && main_icon_path[0]) iconLoaded = menuEntryLoadExternalIcon(me, main_icon_path);
 
-                                if (success2) {
+                                if (iconLoaded) {
                                     menuEntryParseIcon(me);
                                 } else {
-                                    success2 = menuEntryImportIconGfx(me, app_icon_gfx, app_icon_gfx_small);
+                                    iconLoaded = menuEntryImportIconGfx(me, app_icon_gfx, app_icon_gfx_small);
                                 }
                             }
 
-                            if (me) {
-                                if (success2)
-                                    menuFileassocAddEntry(me);
-                                else
-                                    menuDeleteEntry(me, 0);
-                            }
+                            if (me) menuFileassocAddEntry(me);
                         }
                     }
                 }
