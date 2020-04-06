@@ -567,7 +567,15 @@ int netloader_activate(void) {
         return -1;
     }
 
-    int rc = bind(netloader_listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    uint32_t tmpval=1;
+    int rc = setsockopt(netloader_listenfd, SOL_SOCKET, SO_REUSEADDR, (const char*)&tmpval, sizeof(tmpval));
+    if(rc != 0)
+    {
+        netloader_socket_error("setsockopt");
+        return -1;
+    }
+
+    rc = bind(netloader_listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     if(rc != 0)
     {
         netloader_socket_error("bind");
