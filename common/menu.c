@@ -763,8 +763,11 @@ void menuLoop(void) {
 
         menuCloseMsgBox();
         menuMsgBoxSetNetloaderState(0, NULL, 0, 0);
+    }
 
-        if (netloader_state.errormsg[0]) menuCreateMsgBox(780,300, netloader_state.errormsg);
+    if (netloader_state.errormsg[0]) {
+        menuCloseMsgBox();
+        menuCreateMsgBox(780,300, netloader_state.errormsg);
     }
 
     if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
