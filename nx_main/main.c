@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     if (R_SUCCEEDED(rc)) setsysGetColorSetId(&theme);
 
     if (R_SUCCEEDED(rc)) {
-        rc = plInitialize();
+        rc = plInitialize(PlServiceType_User);
         if (R_FAILED(rc)) snprintf(errormsg, sizeof(errormsg)-1, "Error: plInitialize() failed: 0x%x.", rc);
     }
 
