@@ -77,7 +77,7 @@ typedef enum
     IMAGE_MODE_RGBA32
 } ImageMode;
 
-double menuTimer;
+extern double menuTimer;
 
 #ifdef __cplusplus
 extern "C" {

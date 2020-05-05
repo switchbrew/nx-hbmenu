@@ -6,6 +6,8 @@
 #include "switch/runtime/nxlink.h"
 #endif
 
+double menuTimer;
+
 char rootPathBase[PATH_MAX];
 char rootPath[PATH_MAX+8];
 

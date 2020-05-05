@@ -560,8 +560,8 @@ void menuEntryFileassocLoad(const char* filepath) {
     char target_file_extension[PATH_MAX+1];
     char target_filename[PATH_MAX+1];
 
-    char app_author[ENTRY_AUTHORLENGTH+1];
-    char app_version[ENTRY_VERLENGTH+1];
+    char app_author[ENTRY_AUTHORLENGTH+2];
+    char app_version[ENTRY_VERLENGTH+2];
 
     uint8_t *app_icon_gfx = NULL;
     uint8_t *app_icon_gfx_small = NULL;
