@@ -35,6 +35,7 @@ static void _menuAddEntry(menu_s *m, menuEntry_s* me) {
         m->lastEntry = me;
     }
     m->xPos = 0;
+    m->slideSpeed = 0;
     m->nEntries ++;
 }
 
@@ -59,6 +60,7 @@ static void menuAddEntryToFront(menuEntry_s* me) {
         m->lastEntry = me;
     }
     m->xPos = 0;
+    m->slideSpeed = 0;
     m->nEntries ++;
 }
 
