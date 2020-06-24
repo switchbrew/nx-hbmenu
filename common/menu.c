@@ -831,11 +831,6 @@ void menuLoop(void) {
             menu->curEntry = clamp(round(-((double) menu->xPos / layoutobj->posEnd[0])), 0, menu->nEntries);
         }
 
-        // Debug Text for Slide Speed
-        //char array[20];
-        //sprintf(array, "Slide Speed: %i", menu->slideSpeed);
-        //DrawText(layoutobj->font, 640, 60, themeCurrent.textColor, array);
-
         menuEntry_s *active_entry = NULL;
 
         // Draw menu entries
