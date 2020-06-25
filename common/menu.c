@@ -818,17 +818,17 @@ void menuLoop(void) {
             if (abs(menu->slideSpeed) > 2) {
                 // Slow down way faster when outside the normal bounds
                 if (menu->xPos > 0 || menu->xPos < -(menu->nEntries) * layoutobj->posEnd[0]) {
-                    menu->slideSpeed *= .5;
+                    menu->slideSpeed *= .5f;
                 }
                 else {
-                    menu->slideSpeed *= .9;
+                    menu->slideSpeed *= .9f;
                 }
             }
             else {
                 menu->slideSpeed = 0;
             }
 
-            menu->curEntry = clamp(round(-((double) menu->xPos / layoutobj->posEnd[0])), 0, menu->nEntries);
+            menu->curEntry = clamp(roundf(-((float) menu->xPos / layoutobj->posEnd[0])), 0, menu->nEntries);
         }
 
         menuEntry_s *active_entry = NULL;
