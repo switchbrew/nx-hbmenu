@@ -33,6 +33,7 @@ struct menu_s_tag
     int nEntries;
     int curEntry;
     int xPos;
+    int slideSpeed;
 
     char dirname[PATH_MAX+1];
 };

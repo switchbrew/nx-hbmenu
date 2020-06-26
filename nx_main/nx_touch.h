@@ -10,6 +10,7 @@ struct touchInfo_s {
     bool isTap;
     int initMenuXPos;
     int initMenuIndex;
+    int lastSlideSpeed;
 };
 
 void handleTouch(menu_s* menu);

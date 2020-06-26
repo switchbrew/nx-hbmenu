@@ -15,6 +15,7 @@ void touchInit() {
     touchInfo.isTap = true;
     touchInfo.initMenuXPos = 0;
     touchInfo.initMenuIndex = 0;
+    touchInfo.lastSlideSpeed = 0;
 }
 
 void handleTappingOnApp(menu_s* menu, int px) {
@@ -72,10 +73,14 @@ void handleTouch(menu_s* menu) {
         touchInfo.isTap = true;
         touchInfo.initMenuXPos = menu->xPos;
         touchInfo.initMenuIndex = menu->curEntry;
+        touchInfo.lastSlideSpeed = 0;
+        menu->slideSpeed = 0;
     }
     // On touch moving.
     else if (touches >= 1 && touchInfo.gestureInProgress) {
         hidTouchRead(&currentTouch, 0);
+
+        touchInfo.lastSlideSpeed = ((int)(currentTouch.px - touchInfo.prevTouch.px));
 
         touchInfo.prevTouch = currentTouch;
 
@@ -83,14 +88,10 @@ void handleTouch(menu_s* menu) {
             touchInfo.isTap = false;
         }
         if (!menuIsMsgBoxOpen() && touchInfo.firstTouch.py > layoutobj->posStart[1] && touchInfo.firstTouch.py < layoutobj->posStart[1]+layoutobj->size[1] && !touchInfo.isTap && menu->nEntries > entries_count) {
-            menu->xPos = touchInfo.initMenuXPos + (currentTouch.px - touchInfo.firstTouch.px);
-            menu->curEntry = touchInfo.initMenuIndex + ((int) (touchInfo.firstTouch.px - currentTouch.px) / layoutobj->posEnd[0]);
 
-            if (menu->curEntry < 0)
-                menu->curEntry = 0;
-
-            if (menu->curEntry >= menu->nEntries - entries_count - 1)
-                menu->curEntry = menu->nEntries - entries_count;
+            if (!touchInfo.isTap) {
+                menu->slideSpeed = touchInfo.lastSlideSpeed;
+            }
         }
     }
     // On touch end.
@@ -99,6 +100,10 @@ void handleTouch(menu_s* menu) {
         int y1 = touchInfo.firstTouch.py;
         int x2 = touchInfo.prevTouch.px;
         int y2 = touchInfo.prevTouch.py;
+
+        if (!touchInfo.isTap) {
+            menu->slideSpeed = touchInfo.lastSlideSpeed;
+        }
 
         bool netloader_active = menuIsNetloaderActive();
 

@@ -800,14 +800,35 @@ void menuLoop(void) {
         int entries_count = layoutobj->posEnd[0];
         layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuList];
 
-        if (menu->nEntries > entries_count) {
-            int wanted_x = clamp(-menu->curEntry * layoutobj->posEnd[0], -(menu->nEntries - entries_count) * layoutobj->posEnd[0], 0);
-            menu->xPos += v;
-            v += (wanted_x - menu->xPos) / 3;
-            v /= 2;
+        // Gentle Realign only when not manually moving
+        if (menu->slideSpeed == 0) {
+            if (menu->nEntries > entries_count) {
+                int wanted_x = clamp(-menu->curEntry * layoutobj->posEnd[0], -(menu->nEntries - entries_count) * layoutobj->posEnd[0], 0);
+                menu->xPos += v;
+                v += (wanted_x - menu->xPos) / 3;
+                v /= 2;
+            }
+            else {
+                menu->xPos = v = 0;
+            }
         }
         else {
-            menu->xPos = v = 0;
+            menu->xPos += menu->slideSpeed;
+
+            if (abs(menu->slideSpeed) > 2) {
+                // Slow down way faster when outside the normal bounds
+                if (menu->xPos > 0 || menu->xPos < -(menu->nEntries) * layoutobj->posEnd[0]) {
+                    menu->slideSpeed *= .5f;
+                }
+                else {
+                    menu->slideSpeed *= .9f;
+                }
+            }
+            else {
+                menu->slideSpeed = 0;
+            }
+
+            menu->curEntry = clamp(roundf(-((float) menu->xPos / layoutobj->posEnd[0])), 0, menu->nEntries);
         }
 
         menuEntry_s *active_entry = NULL;
