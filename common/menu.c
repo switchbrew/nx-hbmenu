@@ -81,7 +81,7 @@ void launchMenuNetloaderTask() {
         workerSchedule(netloaderTask, NULL);
 }
 
-void launchMenuBackTask() {
+int launchMenuBackTask() {
     if(hbmenu_state == HBMENU_NETLOADER_ACTIVE) {
         netloaderSignalExit();
     }
@@ -90,9 +90,9 @@ void launchMenuBackTask() {
         menuScan(rootPath);
     }
     else {
-        menuScan("..");
+        return menuScan("..");
     }
-
+    return false;
 }
 
 void menuHandleAButton(void) {

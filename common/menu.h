@@ -109,7 +109,7 @@ int menuFileassocScan(const char* target);
 void launchMenuEntryTask(menuEntry_s* arg);
 void toggleStarState(menuEntry_s* arg);
 void launchApplyThemeTask(menuEntry_s* arg);
-void launchMenuBackTask();
+int launchMenuBackTask();
 void launchMenuNetloaderTask();
 char *menuGetRootPath(void);
 char *menuGetRootBasePath(void);

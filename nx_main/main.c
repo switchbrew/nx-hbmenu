@@ -225,13 +225,17 @@ bool menuUpdate(void) {
     }
     else if (down & HidNpadButton_B)
     {
-        launchMenuBackTask();
+        if (launchMenuBackTask()) {
+            __nx_applet_exit_mode = 1;
+            exitflag = 1;
+        }
     }
     else if(down & HidNpadButton_Minus){
         themeMenuStartup();
     }
     else if (down & HidNpadButton_Plus)
     {
+        __nx_applet_exit_mode = 1;
         exitflag = 1;
     }
     else if (menu->nEntries > 0)
