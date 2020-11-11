@@ -44,21 +44,17 @@ int main(int argc, char **argv)
     appletLockExit();
     appletSetScreenShotPermission(AppletScreenShotPermission_Enable);
 
-    ColorSetId theme;
+    ColorSetId theme = ColorSetId_Light;
     rc = setsysInitialize();
-    if (R_FAILED(rc)) snprintf(errormsg, sizeof(errormsg)-1, "Error: setsysInitialize() failed: 0x%x.", rc);
-
-    if (R_SUCCEEDED(rc)) setsysGetColorSetId(&theme);
-
     if (R_SUCCEEDED(rc)) {
-        rc = plInitialize(PlServiceType_User);
-        if (R_FAILED(rc)) snprintf(errormsg, sizeof(errormsg)-1, "Error: plInitialize() failed: 0x%x.", rc);
+        setsysGetColorSetId(&theme);
+        setsysExit();
     }
 
     if (R_SUCCEEDED(rc)) {
         rc = textInit();
         if (R_FAILED(rc)) {
-            snprintf(errormsg, sizeof(errormsg)-1, "Error: textInit() failed: 0x%x.", rc);
+            snprintf(errormsg, sizeof(errormsg)-1, "Error: textInit() failed: 2%03d-%04d", R_MODULE(rc), R_DESCRIPTION(rc));
         }
     }
 
@@ -67,7 +63,7 @@ int main(int argc, char **argv)
     if (R_SUCCEEDED(rc)) {
         rc = assetsInit();
         if (R_FAILED(rc)) {
-            snprintf(errormsg, sizeof(errormsg)-1, "Error: assetsInit() failed: 0x%x.", rc);
+            snprintf(errormsg, sizeof(errormsg)-1, "Error: assetsInit() failed: 2%03d-%04d", R_MODULE(rc), R_DESCRIPTION(rc));
         }
     }
 
@@ -78,7 +74,7 @@ int main(int argc, char **argv)
     if (R_SUCCEEDED(rc)) {
         rc = netloaderInit();
         if (R_FAILED(rc)) {
-            snprintf(errormsg, sizeof(errormsg)-1, "Error: netloaderInit() failed: 0x%x.", rc);
+            snprintf(errormsg, sizeof(errormsg)-1, "Error: netloaderInit() failed: 2%03d-%04d", R_MODULE(rc), R_DESCRIPTION(rc));
         }
     }
 
@@ -115,7 +111,7 @@ int main(int argc, char **argv)
 
         if (R_FAILED(lastret)) {
             memset(msg, 0, sizeof(msg));
-            snprintf(msg, sizeof(msg)-1, "%s\n0x%x", textGetString(StrId_LastLoadResult), lastret);
+            snprintf(msg, sizeof(msg)-1, "%s\n2%03d-%04d", textGetString(StrId_LastLoadResult), R_MODULE(lastret), R_DESCRIPTION(lastret));
 
             menuCreateMsgBox(780, 300, msg);
         }
@@ -144,7 +140,7 @@ int main(int argc, char **argv)
             if (!uiUpdate()) break;
             g_framebuf = framebufferBegin(&g_framebufObj, &g_framebuf_width);
             #ifdef PERF_LOG
-            start_tick = svcGetSystemTick();
+            start_tick = armGetSystemTick();
             #endif
             memset(g_framebuf, 237, g_framebuf_width * FB_HEIGHT);
             menuLoop();
@@ -157,7 +153,7 @@ int main(int argc, char **argv)
             framebufferEnd(&g_framebufObj);
 
             #ifdef PERF_LOG
-            g_tickdiff_frame = svcGetSystemTick() - start_tick;
+            g_tickdiff_frame = armGetSystemTick() - start_tick;
             #endif
         }
         else {
@@ -185,8 +181,6 @@ int main(int argc, char **argv)
     netloaderExit();
     powerExit();
     assetsExit();
-    plExit();
-    setsysExit();
 
     appletUnlockExit();
 
@@ -211,7 +205,7 @@ bool menuUpdate(void) {
     u64 down = menuGetKeysDown();
     ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListTiles];
     int entries_count = layoutobj->posEnd[0];
-    
+
     handleTouch(menu);
 
     if (down & KEY_Y)

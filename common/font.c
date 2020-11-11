@@ -9,6 +9,10 @@
 #define FONT_FACES_MAX 2
 #endif
 
+#ifdef __SWITCH__
+static bool s_plinited;
+#endif
+
 static FT_Error s_font_libret=1, s_font_facesret[FONT_FACES_MAX];
 
 static FT_Library s_font_library;
@@ -364,7 +368,11 @@ bool fontInitialize(void)
     PlFontData fonts[PlSharedFontType_Total];
 
     Result rc=0;
-    rc = plGetSharedFont(textGetLanguageCode(), fonts, FONT_FACES_MAX, &s_font_faces_total);
+    rc = plInitialize(PlServiceType_User);
+    if (R_SUCCEEDED(rc)) {
+        s_plinited = true;
+        rc = plGetSharedFont(textGetLanguageCode(), fonts, FONT_FACES_MAX, &s_font_faces_total);
+    }
     if (R_FAILED(rc)) return false;
 
     for (i=0; i<s_font_faces_total; i++) {
@@ -410,6 +418,10 @@ void fontExit()
         if (s_font_facesret[i]==0) FT_Done_Face(s_font_faces[i]);
 
     if (s_font_libret==0) FT_Done_FreeType(s_font_library);
+
+    #ifdef __SWITCH__
+    if (s_plinited) plExit();
+    #endif
 }
 
 /*Automatically gives you the desired x-coordinate

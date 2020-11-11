@@ -71,7 +71,7 @@ static void launchFile(const char* path, argData_s* args)
     Result rc = envSetNextLoad(path, argBuf);
     if(R_FAILED(rc)) {
         memset(msg, 0, sizeof(msg));
-        snprintf(msg, sizeof(msg)-1, "%s\n0x%x", textGetString(StrId_AppLaunchError), rc);
+        snprintf(msg, sizeof(msg)-1, "%s\n2%03d-%04d", textGetString(StrId_AppLaunchError), R_MODULE(rc), R_DESCRIPTION(rc));
 
         menuCreateMsgBox(780, 300, msg);
     }
