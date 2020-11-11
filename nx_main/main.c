@@ -3,13 +3,12 @@
 #include <stdio.h>
 
 #include "../common/common.h"
+#include "nx_graphics.h"
 #include "nx_touch.h"
 
 // Define the desired framebuffer resolution (here we set it to 720p).
 #define FB_WIDTH  1280
 #define FB_HEIGHT 720
-
-Framebuffer g_framebufObj;
 
 uint8_t* g_framebuf;
 u32 g_framebuf_width;
@@ -120,8 +119,7 @@ int main(int argc, char **argv)
     if (errormsg[0]) error_screen = 1;
 
     if (!error_screen) {
-        framebufferCreate(&g_framebufObj, nwindowGetDefault(), FB_WIDTH, FB_HEIGHT, PIXEL_FORMAT_RGBA_8888, 2);
-        framebufferMakeLinear(&g_framebufObj);
+        graphicsInit(FB_WIDTH, FB_HEIGHT);
     }
     else {
         consoleInit(NULL);
@@ -138,7 +136,7 @@ int main(int argc, char **argv)
 
         if (!error_screen) {
             if (!uiUpdate()) break;
-            g_framebuf = framebufferBegin(&g_framebufObj, &g_framebuf_width);
+            g_framebuf = graphicsFrameBegin(&g_framebuf_width);
             #ifdef PERF_LOG
             start_tick = armGetSystemTick();
             #endif
@@ -150,7 +148,7 @@ int main(int argc, char **argv)
         }
 
         if (!error_screen) {
-            framebufferEnd(&g_framebufObj);
+            graphicsFrameEnd();
 
             #ifdef PERF_LOG
             g_tickdiff_frame = armGetSystemTick() - start_tick;
@@ -162,7 +160,7 @@ int main(int argc, char **argv)
     }
 
     if (!error_screen) {
-        framebufferClose(&g_framebufObj);
+        graphicsExit();
     }
     else {
         consoleExit(NULL);
