@@ -13,6 +13,9 @@
 uint8_t* g_framebuf;
 u32 g_framebuf_width;
 
+PadState g_pad;
+PadRepeater g_pad_repeater;
+
 bool menuUpdateErrorScreen(void);
 
 #ifdef PERF_LOG
@@ -37,6 +40,12 @@ int main(int argc, char **argv)
     #ifdef PERF_LOG
     u64 start_tick=0;
     #endif
+
+    padConfigureInput(8, HidNpadStyleSet_NpadStandard);
+    padInitializeAny(&g_pad);
+    padRepeaterInitialize(&g_pad_repeater, 20, 10);
+    hidSetNpadHandheldActivationMode(HidNpadHandheldActivationMode_Single);
+    touchInit();
 
     memset(errormsg, 0, sizeof(errormsg));
 
@@ -129,10 +138,11 @@ int main(int argc, char **argv)
 
     while (appletMainLoop())
     {
-
-
-        //Scan all the inputs. This should be done once for each frame
-        hidScanInput();
+        // Scan the gamepad. This should be done once for each frame
+        padUpdate(&g_pad);
+        padRepeaterUpdate(&g_pad_repeater, padGetButtons(&g_pad) & (
+            HidNpadButton_AnyLeft | HidNpadButton_AnyUp | HidNpadButton_AnyRight | HidNpadButton_AnyDown
+        ));
 
         if (!error_screen) {
             if (!uiUpdate()) break;
@@ -186,14 +196,9 @@ int main(int argc, char **argv)
 }
 
 u64 menuGetKeysDown(void) {
-    u64 down = 0;
-
-    for (u32 controller=0; controller<8; controller++) {
-        if (hidIsControllerConnected(controller)) down |= hidKeysDown(controller);
-    }
-    if (hidIsControllerConnected(CONTROLLER_HANDHELD)) down |= hidKeysDown(CONTROLLER_HANDHELD);
-
-    return down;
+    u64 keys = padGetButtonsDown(&g_pad);
+    keys |= padRepeaterGetButtons(&g_pad_repeater);
+    return keys;
 }
 
 //This is implemented here due to the hid code.
@@ -206,26 +211,26 @@ bool menuUpdate(void) {
 
     handleTouch(menu);
 
-    if (down & KEY_Y)
+    if (down & HidNpadButton_Y)
     {
         launchMenuNetloaderTask();
     }
-    else if (down & KEY_X)
+    else if (down & HidNpadButton_X)
     {
         menuHandleXButton();
     }
-    else if (down & KEY_A)
+    else if (down & HidNpadButton_A)
     {
         menuHandleAButton();
     }
-    else if (down & KEY_B)
+    else if (down & HidNpadButton_B)
     {
         launchMenuBackTask();
     }
-    else if(down & KEY_MINUS){
+    else if(down & HidNpadButton_Minus){
         themeMenuStartup();
     }
-    else if (down & KEY_PLUS)
+    else if (down & HidNpadButton_Plus)
     {
         exitflag = 1;
     }
@@ -233,10 +238,10 @@ bool menuUpdate(void) {
     {
         int move = 0;
 
-        if (down & KEY_LEFT) move--;
-        if (down & KEY_RIGHT) move++;
-        if (down & KEY_DOWN) move-=entries_count;
-        if (down & KEY_UP) move+=entries_count;
+        if (down & HidNpadButton_AnyLeft) move--;
+        if (down & HidNpadButton_AnyRight) move++;
+        if (down & HidNpadButton_AnyDown) move-=entries_count;
+        if (down & HidNpadButton_AnyUp) move+=entries_count;
 
         int newEntry = menu->curEntry + move;
         if (newEntry < 0) newEntry = 0;
@@ -251,7 +256,7 @@ bool menuUpdateErrorScreen(void) {
     bool exitflag = 0;
     u64 down = menuGetKeysDown();
 
-    if (down & KEY_PLUS)
+    if (down & HidNpadButton_Plus)
     {
         exitflag = 1;
     }
