@@ -308,7 +308,7 @@ void themeStartup(ThemePreset preset) {
             [ThemeLayoutId_NetworkIcon] = {
                 .visible = true,
                 .posType = true,
-                .posStart = {0, 0 + 47 + 10 + 3},
+                .posStart = {-63, 0 + 47 + 10 + 3},
             },
 
             [ThemeLayoutId_BatteryCharge] = {

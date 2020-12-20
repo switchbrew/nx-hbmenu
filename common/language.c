@@ -346,6 +346,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("Star"),
         STR_ES("Agregar a favoritos"),
         STR_IT("Aggiungi ai preferiti"),
+        STR_FR("Ajouter aux favoris"),
     },
 
     [StrId_Actions_Unstar] =
@@ -353,6 +354,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("Unstar"),
         STR_ES("Borrar de favoritos"),
         STR_IT("Rimuovi dai preferiti"),
+        STR_FR("Retirer des favoris")
     },
 
     [StrId_ThemeMenu] =

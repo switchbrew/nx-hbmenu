@@ -33,6 +33,7 @@ struct menu_s_tag
     int nEntries;
     int curEntry;
     int xPos;
+    int slideSpeed;
 
     char dirname[PATH_MAX+1];
 };
@@ -77,7 +78,7 @@ typedef enum
     IMAGE_MODE_RGBA32
 } ImageMode;
 
-double menuTimer;
+extern double menuTimer;
 
 #ifdef __cplusplus
 extern "C" {

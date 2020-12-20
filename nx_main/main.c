@@ -3,16 +3,18 @@
 #include <stdio.h>
 
 #include "../common/common.h"
+#include "nx_graphics.h"
 #include "nx_touch.h"
 
 // Define the desired framebuffer resolution (here we set it to 720p).
 #define FB_WIDTH  1280
 #define FB_HEIGHT 720
 
-Framebuffer g_framebufObj;
-
 uint8_t* g_framebuf;
 u32 g_framebuf_width;
+
+PadState g_pad;
+PadRepeater g_pad_repeater;
 
 bool menuUpdateErrorScreen(void);
 
@@ -39,26 +41,28 @@ int main(int argc, char **argv)
     u64 start_tick=0;
     #endif
 
+    padConfigureInput(8, HidNpadStyleSet_NpadStandard);
+    padInitializeAny(&g_pad);
+    padRepeaterInitialize(&g_pad_repeater, 20, 10);
+    hidSetNpadHandheldActivationMode(HidNpadHandheldActivationMode_Single);
+    touchInit();
+
     memset(errormsg, 0, sizeof(errormsg));
 
     appletLockExit();
     appletSetScreenShotPermission(AppletScreenShotPermission_Enable);
 
-    ColorSetId theme;
+    ColorSetId theme = ColorSetId_Light;
     rc = setsysInitialize();
-    if (R_FAILED(rc)) snprintf(errormsg, sizeof(errormsg)-1, "Error: setsysInitialize() failed: 0x%x.", rc);
-
-    if (R_SUCCEEDED(rc)) setsysGetColorSetId(&theme);
-
     if (R_SUCCEEDED(rc)) {
-        rc = plInitialize();
-        if (R_FAILED(rc)) snprintf(errormsg, sizeof(errormsg)-1, "Error: plInitialize() failed: 0x%x.", rc);
+        setsysGetColorSetId(&theme);
+        setsysExit();
     }
 
     if (R_SUCCEEDED(rc)) {
         rc = textInit();
         if (R_FAILED(rc)) {
-            snprintf(errormsg, sizeof(errormsg)-1, "Error: textInit() failed: 0x%x.", rc);
+            snprintf(errormsg, sizeof(errormsg)-1, "Error: textInit() failed: 2%03d-%04d", R_MODULE(rc), R_DESCRIPTION(rc));
         }
     }
 
@@ -67,7 +71,7 @@ int main(int argc, char **argv)
     if (R_SUCCEEDED(rc)) {
         rc = assetsInit();
         if (R_FAILED(rc)) {
-            snprintf(errormsg, sizeof(errormsg)-1, "Error: assetsInit() failed: 0x%x.", rc);
+            snprintf(errormsg, sizeof(errormsg)-1, "Error: assetsInit() failed: 2%03d-%04d", R_MODULE(rc), R_DESCRIPTION(rc));
         }
     }
 
@@ -78,7 +82,7 @@ int main(int argc, char **argv)
     if (R_SUCCEEDED(rc)) {
         rc = netloaderInit();
         if (R_FAILED(rc)) {
-            snprintf(errormsg, sizeof(errormsg)-1, "Error: netloaderInit() failed: 0x%x.", rc);
+            snprintf(errormsg, sizeof(errormsg)-1, "Error: netloaderInit() failed: 2%03d-%04d", R_MODULE(rc), R_DESCRIPTION(rc));
         }
     }
 
@@ -115,7 +119,7 @@ int main(int argc, char **argv)
 
         if (R_FAILED(lastret)) {
             memset(msg, 0, sizeof(msg));
-            snprintf(msg, sizeof(msg)-1, "%s\n0x%x", textGetString(StrId_LastLoadResult), lastret);
+            snprintf(msg, sizeof(msg)-1, "%s\n2%03d-%04d", textGetString(StrId_LastLoadResult), R_MODULE(lastret), R_DESCRIPTION(lastret));
 
             menuCreateMsgBox(780, 300, msg);
         }
@@ -124,8 +128,7 @@ int main(int argc, char **argv)
     if (errormsg[0]) error_screen = 1;
 
     if (!error_screen) {
-        framebufferCreate(&g_framebufObj, nwindowGetDefault(), FB_WIDTH, FB_HEIGHT, PIXEL_FORMAT_RGBA_8888, 2);
-        framebufferMakeLinear(&g_framebufObj);
+        graphicsInit(FB_WIDTH, FB_HEIGHT);
     }
     else {
         consoleInit(NULL);
@@ -135,16 +138,17 @@ int main(int argc, char **argv)
 
     while (appletMainLoop())
     {
-
-
-        //Scan all the inputs. This should be done once for each frame
-        hidScanInput();
+        // Scan the gamepad. This should be done once for each frame
+        padUpdate(&g_pad);
+        padRepeaterUpdate(&g_pad_repeater, padGetButtons(&g_pad) & (
+            HidNpadButton_AnyLeft | HidNpadButton_AnyUp | HidNpadButton_AnyRight | HidNpadButton_AnyDown
+        ));
 
         if (!error_screen) {
             if (!uiUpdate()) break;
-            g_framebuf = framebufferBegin(&g_framebufObj, &g_framebuf_width);
+            g_framebuf = graphicsFrameBegin(&g_framebuf_width);
             #ifdef PERF_LOG
-            start_tick = svcGetSystemTick();
+            start_tick = armGetSystemTick();
             #endif
             memset(g_framebuf, 237, g_framebuf_width * FB_HEIGHT);
             menuLoop();
@@ -154,10 +158,10 @@ int main(int argc, char **argv)
         }
 
         if (!error_screen) {
-            framebufferEnd(&g_framebufObj);
+            graphicsFrameEnd();
 
             #ifdef PERF_LOG
-            g_tickdiff_frame = svcGetSystemTick() - start_tick;
+            g_tickdiff_frame = armGetSystemTick() - start_tick;
             #endif
         }
         else {
@@ -166,7 +170,7 @@ int main(int argc, char **argv)
     }
 
     if (!error_screen) {
-        framebufferClose(&g_framebufObj);
+        graphicsExit();
     }
     else {
         consoleExit(NULL);
@@ -185,8 +189,6 @@ int main(int argc, char **argv)
     netloaderExit();
     powerExit();
     assetsExit();
-    plExit();
-    setsysExit();
 
     appletUnlockExit();
 
@@ -194,14 +196,9 @@ int main(int argc, char **argv)
 }
 
 u64 menuGetKeysDown(void) {
-    u64 down = 0;
-
-    for (u32 controller=0; controller<8; controller++) {
-        if (hidIsControllerConnected(controller)) down |= hidKeysDown(controller);
-    }
-    if (hidIsControllerConnected(CONTROLLER_HANDHELD)) down |= hidKeysDown(CONTROLLER_HANDHELD);
-
-    return down;
+    u64 keys = padGetButtonsDown(&g_pad);
+    keys |= padRepeaterGetButtons(&g_pad_repeater);
+    return keys;
 }
 
 //This is implemented here due to the hid code.
@@ -211,29 +208,29 @@ bool menuUpdate(void) {
     u64 down = menuGetKeysDown();
     ThemeLayoutObject *layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListTiles];
     int entries_count = layoutobj->posEnd[0];
-    
+
     handleTouch(menu);
 
-    if (down & KEY_Y)
+    if (down & HidNpadButton_Y)
     {
         launchMenuNetloaderTask();
     }
-    else if (down & KEY_X)
+    else if (down & HidNpadButton_X)
     {
         menuHandleXButton();
     }
-    else if (down & KEY_A)
+    else if (down & HidNpadButton_A)
     {
         menuHandleAButton();
     }
-    else if (down & KEY_B)
+    else if (down & HidNpadButton_B)
     {
         launchMenuBackTask();
     }
-    else if(down & KEY_MINUS){
+    else if(down & HidNpadButton_Minus){
         themeMenuStartup();
     }
-    else if (down & KEY_PLUS)
+    else if (down & HidNpadButton_Plus)
     {
         exitflag = 1;
     }
@@ -241,10 +238,10 @@ bool menuUpdate(void) {
     {
         int move = 0;
 
-        if (down & KEY_LEFT) move--;
-        if (down & KEY_RIGHT) move++;
-        if (down & KEY_DOWN) move-=entries_count;
-        if (down & KEY_UP) move+=entries_count;
+        if (down & HidNpadButton_AnyLeft) move--;
+        if (down & HidNpadButton_AnyRight) move++;
+        if (down & HidNpadButton_AnyDown) move-=entries_count;
+        if (down & HidNpadButton_AnyUp) move+=entries_count;
 
         int newEntry = menu->curEntry + move;
         if (newEntry < 0) newEntry = 0;
@@ -259,7 +256,7 @@ bool menuUpdateErrorScreen(void) {
     bool exitflag = 0;
     u64 down = menuGetKeysDown();
 
-    if (down & KEY_PLUS)
+    if (down & HidNpadButton_Plus)
     {
         exitflag = 1;
     }

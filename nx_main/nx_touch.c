@@ -10,11 +10,13 @@
 
 struct touchInfo_s touchInfo;
 
-void touchInit() {
+void touchInit(void) {
     touchInfo.gestureInProgress = false;
     touchInfo.isTap = true;
     touchInfo.initMenuXPos = 0;
     touchInfo.initMenuIndex = 0;
+    touchInfo.lastSlideSpeed = 0;
+    hidInitializeTouchScreen();
 }
 
 void handleTappingOnApp(menu_s* menu, int px) {
@@ -55,50 +57,50 @@ static inline bool checkInsideTextLayoutObject(ThemeLayoutId id, int x, int y) {
 
 void handleTouch(menu_s* menu) {
     ThemeLayoutObject *layoutobj = NULL;
-    touchPosition currentTouch;
-    u32 touches = hidTouchCount();
+    HidTouchScreenState touch = {0};
+    hidGetTouchScreenStates(&touch, 1);
 
     layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuListTiles];
     int entries_count = layoutobj->posEnd[0];
     layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuList];
 
     // On touch start.
-    if (touches == 1 && !touchInfo.gestureInProgress) {
-        hidTouchRead(&currentTouch, 0);
-
+    if (touch.count == 1 && !touchInfo.gestureInProgress) {
         touchInfo.gestureInProgress = true;
-        touchInfo.firstTouch = currentTouch;
-        touchInfo.prevTouch = currentTouch;
+        touchInfo.firstTouch = touch.touches[0];
+        touchInfo.prevTouch = touch.touches[0];
         touchInfo.isTap = true;
         touchInfo.initMenuXPos = menu->xPos;
         touchInfo.initMenuIndex = menu->curEntry;
+        touchInfo.lastSlideSpeed = 0;
+        menu->slideSpeed = 0;
     }
     // On touch moving.
-    else if (touches >= 1 && touchInfo.gestureInProgress) {
-        hidTouchRead(&currentTouch, 0);
+    else if (touch.count >= 1 && touchInfo.gestureInProgress) {
+        touchInfo.lastSlideSpeed = ((int)(touch.touches[0].x - touchInfo.prevTouch.x));
 
-        touchInfo.prevTouch = currentTouch;
+        touchInfo.prevTouch = touch.touches[0];
 
-        if (touchInfo.isTap && (abs(touchInfo.firstTouch.px - currentTouch.px) > TAP_MOVEMENT_GAP || abs(touchInfo.firstTouch.py - currentTouch.py) > TAP_MOVEMENT_GAP)) {
+        if (touchInfo.isTap && (abs(touchInfo.firstTouch.x - touch.touches[0].x) > TAP_MOVEMENT_GAP || abs(touchInfo.firstTouch.y - touch.touches[0].y) > TAP_MOVEMENT_GAP)) {
             touchInfo.isTap = false;
         }
-        if (!menuIsMsgBoxOpen() && touchInfo.firstTouch.py > layoutobj->posStart[1] && touchInfo.firstTouch.py < layoutobj->posStart[1]+layoutobj->size[1] && !touchInfo.isTap && menu->nEntries > entries_count) {
-            menu->xPos = touchInfo.initMenuXPos + (currentTouch.px - touchInfo.firstTouch.px);
-            menu->curEntry = touchInfo.initMenuIndex + ((int) (touchInfo.firstTouch.px - currentTouch.px) / layoutobj->posEnd[0]);
+        if (!menuIsMsgBoxOpen() && touchInfo.firstTouch.y > layoutobj->posStart[1] && touchInfo.firstTouch.y < layoutobj->posStart[1]+layoutobj->size[1] && !touchInfo.isTap && menu->nEntries > entries_count) {
 
-            if (menu->curEntry < 0)
-                menu->curEntry = 0;
-
-            if (menu->curEntry >= menu->nEntries - entries_count - 1)
-                menu->curEntry = menu->nEntries - entries_count;
+            if (!touchInfo.isTap) {
+                menu->slideSpeed = touchInfo.lastSlideSpeed;
+            }
         }
     }
     // On touch end.
     else if (touchInfo.gestureInProgress) {
-        int x1 = touchInfo.firstTouch.px;
-        int y1 = touchInfo.firstTouch.py;
-        int x2 = touchInfo.prevTouch.px;
-        int y2 = touchInfo.prevTouch.py;
+        int x1 = touchInfo.firstTouch.x;
+        int y1 = touchInfo.firstTouch.y;
+        int x2 = touchInfo.prevTouch.x;
+        int y2 = touchInfo.prevTouch.y;
+
+        if (!touchInfo.isTap) {
+            menu->slideSpeed = touchInfo.lastSlideSpeed;
+        }
 
         bool netloader_active = menuIsNetloaderActive();
 
@@ -117,7 +119,7 @@ void handleTouch(menu_s* menu) {
         } else if (touchInfo.isTap && !netloader_active) {
             // App Icons
             if (y1 > layoutobj->posStart[1] && y1 < layoutobj->posStart[1]+layoutobj->size[1]) {
-                handleTappingOnApp(menu, touchInfo.prevTouch.px);
+                handleTappingOnApp(menu, touchInfo.prevTouch.x);
             }
             // Bottom Buttons
             else {

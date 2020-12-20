@@ -1,3 +1,4 @@
+.*/
 *~
 *.exe
 *.o
@@ -13,3 +14,4 @@ build
 *.nro
 test.*
 switch
+nx-hbmenu*

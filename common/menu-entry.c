@@ -210,7 +210,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
     menu_s *menu_fileassoc = menuFileassocGetCurrent();
     menuEntry_s* fileassoc_me = NULL;
     char *strptr = NULL;
-    char tempbuf[PATH_MAX+1];
+    char tempbuf[PATH_MAX+16];
     //bool isOldAppFolder = false;
 
     if (check_exists && !fsobjExists(me->path)) return false;
@@ -504,9 +504,28 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
 
             // Initialize the argument data
             argData_s* ad = &me->args;
+            argData_s* ad_assoc = &fileassoc_me->args;
+            char *arg_src = (char*)&ad_assoc->buf[1];
+            bool ftoken_found=0;
             ad->dst = (char*)&ad->buf[1];
-            launchAddArg(ad, fileassoc_me->path);
-            launchAddArg(ad, me->path);
+
+            for (u32 argi=0; argi<ad_assoc->buf[0]; argi++, arg_src+= strlen(arg_src)+1) {
+                if (argi) {
+                    strptr = strchr(arg_src, '%');
+                    if (strptr && strptr[0] && strptr[1] && (strptr == arg_src || strptr[-1] != '\\')) {
+                        if (strptr[1] == 'f') {
+                            memset(tempbuf, 0, sizeof(tempbuf));
+                            snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s%s%s", (int)((uintptr_t)strptr-(uintptr_t)arg_src), arg_src, me->path, &strptr[2]);
+                            launchAddArg(ad, tempbuf);
+                            ftoken_found = 1;
+                            continue;
+                        }
+                    }
+                }
+
+                launchAddArg(ad, arg_src);
+            }
+            if (!ftoken_found) launchAddArg(ad, me->path);
 
             strncpy(me->path, fileassoc_me->path, sizeof(me->path));
             me->path[sizeof(me->path)-1] = 0;
@@ -527,12 +546,12 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
 }
 
 void menuEntryFileassocLoad(const char* filepath) {
-    bool success=0, success2=0;
+    bool success=0, iconLoaded=0;
     menuEntry_s* me = NULL;
 
-    config_setting_t *fileassoc = NULL, *targets = NULL, *target = NULL;
+    config_setting_t *fileassoc = NULL, *targets = NULL, *target = NULL, *app_args = NULL, *target_args = NULL;
     config_t cfg = {0};
-    int targets_len=0, i;
+    int targets_len=0, args_len=0, i;
     const char *strptr = NULL;
 
     char app_path[PATH_MAX+8];
@@ -541,8 +560,8 @@ void menuEntryFileassocLoad(const char* filepath) {
     char target_file_extension[PATH_MAX+1];
     char target_filename[PATH_MAX+1];
 
-    char app_author[ENTRY_AUTHORLENGTH+1];
-    char app_version[ENTRY_VERLENGTH+1];
+    char app_author[ENTRY_AUTHORLENGTH+2];
+    char app_version[ENTRY_VERLENGTH+2];
 
     uint8_t *app_icon_gfx = NULL;
     uint8_t *app_icon_gfx_small = NULL;
@@ -564,7 +583,8 @@ void menuEntryFileassocLoad(const char* filepath) {
                 snprintf(app_path, sizeof(app_path)-1, "%s%s", menuGetRootBasePath(), strptr);
             if (config_setting_lookup_string(fileassoc, "icon_path", &strptr))
                 snprintf(main_icon_path, sizeof(main_icon_path)-1, "%s%s", menuGetRootBasePath(), strptr);
-            targets = config_setting_get_member(fileassoc, "targets");
+            app_args = config_setting_lookup(fileassoc, "app_args");
+            targets = config_setting_lookup(fileassoc, "targets");
 
             if (app_path[0] && targets) {
                 targets_len = config_setting_length(targets);
@@ -610,12 +630,13 @@ void menuEntryFileassocLoad(const char* filepath) {
                                 strncpy(target_file_extension, strptr, sizeof(target_file_extension)-1);
                             if (config_setting_lookup_string(target, "filename", &strptr))
                                 strncpy(target_filename, strptr, sizeof(target_filename)-1);
+                            target_args = config_setting_lookup(target, "app_args");
 
                             //string_is_set for target_file_extension and target_filename must differ: only 1 can be set, not both set or both not set.
                             if ((target_file_extension[0]!=0) == (target_filename[0]!=0)) continue;
 
                             me = menuCreateEntry(ENTRY_TYPE_FILEASSOC);
-                            success2 = 0;
+                            iconLoaded = 0;
 
                             if (me) {
                                 strncpy(me->path, app_path, sizeof(me->path));
@@ -634,22 +655,32 @@ void menuEntryFileassocLoad(const char* filepath) {
                                 }
                                 me->fileassoc_str[sizeof(me->fileassoc_str)-1] = 0;
 
-                                if (target_icon_path[0]) success2 = menuEntryLoadExternalIcon(me, target_icon_path);
-                                if (!success2 && main_icon_path[0]) success2 = menuEntryLoadExternalIcon(me, main_icon_path);
+                                if (target_icon_path[0]) iconLoaded = menuEntryLoadExternalIcon(me, target_icon_path);
+                                if (!iconLoaded && main_icon_path[0]) iconLoaded = menuEntryLoadExternalIcon(me, main_icon_path);
 
-                                if (success2) {
+                                if (iconLoaded) {
                                     menuEntryParseIcon(me);
                                 } else {
-                                    success2 = menuEntryImportIconGfx(me, app_icon_gfx, app_icon_gfx_small);
+                                    iconLoaded = menuEntryImportIconGfx(me, app_icon_gfx, app_icon_gfx_small);
+                                }
+
+                                argData_s* ad = &me->args;
+                                ad->dst = (char*)&ad->buf[1];
+                                launchAddArg(ad, me->path);
+
+                                config_setting_t *config_args = target_args ? target_args : app_args;
+                                if (config_args) {
+                                    args_len = config_setting_length(config_args);
+                                    for (int argi=0; argi<args_len; argi++) {
+                                        strptr = config_setting_get_string_elem(config_args, argi);
+                                        if (strptr==NULL) continue;
+
+                                        launchAddArg(ad, strptr);
+                                    }
                                 }
                             }
 
-                            if (me) {
-                                if (success2)
-                                    menuFileassocAddEntry(me);
-                                else
-                                    menuDeleteEntry(me, 0);
-                            }
+                            if (me) menuFileassocAddEntry(me);
                         }
                     }
                 }

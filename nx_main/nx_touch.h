@@ -5,11 +5,13 @@
 
 struct touchInfo_s {
     bool gestureInProgress;
-    touchPosition firstTouch;
-    touchPosition prevTouch;
+    HidTouchState firstTouch;
+    HidTouchState prevTouch;
     bool isTap;
     int initMenuXPos;
     int initMenuIndex;
+    int lastSlideSpeed;
 };
 
+void touchInit(void);
 void handleTouch(menu_s* menu);
