@@ -68,15 +68,26 @@ static void launchFile(const char* path, argData_s* args)
 
     init_args(argBuf, sizeof(argBuf)-1, args->buf, sizeof(args->buf));
 
-    Result rc = envSetNextLoad(path, argBuf);
-    if(R_FAILED(rc)) {
+    struct stat st;
+
+    if (stat(path, &st) == -1) {
         memset(msg, 0, sizeof(msg));
-        snprintf(msg, sizeof(msg)-1, "%s\n2%03d-%04d", textGetString(StrId_AppLaunchError), R_MODULE(rc), R_DESCRIPTION(rc));
+        snprintf(msg, sizeof(msg)-1, "Couldn't find executable: %s", path);
 
         menuCreateMsgBox(780, 300, msg);
+        menuScan(".");
     }
     else {
-        uiExitLoop();
+        Result rc = envSetNextLoad(path, argBuf);
+        if(R_FAILED(rc)) {
+            memset(msg, 0, sizeof(msg));
+            snprintf(msg, sizeof(msg)-1, "%s\n2%03d-%04d", textGetString(StrId_AppLaunchError), R_MODULE(rc), R_DESCRIPTION(rc));
+
+            menuCreateMsgBox(780, 300, msg);
+        }
+        else {
+            uiExitLoop();
+        }
     }
 }
 
