@@ -72,7 +72,7 @@ static void launchFile(const char* path, argData_s* args)
 
     if (stat(path, &st) == -1) {
         memset(msg, 0, sizeof(msg));
-        snprintf(msg, sizeof(msg)-1, "Couldn't find executable: %s", path);
+        snprintf(msg, sizeof(msg)-1, textGetString(StrId_NroNotFound), path);
 
         menuCreateMsgBox(780, 300, msg);
         menuScan(".");
