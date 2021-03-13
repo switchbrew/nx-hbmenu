@@ -50,7 +50,7 @@ const char* const g_strings[StrId_Max][17] =
     {
         STR_EN("● Applet Mode ●"),
         STR_ES("● Modo Applet ●"),
-        STR_FR("● Mode applet ●"),
+        STR_FR("● Mode Applet ●"),
     },
 
     [StrId_Directory] =
@@ -902,7 +902,7 @@ const char* const g_strings[StrId_Max][17] =
         ),
         STR_FR(
             "Transfert…\n"
-            "%zu sur %zu Ko écrits"
+            "%zu sur %zu Kio écrits"
         ),
         STR_IT(
             "Trasferimento…\n"
