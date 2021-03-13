@@ -849,7 +849,7 @@ const char* const g_strings[StrId_Max][17] =
             "IP Addr: %lu.%lu.%lu.%lu, Port: %d"
         ),
         STR_FR(
-            "En attente de la connexion du nxlink…\n"
+            "En attente de la connexion de nxlink…\n"
             "Adr. IP : %lu.%lu.%lu.%lu, Port : %d"
         ),
         STR_IT(
