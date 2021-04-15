@@ -50,6 +50,7 @@ const char* const g_strings[StrId_Max][17] =
     {
         STR_EN("● Applet Mode ●"),
         STR_ES("● Modo Applet ●"),
+        STR_FR("● Mode Applet ●")
     },
 
     [StrId_Directory] =
