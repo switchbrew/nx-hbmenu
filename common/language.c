@@ -831,7 +831,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_DE("Offline, warte auf Netzwerk…"),
         STR_FR("Hors-ligne, en attente d'une connection..."),
         STR_IT("Disconnesso, in attesa della connessione…"),
-        STR_ES("Desconectado, esperando la red..."),
+        STR_ES("Desconectado, esperando a la red..."),
         STR_JP("オフラインです。ネットワーク接続を待っています…"),
         STR_KO("연결 끊김, 네트워크 기다리는 중…"),
         STR_ZH_HANS("无法连接网络，等待网络连接…"),
@@ -942,4 +942,3 @@ const char* const g_strings[StrId_Max][17] =
         ),
     },
 };
-
