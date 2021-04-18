@@ -390,7 +390,6 @@ const char* const g_strings[StrId_Max][17] =
         STR_DE("Standard Theme"),
         STR_IT("Tema di default"),
         STR_ES("Tema por defecto"),
-        
     },
 
     /*[StrId_Reboot] =
