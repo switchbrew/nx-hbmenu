@@ -50,6 +50,7 @@ const char* const g_strings[StrId_Max][17] =
     {
         STR_EN("● Applet Mode ●"),
         STR_ES("● Modo Applet ●"),
+        STR_FR("● Mode Applet ●"),
     },
 
     [StrId_Directory] =
@@ -233,8 +234,9 @@ const char* const g_strings[StrId_Max][17] =
     {
         STR_EN("Failed to launch the application:"),
         STR_DE("Konnte die Anwendung nicht starten:"),
-        STR_FR("Erreur au lancement de l'application"),
+        STR_FR("Erreur au lancement de l'application:"),
         STR_IT("Errore nell'avvio dell'applicazione:"),
+        STR_ES("No se ha podido iniciar la aplicación:"),
     },
 
     [StrId_AppInfo_Author] =
@@ -387,6 +389,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Thème par défaut"),
         STR_DE("Standard Theme"),
         STR_IT("Tema di default"),
+        STR_ES("Tema por defecto"),
     },
 
     /*[StrId_Reboot] =
@@ -827,6 +830,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_DE("Offline, warte auf Netzwerk…"),
         STR_FR("Hors-ligne, en attente d'une connection..."),
         STR_IT("Disconnesso, in attesa della connessione…"),
+        STR_ES("Desconectado, esperando a la red..."),
         STR_JP("オフラインです。ネットワーク接続を待っています…"),
         STR_KO("연결 끊김, 네트워크 기다리는 중…"),
         STR_ZH_HANS("无法连接网络，等待网络连接…"),
@@ -937,4 +941,3 @@ const char* const g_strings[StrId_Max][17] =
         ),
     },
 };
-
