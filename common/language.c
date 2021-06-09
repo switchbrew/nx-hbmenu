@@ -133,6 +133,12 @@ const char* const g_strings[StrId_Max][17] =
         STR_ZH_HANT("開啓檔案失敗:\n%s"),
     },
 
+    [StrId_NroNotFound] =
+    {
+        STR_EN("Could not find executable: %s"),
+        STR_FR("Impossible trouver l'exécutable : %s"),
+    },
+
     [StrId_NoAppsFound_Title] =
     {
         STR_EN("No applications found"),

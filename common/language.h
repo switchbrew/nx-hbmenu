@@ -11,6 +11,7 @@ typedef enum
     StrId_DefaultPublisher,
     StrId_IOError,
     StrId_CouldNotOpenFile,
+    StrId_NroNotFound,
 
     StrId_NoAppsFound_Title,
     StrId_NoAppsFound_Msg,
