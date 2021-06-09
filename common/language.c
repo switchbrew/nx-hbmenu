@@ -282,7 +282,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("Launch"),
         STR_ES("Lanzamiento"),
         STR_DE("Starten"),
-        STR_FR("Lancement"),
+        STR_FR("Lancer"),
         STR_IT("Avvia"),
         STR_JP("起動"),
         STR_PT("Lançamento"),
@@ -368,7 +368,7 @@ const char* const g_strings[StrId_Max][17] =
     [StrId_ThemeMenu] =
     {
         STR_EN("Theme Menu"),
-        STR_FR("Menu Thème"),
+        STR_FR("Menu thèmes"),
         STR_DE("Theme Menü"),
         STR_ES("Menú temático"),
         STR_IT("Tema Menu"),
@@ -574,7 +574,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_DE("Fehler beim Lesen der Titel-Metadaten.\n%08lX%08lX@%d"),
         STR_FR(
             "Erreur lors de la lecture des métadonnées\n"
-            "de titre.\n%08lX%08lX@%d"
+            "du titre.\n%08lX%08lX@%d"
         ),
         STR_IT("Errore nella lettura dei metadata dei titoli.\n%08lX%08lX@%d"),
         STR_JP("タイトルメタデータを読み取ることができませんでした。\n%08lX%08lX@%d"),
@@ -787,7 +787,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("NetLoader"),
         STR_ES("Cargador de programas"),
         STR_DE("Netzwerk-Loader"),
-        STR_FR("Chargeur de programme"),
+        STR_FR("NetLoader"),
         STR_IT("Caricamento programmi"),
         STR_JP("ネットローダ"),
         STR_PT("Carregador de programas"),
@@ -803,7 +803,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("The NetLoader is currently unavailable."),
         STR_ES("El cargador de programas no está disponible."),
         STR_DE("Der Netzwerk-Loader ist zur Zeit nicht verfügbar."),
-        STR_FR("Le chargeur de programme nxlink est indisponible."),
+        STR_FR("Le programme nxlink est indisponible."),
         STR_IT("Il caricamento programmi nxlink non è disponibile."),
         STR_JP("nxlinkネットローダは現在利用できません。"),
         STR_PT("O carregador de programas está de momento indisponível."),
