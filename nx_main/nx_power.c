@@ -8,7 +8,7 @@ static bool powerCacheIsCharging;
 static PsmSession powerSession;
 
 bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
-    ChargerType charger = ChargerType_None;
+    PsmChargerType charger = PsmChargerType_Unconnected;
     bool hwReadsSucceeded = false;
     bool use_cache = false;
     Result rc = 0;
@@ -31,7 +31,7 @@ bool powerGetDetails(uint32_t *batteryCharge, bool *isCharging) {
         else {
             rc = psmGetChargerType(&charger);
             hwReadsSucceeded &= R_SUCCEEDED(rc);
-            *isCharging = (charger > ChargerType_None);
+            *isCharging = (charger != PsmChargerType_Unconnected);
         }
 
         powerCacheCharge = *batteryCharge;
