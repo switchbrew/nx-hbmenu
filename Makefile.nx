@@ -212,6 +212,7 @@ $(OUTPUT).nso	:	$(OUTPUT).elf
 
 endif
 
+menu.o :	$(TOPDIR)/Makefile
 $(OUTPUT).elf	:	$(OFILES)
 
 $(OFILES_SRC)	: $(HFILES_BIN)
