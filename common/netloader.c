@@ -367,8 +367,21 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
 //---------------------------------------------------------------------------------
 int loadnro(menuEntry_s *me, int sock, struct in_addr remote) {
 //---------------------------------------------------------------------------------
-    int len, namelen, filelen;
+    int len, server, namelen, filelen;
     char filepath[PATH_MAX+1];
+    len = recvall(sock, &server, 4, 0);
+
+    if (len != 4) {
+        netloader_error("Error getting server flag", errno);
+        return -1;
+    }
+
+    // Clear remote address if the server flag is disabled
+    // Extra nxlink args won't be passed to the launched binary
+    if (!server) {
+        remote.s_addr = 0;
+    }
+
     len = recvall(sock, &namelen, 4, 0);
 
     if (len != 4) {
