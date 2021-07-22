@@ -565,6 +565,13 @@ void drawNetwork(int tmpX, AssetId id) {
     if (layoutobj->visible) drawIcon(layoutobj->posType ? tmpX + layoutobj->posStart[0] : layoutobj->posStart[0], layoutobj->posStart[1], data->imageSize[0], data->imageSize[1], data->buffer, themeCurrent.textColor);
 }
 
+void drawSystemVersion(){
+    char tmpstr[32];
+    u32 currentVersion = hosversionGet();
+    snprintf(tmpstr, sizeof(tmpstr)-1, "System v%d.%d.%d", HOSVER_MAJOR(currentVersion), HOSVER_MINOR(currentVersion), HOSVER_MICRO(currentVersion));
+    DrawTextFromLayout(ThemeLayoutId_SystemVersion, themeCurrent.textColor, tmpstr);
+}
+
 u32 drawStatus() {
     bool netstatusFlag=0;
     bool temperatureFlag=0;
@@ -597,6 +604,8 @@ u32 drawStatus() {
             DrawTextFromLayout(ThemeLayoutId_Temperature, themeCurrent.textColor, tmpstr);
         }
     }
+
+    drawSystemVersion();
 
     return tmpX;
 }

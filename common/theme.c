@@ -404,6 +404,13 @@ void themeStartup(ThemePreset preset) {
                 .posStart = {1280 - 790, 135+10 + 28 + 30 + 18 + 6 + 18},
                 .font = interuiregular14,
             },
+
+            [ThemeLayoutId_SystemVersion] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {40 + 2, 0 + 47 + 10 + 21 + 8},
+                .font = interuiregular14,
+            },
         },
     };
 
