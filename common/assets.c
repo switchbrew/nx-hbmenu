@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include <minizip/unzip.h>
+#include <physfs.h>
 #include <png.h>
 
 #define GENASSET(_p, _mode, _w, _h) {{.path = _p, .imageMode = _mode, .imageSize = {_w, _h}}, {}}
@@ -223,6 +224,42 @@ bool assetsLoadPngFromMemory(u8 *indata, size_t indata_size, u8 *outdata, ImageM
     return ret;
 }
 
+bool assetsPhysfsReadFile(const char *path, u8 **data_buf, size_t *filesize, bool nul_term) {
+    bool ret=true;
+    *data_buf = NULL;
+    if (filesize) *filesize = 0;
+
+    PHYSFS_Stat tmpstat={0};
+    if (!(PHYSFS_stat(path, &tmpstat) && tmpstat.filesize!=-1)) ret = false;
+
+    if (ret) {
+        size_t bufsize = tmpstat.filesize;
+        if (nul_term) bufsize++;
+        *data_buf = (u8*)malloc(bufsize);
+        if (*data_buf) memset(*data_buf, 0, bufsize);
+        else ret = false;
+    }
+
+    if (ret) {
+        PHYSFS_File *f = PHYSFS_openRead(path);
+        if (f==NULL) ret = false;
+        else {
+            ret = PHYSFS_readBytes(f, *data_buf, tmpstat.filesize) == tmpstat.filesize;
+            PHYSFS_close(f);
+        }
+    }
+
+    if (ret) {
+        if (filesize) *filesize = tmpstat.filesize;
+    }
+    else {
+        free(*data_buf);
+        *data_buf = NULL;
+    }
+
+    return ret;
+}
+
 bool assetsLoadFromTheme(AssetId id, const char *path, int *imageSize) {
     if (id < 0 || id >= AssetId_Max) return false;
 
@@ -242,12 +279,10 @@ bool assetsLoadFromTheme(AssetId id, const char *path, int *imageSize) {
 
     const char* ext = getExtension(entry->path);
     bool ret=true;
+    size_t filesize=0;
     if (ext==NULL) ret = false;
 
     u8 *data_buf = NULL;
-    struct stat st;
-
-    if (ret && stat(path, &st)==-1) ret = false;
 
     if (ret) {
         entry->buffer = (u8*)malloc(entry->size);
@@ -255,31 +290,18 @@ bool assetsLoadFromTheme(AssetId id, const char *path, int *imageSize) {
         else ret = false;
     }
 
-    if (ret) {
-        data_buf = (u8*)malloc(st.st_size);
-        if (data_buf) memset(data_buf, 0, st.st_size);
-        else ret = false;
-    }
-
-    if (ret) {
-        FILE *f = fopen(entry->path, "rb");
-        if (f==NULL) ret = false;
-        else {
-            ret = fread(data_buf, st.st_size, 1, f) == 1;
-            fclose(f);
-        }
-    }
+    if (ret) ret = assetsPhysfsReadFile(entry->path, &data_buf, &filesize, false);
 
     if (ret) {
         if (strcasecmp(ext, ".bin")==0) {
-            if (st.st_size != entry->size) ret = false;
+            if (filesize != entry->size) ret = false;
 
             if (ret) memcpy(entry->buffer, data_buf, entry->size);
         }
         else if (strcasecmp(ext, ".jpg")==0 || strcasecmp(ext, ".jpeg")==0)
-            ret = assetsLoadJpgFromMemory(data_buf, st.st_size, entry->buffer, entry->imageMode, entry->imageSize[0], entry->imageSize[1]);
+            ret = assetsLoadJpgFromMemory(data_buf, filesize, entry->buffer, entry->imageMode, entry->imageSize[0], entry->imageSize[1]);
         else if (strcasecmp(ext, ".png")==0)
-            ret = assetsLoadPngFromMemory(data_buf, st.st_size, entry->buffer, entry->imageMode, entry->imageSize[0], entry->imageSize[1]);
+            ret = assetsLoadPngFromMemory(data_buf, filesize, entry->buffer, entry->imageMode, entry->imageSize[0], entry->imageSize[1]);
         else
             ret = false; // File extension not recognized.
     }

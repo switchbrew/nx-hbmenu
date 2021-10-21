@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <string.h>
 #include <math.h>
+#include <physfs.h>
 
 extern "C" {
 
@@ -10,12 +11,13 @@ extern "C" {
 
 color_t pixels[720][1280];
 
-int main()
+int main(int argc, char **argv)
 {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Test");
     window.setFramerateLimit(60);
 
     menuStartupPath();
+    PHYSFS_init(argv[0]);
     assetsInit();
     themeStartup(THEME_PRESET_LIGHT);
     textInit();
@@ -62,6 +64,7 @@ int main()
     netloaderExit();
     fontExit();
     assetsExit();
+    PHYSFS_deinit();
 
     return 0;
 }

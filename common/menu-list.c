@@ -246,8 +246,23 @@ int themeMenuScan(const char* target) {
         memset(tmp_path, 0, sizeof(tmp_path));
         snprintf(tmp_path, sizeof(tmp_path)-1, "%s/%s", s_menu[!s_curMenu].dirname, dp->d_name);
 
+        bool entrytype=0;
+
+        #ifdef _DIRENT_HAVE_D_TYPE
+        if (dp->d_type == DT_UNKNOWN)
+            continue;
+        entrytype = dp->d_type != DT_REG;
+        #else
+        struct stat tmpstat;
+
+        if(stat(tmp_path, &tmpstat)==-1)
+            continue;
+
+        entrytype = (tmpstat.st_mode & S_IFMT) != S_IFREG;
+        #endif
+
         const char* ext = getExtension(dp->d_name);
-        if (strcasecmp(ext, ".cfg")==0 || strcasecmp(ext, ".romfs")==0)
+        if (entrytype || strcasecmp(ext, ".cfg")==0 || strcasecmp(ext, ".romfs")==0 || strcasecmp(ext, ".zip")==0)
             me = menuCreateEntry(ENTRY_TYPE_THEME);
 
         if (!me)

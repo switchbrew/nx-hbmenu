@@ -1,4 +1,5 @@
 #include "theme.h"
+#include <physfs.h>
 
 theme_t themeCurrent;
 ThemePreset themeGlobalPreset;
@@ -82,7 +83,7 @@ bool assetObjectFromSetting(config_setting_t *asset_setting, AssetId id, ThemeLa
         return false;
 
     memset(tmp_path, 0, sizeof(tmp_path));
-    snprintf(tmp_path, sizeof(tmp_path)-1, "theme:/%s", path);
+    snprintf(tmp_path, sizeof(tmp_path)-1, "theme/%s", path);
 
     return assetsLoadFromTheme(id, tmp_path, imageSize);
 }
@@ -420,24 +421,45 @@ void themeStartup(ThemePreset preset) {
     bool logoColor_set = false;
     bool good_cfg = false;
     bool is_romfs = false;
+    bool is_archive = false;
+    const char* theme_archive_path = NULL;
 
     assetsClearTheme();
 
     if(themePath[0]!=0) {
         const char* cfg_path = themePath;
-        #ifdef __SWITCH__
         const char* ext = getExtension(themePath);
+        #ifdef __SWITCH__
         if (strcasecmp(ext, ".romfs")==0) {
             if (R_FAILED(romfsMountFromFsdev(themePath, 0, "theme")))
                 cfg_path = NULL;
             else {
                 is_romfs = true;
                 cfg_path = "theme:/theme.cfg";
+                theme_archive_path = "theme:/";
             }
         }
         #endif
+        if (strcasecmp(ext, ".romfs")!=0 && strcasecmp(ext, ".cfg")!=0) {
+            theme_archive_path = themePath;
+        }
+        if (theme_archive_path) {
+            if (!PHYSFS_mount(theme_archive_path, "theme", 0)) cfg_path = NULL;
+            else {
+                is_archive = true;
+                cfg_path = "theme/theme.cfg";
+            }
+        }
 
-        if (cfg_path) good_cfg = config_read_file(&cfg, cfg_path);
+        if (cfg_path) {
+            if (!is_archive) good_cfg = config_read_file(&cfg, cfg_path);
+            else {
+                u8 *cfg_buf = NULL;
+                good_cfg = assetsPhysfsReadFile(cfg_path, &cfg_buf, NULL, true);
+                if (good_cfg) good_cfg = config_read_string(&cfg, (char*)cfg_buf);
+                free(cfg_buf);
+            }
+        }
     }
 
     switch (preset) {
@@ -583,8 +605,8 @@ void themeStartup(ThemePreset preset) {
             layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryVersion"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryVersion], false);
         }
 
-        if (is_romfs) assets = config_lookup(&cfg, "assets");
-        if (is_romfs && assets) {
+        if (is_archive) assets = config_lookup(&cfg, "assets");
+        if (is_archive && assets) {
             assetObjectFromSetting(config_setting_lookup(assets, "battery_icon"), AssetId_battery_icon, NULL);
             assetObjectFromSetting(config_setting_lookup(assets, "charging_icon"), AssetId_charging_icon, NULL);
             assetObjectFromSetting(config_setting_lookup(assets, "folder_icon"), AssetId_folder_icon, &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryIcon]);
@@ -622,6 +644,7 @@ void themeStartup(ThemePreset preset) {
 
     config_destroy(&cfg);
 
+    if (is_archive) PHYSFS_unmount(theme_archive_path);
     #ifdef __SWITCH__
     if (is_romfs) romfsUnmount("theme");
     #endif

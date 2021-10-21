@@ -1,6 +1,7 @@
 #include <switch.h>
 #include <string.h>
 #include <stdio.h>
+#include <physfs.h>
 
 #include "../common/common.h"
 #include "nx_graphics.h"
@@ -67,6 +68,13 @@ int main(int argc, char **argv)
     }
 
     if (R_SUCCEEDED(rc)) menuStartupPath();
+
+    if (R_SUCCEEDED(rc)) {
+        if (!PHYSFS_init(argv[0])) {
+            rc = 1;
+            snprintf(errormsg, sizeof(errormsg)-1, "Error: PHYSFS_init() failed: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+        }
+    }
 
     if (R_SUCCEEDED(rc)) {
         rc = assetsInit();
@@ -189,6 +197,7 @@ int main(int argc, char **argv)
     netloaderExit();
     powerExit();
     assetsExit();
+    PHYSFS_deinit();
 
     appletUnlockExit();
 

@@ -1,4 +1,5 @@
 #include "common.h"
+#include <physfs.h>
 
 void menuEntryInit(menuEntry_s* me, MenuEntryType type) {
     memset(me, 0, sizeof(*me));
@@ -80,8 +81,12 @@ static bool menuEntryLoadEmbeddedIcon(menuEntry_s* me) {
     return ok;
 }
 
-static bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* path) {
+static bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* path, bool data_source) {
     struct stat st;
+
+    if (data_source) {
+        return assetsPhysfsReadFile(path, &me->icon, &me->icon_size, false);
+    }
 
     if(stat(path, &st)==-1) return false;
 
@@ -326,7 +331,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
             char* ext = getExtension(tempbuf);
 
             strcpy(ext, ".jpg");
-            iconLoaded = menuEntryLoadExternalIcon(me, tempbuf);
+            iconLoaded = menuEntryLoadExternalIcon(me, tempbuf, false);
             if (iconLoaded) break;
 
             if (isOldAppFolder)
@@ -334,7 +339,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
                 char* slash = getSlash(tempbuf);
 
                 strcpy(slash, "/icon.jpg");
-                iconLoaded = menuEntryLoadExternalIcon(me, tempbuf);
+                iconLoaded = menuEntryLoadExternalIcon(me, tempbuf, false);
                 if (iconLoaded) break;
             }*/
 
@@ -408,18 +413,43 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
                    *version = "1.0.0";
 
         const char* cfg_path = me->path;
-        #ifdef __SWITCH__
+        const char* theme_archive_path = NULL;
         const char* ext = getExtension(me->path);
+        bool good_cfg = false;
+        bool is_archive = false;
+        #ifdef __SWITCH__
         bool is_romfs = false;
         if (strcasecmp(ext, ".romfs")==0) {
             if (R_FAILED(romfsMountFromFsdev(me->path, 0, "themetmp")))
                 return false;
             is_romfs = true;
             cfg_path = "themetmp:/theme.cfg";
+            theme_archive_path = "themetmp:/";
         }
         #endif
 
-        if (config_read_file(&cfg, cfg_path)) {
+        if (strcasecmp(ext, ".romfs")!=0 && strcasecmp(ext, ".cfg")!=0) {
+            theme_archive_path = me->path;
+        }
+        if (theme_archive_path) {
+            if (!PHYSFS_mount(theme_archive_path, "themetmp", 0)) cfg_path = NULL;
+            else {
+                is_archive = true;
+                cfg_path = "themetmp/theme.cfg";
+            }
+        }
+
+        if (cfg_path) {
+            if (!is_archive) good_cfg = config_read_file(&cfg, cfg_path);
+            else {
+                u8 *cfg_buf = NULL;
+                good_cfg = assetsPhysfsReadFile(cfg_path, &cfg_buf, NULL, true);
+                if (good_cfg) good_cfg = config_read_string(&cfg, (char*)cfg_buf);
+                free(cfg_buf);
+            }
+        }
+
+        if (good_cfg) {
             themeInfo = config_lookup(&cfg, "themeInfo");
             if (themeInfo != NULL) {
                 if(config_setting_lookup_string(themeInfo, "name", &name))
@@ -433,15 +463,17 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
         strncpy(me->version, version, sizeof(me->version)-1);
         config_destroy(&cfg);
 
-        #ifdef __SWITCH__
-        if (is_romfs) {
+        if (good_cfg && is_archive) {
             bool iconLoaded = false;
 
-            iconLoaded = menuEntryLoadExternalIcon(me, "themetmp:/icon.jpg");
+            iconLoaded = menuEntryLoadExternalIcon(me, "themetmp/icon.jpg", true);
 
             if (iconLoaded) menuEntryParseIcon(me);
         }
 
+        if (is_archive) PHYSFS_unmount(theme_archive_path);
+
+        #ifdef __SWITCH__
         if (is_romfs) romfsUnmount("themetmp");
         #endif
     }
@@ -475,7 +507,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
 
             bool iconLoaded = false;
 
-            iconLoaded = menuEntryLoadExternalIcon(me, tempbuf);
+            iconLoaded = menuEntryLoadExternalIcon(me, tempbuf, false);
 
             if (iconLoaded) menuEntryParseIcon(me);
 
@@ -655,8 +687,8 @@ void menuEntryFileassocLoad(const char* filepath) {
                                 }
                                 me->fileassoc_str[sizeof(me->fileassoc_str)-1] = 0;
 
-                                if (target_icon_path[0]) iconLoaded = menuEntryLoadExternalIcon(me, target_icon_path);
-                                if (!iconLoaded && main_icon_path[0]) iconLoaded = menuEntryLoadExternalIcon(me, main_icon_path);
+                                if (target_icon_path[0]) iconLoaded = menuEntryLoadExternalIcon(me, target_icon_path, false);
+                                if (!iconLoaded && main_icon_path[0]) iconLoaded = menuEntryLoadExternalIcon(me, main_icon_path, false);
 
                                 if (iconLoaded) {
                                     menuEntryParseIcon(me);
