@@ -36,7 +36,7 @@ Result assetsInit(void);
 void assetsExit(void);
 void assetsClearTheme(void);
 bool assetsPhysfsReadFile(const char *path, u8 **data_buf, size_t *filesize, bool nul_term);
-bool assetsLoadFromTheme(AssetId id, const char *path, int *imageSize);
+bool assetsLoadData(AssetId id, const char *path, int *imageSize);
 void assetsGetData(AssetId id, assetsDataEntry **out);
 u8 *assetsGetDataBuffer(AssetId id);
 

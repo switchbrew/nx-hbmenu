@@ -1,6 +1,5 @@
 #include "common.h"
 
-#include <minizip/unzip.h>
 #include <physfs.h>
 #include <png.h>
 
@@ -47,59 +46,9 @@ static void assetsSetPixelSize(assetsDataEntry *entry) {
     }
 }
 
-static int assetsLoadFile(unzFile zipf, assetsDataEntry *entry) {
-    int ret;
-    int filesize=0;
-    unz_file_info file_info;
-    u8* buffer = NULL;
-
-    assetsSetPixelSize(entry);
-
-    ret = unzLocateFile(zipf, entry->path, 0);
-
-    if (ret==UNZ_OK) ret = unzOpenCurrentFile(zipf);
-
-    if (ret==UNZ_OK) {
-        ret = unzGetCurrentFileInfo(zipf, &file_info, NULL, 0, NULL, 0, NULL, 0);
-
-        filesize = file_info.uncompressed_size;
-        if (filesize != entry->imageSize[0] * entry->imageSize[1] * entry->pixSize) ret = -10;
-
-        if (ret==UNZ_OK) {
-            buffer = (u8*)malloc(filesize);
-            if (buffer) {
-                memset(buffer, 0, filesize);
-            } else {
-                ret = -11;
-            }
-        }
-
-        if (ret==UNZ_OK) {
-            ret = unzReadCurrentFile(zipf, buffer, filesize);
-            if(ret < filesize) {
-                ret = -12;
-            } else {
-                ret = UNZ_OK;
-            }
-        }
-
-        if (ret!=UNZ_OK && buffer!=NULL) free(buffer);
-
-        unzCloseCurrentFile(zipf);
-    }
-
-    if (ret==UNZ_OK) {
-        entry->buffer = buffer;
-        entry->size = filesize;
-    }
-
-    return ret;
-}
-
 Result assetsInit(void) {
-    int ret=0;
+    bool ret=false;
     int i, stopi;
-    unzFile zipf;
     assetsDataEntry *entry = NULL;
     char tmp_path[PATH_MAX];
 
@@ -118,40 +67,34 @@ Result assetsInit(void) {
     snprintf(tmp_path, sizeof(tmp_path)-1, "%s/romfs/assets.zip", menuGetRootBasePath());
     #endif
 
-    zipf = unzOpen(tmp_path);
-    if(zipf==NULL) {
-        #ifdef __SWITCH__
-        romfsExit();
-        #endif
-
-        return 0x80;
-    }
-
-    for (i=0; i<AssetId_Max; i++) {
-        stopi = i;
-        entry = &g_assetsDataList[i][0];
-        if (entry->path[0]) {
-            ret = assetsLoadFile(zipf, entry);
-            if (ret!=UNZ_OK) break;
-            entry->initialized = true;
+    if (PHYSFS_mount(tmp_path, "", 0)) {
+        ret=true;
+        for (i=0; i<AssetId_Max; i++) {
+            stopi = i;
+            entry = &g_assetsDataList[i][0];
+            if (entry->path[0]) {
+                ret = assetsLoadData(i, NULL, NULL);
+                if (!ret) break;
+            }
         }
-    }
 
-    if (ret!=UNZ_OK) {
-        for (i=0; i<stopi; i++) {
-            assetsClearEntry(&g_assetsDataList[i][0]);
+        if (!ret) {
+            for (i=0; i<stopi; i++) {
+                assetsClearEntry(&g_assetsDataList[i][0]);
+            }
         }
+
+        if (ret) g_assetsInitialized = 1;
+
+        PHYSFS_unmount(tmp_path);
     }
-
-    if (ret==UNZ_OK) g_assetsInitialized = 1;
-
-    unzClose(zipf);
 
     #ifdef __SWITCH__
     romfsExit();
+    return ret ? 0 : MAKERESULT(Module_Libnx, LibnxError_IoError);
+    #else
+    return ret ? 0 : 1;
     #endif
-
-    return ret;
 }
 
 void assetsExit(void) {
@@ -260,22 +203,24 @@ bool assetsPhysfsReadFile(const char *path, u8 **data_buf, size_t *filesize, boo
     return ret;
 }
 
-bool assetsLoadFromTheme(AssetId id, const char *path, int *imageSize) {
+bool assetsLoadData(AssetId id, const char *path, int *imageSize) {
     if (id < 0 || id >= AssetId_Max) return false;
 
-    assetsDataEntry *entry = &g_assetsDataList[id][1];
+    assetsDataEntry *entry = &g_assetsDataList[id][path ? 1 : 0];
     if (entry->initialized) return false;
 
-    memset(entry, 0, sizeof(*entry));
+    if (path) memset(entry, 0, sizeof(*entry));
 
-    entry->imageSize[0] = imageSize[0];
-    entry->imageSize[1] = imageSize[1];
+    if (imageSize) {
+        entry->imageSize[0] = imageSize[0];
+        entry->imageSize[1] = imageSize[1];
+    }
 
-    entry->imageMode = g_assetsDataList[id][0].imageMode;
+    if (path) entry->imageMode = g_assetsDataList[id][0].imageMode;
     assetsSetPixelSize(entry);
     entry->size = entry->imageSize[0] * entry->imageSize[1] * entry->pixSize;
 
-    strncpy(entry->path, path, sizeof(entry->path)-1);
+    if (path) strncpy(entry->path, path, sizeof(entry->path)-1);
 
     const char* ext = getExtension(entry->path);
     bool ret=true;

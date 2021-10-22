@@ -85,7 +85,7 @@ bool assetObjectFromSetting(config_setting_t *asset_setting, AssetId id, ThemeLa
     memset(tmp_path, 0, sizeof(tmp_path));
     snprintf(tmp_path, sizeof(tmp_path)-1, "theme/%s", path);
 
-    return assetsLoadFromTheme(id, tmp_path, imageSize);
+    return assetsLoadData(id, tmp_path, imageSize);
 }
 
 void themeStartup(ThemePreset preset) {
@@ -420,7 +420,9 @@ void themeStartup(ThemePreset preset) {
     const char *AText, *BText, *XText, *YText, *PText, *MText, *starOnText, *starOffText;
     bool logoColor_set = false;
     bool good_cfg = false;
+    #ifdef __SWITCH__
     bool is_romfs = false;
+    #endif
     bool is_archive = false;
     const char* theme_archive_path = NULL;
 
