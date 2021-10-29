@@ -13,13 +13,13 @@ The following [pacman packages](https://devkitpro.org/wiki/devkitPro_pacman) are
 - `switch-freetype`
 - `switch-libconfig`
 - `switch-libjpeg-turbo`
-- `switch-zlib`
+- `switch-physfs`
 
 The following libraries are required to build for PC:
 - `libfreetype`
 - `libconfig`
 - `libjpeg-turbo`
-- `libminizip`
+- `libphysfs`
 
 Building for Switch/PC requires `zip`.
 
