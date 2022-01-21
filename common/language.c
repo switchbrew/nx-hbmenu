@@ -51,6 +51,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("● Applet Mode ●"),
         STR_ES("● Modo Applet ●"),
         STR_FR("● Mode Applet ●"),
+        STR_ZH_HANS("● 小程序模式 ●"),
     },
 
     [StrId_Directory] =
@@ -137,6 +138,7 @@ const char* const g_strings[StrId_Max][17] =
     {
         STR_EN("Could not find executable: %s"),
         STR_FR("Impossible trouver l'exécutable : %s"),
+        STR_ZH_HANS("找不到可执行文件"),
     },
 
     [StrId_NoAppsFound_Title] =
@@ -213,9 +215,9 @@ const char* const g_strings[StrId_Max][17] =
             "названием switch и она содержит приложения."
         ),
         STR_ZH_HANS(
-            "内存卡找不到任何可执行的应用程序。\n"
-            "请在内存卡的根目录建立「switch」子目录，\n"
-            "并存放自制应用软件至该目录。"
+            "找不到任何自制程序(nro)。\n"
+            "在SD卡根目录建立“switch”文件夹，\n"
+            "并将自制程序(nro)放在其中。"
         ),
         STR_ZH_HANT(
             "記憶卡內沒有可供執行的應用程式。\n"
@@ -233,6 +235,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_IT("L'ultima applicazione ha restituito un errore:"),
         STR_JP("直前に実行したアプリでエラーが発生しました:"),
         STR_KO("최근 애플리케이션에서 오류가 발생했습니다:"),
+        STR_ZH_HANS("程序运行后出现错误:"),
         STR_ZH_HANT("程式執行後出現錯誤:"),
     },
 
@@ -243,6 +246,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Erreur au lancement de l'application:"),
         STR_IT("Errore nell'avvio dell'applicazione:"),
         STR_ES("No se ha podido iniciar la aplicación:"),
+        STR_ZH_HANS("运行程序时发生错误:"),
         STR_ZH_HANT("執行程式時發生錯誤:"),
     },
 
@@ -274,7 +278,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_NL("Versie"),
         STR_KO("버전"),
         STR_RU("Версия"),
-        STR_ZH_HANS("版"),
+        STR_ZH_HANS("版本"),
         STR_ZH_HANT("版本"),
     },
 
@@ -322,7 +326,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_NL("Terug"),
         STR_KO("뒤로 가기"),
         STR_RU("возвращаться"),
-        STR_ZH_HANS("回去"),
+        STR_ZH_HANS("返回"),
         STR_ZH_HANT("返回"),
     },
 
@@ -335,6 +339,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("Aceptar"),
         STR_JP("了解"),
         STR_KO("확인"),
+        STR_ZH_HANS("确认"),
         STR_ZH_HANT("確認"),
     },
 
@@ -357,6 +362,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("Agregar a favoritos"),
         STR_IT("Aggiungi ai preferiti"),
         STR_FR("Ajouter aux favoris"),
+        STR_ZH_HANS("收藏"),
     },
 
     [StrId_Actions_Unstar] =
@@ -364,7 +370,8 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("Unstar"),
         STR_ES("Borrar de favoritos"),
         STR_IT("Rimuovi dai preferiti"),
-        STR_FR("Retirer des favoris")
+        STR_FR("Retirer des favoris"),
+        STR_ZH_HANS("取消收藏"),
     },
 
     [StrId_ThemeMenu] =
@@ -400,6 +407,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_DE("Standard Theme"),
         STR_IT("Tema di default"),
         STR_ES("Tema por defecto"),
+        STR_ZH_HANS("默认主题"),
         STR_ZH_HANT("預設主題"),
     },
 
