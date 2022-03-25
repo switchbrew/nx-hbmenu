@@ -9,6 +9,6 @@ void thermalstatusExit(void) {
 }
 
 bool thermalstatusGetDetails(s32 *temperature) {
-    return R_SUCCEEDED(tsGetTemperatureMilliC(TsLocation_Internal, temperature));
+    return R_SUCCEEDED(tsGetTemperature(TsLocation_Internal, temperature));
 }
 

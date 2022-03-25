@@ -593,7 +593,7 @@ u32 drawStatus() {
     if (statusGet(&netstatusFlag, &id, &temperatureFlag, &temperature)) {
         if (netstatusFlag) drawNetwork(tmpX, id);
         if (temperatureFlag) {
-            snprintf(tmpstr, sizeof(tmpstr)-1, "%.1f°C", ((float)temperature) / 1000);
+            snprintf(tmpstr, sizeof(tmpstr)-1, "%d°C", temperature);
             DrawTextFromLayout(ThemeLayoutId_Temperature, themeCurrent.textColor, tmpstr);
         }
     }
