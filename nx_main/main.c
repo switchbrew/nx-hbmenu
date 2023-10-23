@@ -249,10 +249,8 @@ bool menuUpdate(void) {
 
         if (down & HidNpadButton_AnyLeft) move--;
         if (down & HidNpadButton_AnyRight) move++;
-        if (down & HidNpadButton_AnyDown) move-=entries_count;
-        if (down & HidNpadButton_AnyUp) move+=entries_count;
-        if (down & HidNpadButton_ZL) move-=entries_count;
-        if (down & HidNpadButton_ZR) move+=entries_count;
+        if (down & (HidNpadButton_AnyDown | HidNpadButton_ZL)) move-=entries_count;
+        if (down & (HidNpadButton_AnyUp | HidNpadButton_ZR)) move+=entries_count;
 
         int newEntry = menu->curEntry + move;
         if (newEntry < 0) newEntry = 0;
