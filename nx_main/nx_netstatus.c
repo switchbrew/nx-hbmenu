@@ -27,7 +27,7 @@ bool netstatusGetDetails(AssetId *id) {
 
     if (wifiStrength==3)
         *id = AssetId_wifi3_icon;
-    if (wifiStrength==2)
+    else if (wifiStrength==2)
         *id = AssetId_wifi2_icon;
     else
         *id = AssetId_wifi1_icon;
