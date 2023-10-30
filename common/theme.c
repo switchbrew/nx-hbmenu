@@ -341,7 +341,7 @@ void themeStartup(ThemePreset preset) {
             [ThemeLayoutId_Temperature] = {
                 .visible = true,
                 .posType = false,
-                .posStart = {1180 + 4, 0 + 47 + 10 + + 21 + 6},
+                .posStart = {1180 + 4, 0 + 47 + 10 + 21 + 4},
                 .font = interuiregular14,
             },
 
