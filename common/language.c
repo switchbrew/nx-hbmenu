@@ -41,7 +41,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Carregando…"),
         STR_NL("Laden…"),
         STR_KO("로딩중…"),
-        STR_RU("загрузка…"),
+        STR_RU("Загрузка…"),
         STR_ZH_HANS("加载中…"),
         STR_ZH_HANT("載入中…"),
     },
@@ -52,6 +52,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("● Modo Applet ●"),
         STR_FR("● Mode Applet ●"),
         STR_ZH_HANS("● 小程序模式 ●"),
+        STR_RU("● Режим Applet ●"),
     },
 
     [StrId_Directory] =
@@ -65,7 +66,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Directório"),
         STR_NL("Map"),
         STR_KO("디렉토리"),
-        STR_RU("каталог"),
+        STR_RU("Директория"),
         STR_ZH_HANS("目录"),
         STR_ZH_HANT("資料夾"),
     },
@@ -97,7 +98,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Autor Desconhecido"),
         STR_NL("Auteur onbekend"),
         STR_KO("알 수 없는 개발자"),
-        STR_RU("неизвестный автор"),
+        STR_RU("Неизвестный автор"),
         STR_ZH_HANS("未知作者"),
         STR_ZH_HANT("作者未知"),
     },
@@ -113,7 +114,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Erro de E/S"),
         STR_NL("I/O Fout"),
         STR_KO("입출력 오류"),
-        STR_RU("I/O-ошибка"),
+        STR_RU("Ошибка ввода/вывода"),
         STR_ZH_HANS("读写出错"),
         STR_ZH_HANT("取存錯誤"),
     },
@@ -129,7 +130,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Não foi possível abrir o ficheiro:\n%s"),
         STR_NL("Kan bestand niet openen:\n%s"),
         STR_KO("파일을 열 수 없습니다:\n%s"),
-        STR_RU("Не могу открыть файл:\n%s"),
+        STR_RU("Невозможно открыть файл:\n%s"),
         STR_ZH_HANS("无法打开文件:\n%s"),
         STR_ZH_HANT("無法開啟檔案:\n%s"),
     },
@@ -139,6 +140,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("Could not find executable: %s"),
         STR_FR("Impossible trouver l'exécutable : %s"),
         STR_ZH_HANS("找不到可执行文件"),
+        STR_RU("Не удалось найти исполняемый файл: %s"),
     },
 
     [StrId_NoAppsFound_Title] =
@@ -152,7 +154,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Não foram encontradas aplicações"),
         STR_NL("Geen toepassingen gevonden"),
         STR_KO("애플리케이션을 찾을 수 없습니다"),
-        STR_RU("приложение не найдено"),
+        STR_RU("Приложения не найдены"),
         STR_ZH_HANS("找不到可执行的自制程序"),
         STR_ZH_HANT("沒有可執行的自製程式"),
     },
@@ -210,9 +212,9 @@ const char* const g_strings[StrId_Max][17] =
             "애플리케이션을 포함하는지 확인해 주십시오."
         ),
         STR_RU(
-            "На SD-карте нет приложений.\n"
-            "Убедитесь, что на карте SD есть каталог с\n"
-            "названием switch и она содержит приложения."
+            "На SD-карте не удалось найти ни одного приложения.\n"
+            "Убедитесь, что на SD-карте существует папка с именем switch в\n"
+            "корневом каталоге и в ней содержатся приложения."
         ),
         STR_ZH_HANS(
             "找不到任何自制程序(nro)。\n"
@@ -237,6 +239,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_KO("최근 애플리케이션에서 오류가 발생했습니다:"),
         STR_ZH_HANS("程序运行后出现错误:"),
         STR_ZH_HANT("程式執行後出現錯誤:"),
+        STR_RU("Последнее приложение вернуло ошибку:"),
     },
 
     [StrId_AppLaunchError] =
@@ -248,6 +251,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("No se ha podido iniciar la aplicación:"),
         STR_ZH_HANS("运行程序时发生错误:"),
         STR_ZH_HANT("執行程式時發生錯誤:"),
+        STR_RU("Не удалось запустить приложение:"),
     },
 
     [StrId_AppInfo_Author] =
@@ -261,7 +265,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Autor"),
         STR_NL("Auteur"),
         STR_KO("개발자"),
-        STR_RU("автор"),
+        STR_RU("Автор"),
         STR_ZH_HANS("作者"),
         STR_ZH_HANT("作者"),
     },
@@ -293,7 +297,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Lançamento"),
         STR_NL("Lancering"),
         STR_KO("실행"),
-        STR_RU("запуск"),
+        STR_RU("Запустить"),
         STR_ZH_HANS("发射"),
         STR_ZH_HANT("啟動"),
     },
@@ -309,7 +313,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Abrir"),
         STR_NL("Open"),
         STR_KO("열기"),
-        STR_RU("открыто"),
+        STR_RU("Открыть"),
         STR_ZH_HANS("打开"),
         STR_ZH_HANT("開啟"),
     },
@@ -325,7 +329,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Regressar"),
         STR_NL("Terug"),
         STR_KO("뒤로 가기"),
-        STR_RU("возвращаться"),
+        STR_RU("Назад"),
         STR_ZH_HANS("返回"),
         STR_ZH_HANT("返回"),
     },
@@ -341,6 +345,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_KO("확인"),
         STR_ZH_HANS("确认"),
         STR_ZH_HANT("確認"),
+        STR_RU("ОК"),
     },
 
     [StrId_Actions_Apply] =
@@ -354,6 +359,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_KO("적용"),
         STR_ZH_HANS("应用"),
         STR_ZH_HANT("套用"),
+        STR_RU("Применить"),
     },
 
     [StrId_Actions_Star] =
@@ -363,6 +369,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_IT("Aggiungi ai preferiti"),
         STR_FR("Ajouter aux favoris"),
         STR_ZH_HANS("收藏"),
+        STR_RU("Добавить в избранное"),
     },
 
     [StrId_Actions_Unstar] =
@@ -372,6 +379,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_IT("Rimuovi dai preferiti"),
         STR_FR("Retirer des favoris"),
         STR_ZH_HANS("取消收藏"),
+        STR_RU("Удалить из избранного")
     },
 
     [StrId_ThemeMenu] =
@@ -385,6 +393,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_KO("테마 메뉴"),
         STR_ZH_HANS("主题菜单"),
         STR_ZH_HANT("主題選單"),
+        STR_RU("Меню тем")
     },
 
     [StrId_ThemeNotApplied] =
@@ -398,6 +407,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_KO("오류가 발생 했기 때문에 테마를 적용할 수 없습니다."),
         STR_ZH_HANS("由于发生错误, 无法应用主题。"),
         STR_ZH_HANT("出現錯誤，無法套用主題。"),
+        STR_RU("Тема не может быть применена из-за возникшей ошибки."),
     },
 
     [StrId_DefaultThemeName] =
@@ -409,6 +419,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("Tema por defecto"),
         STR_ZH_HANS("默认主题"),
         STR_ZH_HANT("預設主題"),
+        STR_RU("Тема по умолчанию"),
     },
 
     /*[StrId_Reboot] =
@@ -806,7 +817,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Carregador de programas"),
         STR_NL("netwerk lader"),
         STR_KO("네트워크 로더"),
-        STR_RU("Загрузчик"),
+        STR_RU("NetLoader"),
         STR_ZH_HANS("网络执行模块"),
         STR_ZH_HANT("網路執行模組"),
     },
@@ -822,7 +833,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("O carregador de programas está de momento indisponível."),
         STR_NL("De netwerk lader is niet beschikbaar."),
         STR_KO("현재 네트워크 로더는 사용이 불가합니다."),
-        STR_RU("Загрузчик в настоящее время недоступен."),
+        STR_RU("NetLoader в настоящее время недоступен."),
         STR_ZH_HANS("无法启动 nxlink 网络执行模块。"),
         STR_ZH_HANT("無法啓動 nxlink 網路執行模組。"),
     },
@@ -854,6 +865,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_KO("연결 끊김, 네트워크 기다리는 중…"),
         STR_ZH_HANS("无法连接网络，等待网络连接…"),
         STR_ZH_HANT("目前已離線，等待網路連線…"),
+        STR_RU("Оффлайн, ожидание сети…"),
     },
 
     [StrId_NetLoaderActive] =
@@ -896,7 +908,7 @@ const char* const g_strings[StrId_Max][17] =
         ),
         STR_RU(
             "Ожидание подключения nxlink…\n"
-            "айпи адрес: %lu.%lu.%lu.%lu, Порт: %d"
+            "IP-адрес: %lu.%lu.%lu.%lu, Порт: %d"
         ),
         STR_ZH_HANS(
             "等待 nxlink 连接…\n"
@@ -948,7 +960,7 @@ const char* const g_strings[StrId_Max][17] =
         ),
         STR_RU(
             "Передача…\n"
-            "%zu из %zu КИБ написано"
+            "%zu из %zu КиБ получено"
         ),
         STR_ZH_HANS(
             "正在传输…\n"
