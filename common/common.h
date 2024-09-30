@@ -10,7 +10,11 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#if defined(__APPLE__) || defined(_WIN32)
+#include "c11threads.h"
+#else
 #include <threads.h>
+#endif
 #ifndef __APPLE__
 #include <malloc.h>
 #endif
