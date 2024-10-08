@@ -40,7 +40,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_JP("ロード中…"),
         STR_PT("Carregando…"),
         STR_NL("Laden…"),
-        STR_KO("로딩중…"),
+        STR_KO("로딩 중…"),
         STR_RU("Загрузка…"),
         STR_ZH_HANS("加载中…"),
         STR_ZH_HANT("載入中…"),
@@ -51,6 +51,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("● Applet Mode ●"),
         STR_ES("● Modo Applet ●"),
         STR_FR("● Mode Applet ●"),
+        STR_KO("● 애플릿 모드 ●"),
         STR_ZH_HANS("● 小程序模式 ●"),
         STR_RU("● Режим Applet ●"),
     },
@@ -139,6 +140,7 @@ const char* const g_strings[StrId_Max][17] =
     {
         STR_EN("Could not find executable: %s"),
         STR_FR("Impossible trouver l'exécutable : %s"),
+        STR_KO("실행 파일을 찾을 수 없습니다: %s"),
         STR_ZH_HANS("找不到可执行文件"),
         STR_RU("Не удалось найти исполняемый файл: %s"),
     },
@@ -194,6 +196,11 @@ const char* const g_strings[StrId_Max][17] =
             "SDカードのルートに「switch」という名前のフォルダを\n"
             "作成してください。"
         ),
+        STR_KO(
+            "SD 카드에서 애플리케이션을 찾을 수 없습니다.\n"
+            "SD 카드 최상위에 /switch 폴더가 있고\n"
+            "애플리케이션이 포함되어 있는지 확인하세요."
+        ),
         STR_PT(
             "Nenhuma aplicação foi encontrada no cartão SD.\n"
             "Certifique-se que uma pasta com o nome /switch\n"
@@ -205,11 +212,6 @@ const char* const g_strings[StrId_Max][17] =
             "Zorg ervoor dat een map genaamd /switch in de\n"
             "rootdirectory van de SD kaart aangemaakt is\n"
             "en de toepassingen bevat."
-        ),
-        STR_KO(
-            "SD 카드에서 애플리케이션을 찾을 수 없습니다.\n"
-            "SD 카드 최상위에 /switch 폴더가 있고\n"
-            "애플리케이션을 포함하는지 확인해 주십시오."
         ),
         STR_RU(
             "На SD-карте не удалось найти ни одного приложения.\n"
@@ -249,6 +251,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Erreur au lancement de l'application:"),
         STR_IT("Errore nell'avvio dell'applicazione:"),
         STR_ES("No se ha podido iniciar la aplicación:"),
+        STR_KO("애플리케이션을 시작하지 못했습니다:"),
         STR_ZH_HANS("运行程序时发生错误:"),
         STR_ZH_HANT("執行程式時發生錯誤:"),
         STR_RU("Не удалось запустить приложение:"),
@@ -262,9 +265,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Auteur"),
         STR_IT("Autore"),
         STR_JP("作者"),
+        STR_KO("개발자"),
         STR_PT("Autor"),
         STR_NL("Auteur"),
-        STR_KO("개발자"),
         STR_RU("Автор"),
         STR_ZH_HANS("作者"),
         STR_ZH_HANT("作者"),
@@ -278,9 +281,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Version"),
         STR_IT("Versione"),
         STR_JP("バージョン"),
+        STR_KO("버전"),
         STR_PT("Versão"),
         STR_NL("Versie"),
-        STR_KO("버전"),
         STR_RU("Версия"),
         STR_ZH_HANS("版本"),
         STR_ZH_HANT("版本"),
@@ -294,9 +297,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Lancer"),
         STR_IT("Avvia"),
         STR_JP("起動"),
+        STR_KO("실행"),
         STR_PT("Lançamento"),
         STR_NL("Lancering"),
-        STR_KO("실행"),
         STR_RU("Запустить"),
         STR_ZH_HANS("发射"),
         STR_ZH_HANT("啟動"),
@@ -310,9 +313,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Ouvrir"),
         STR_IT("Apri"),
         STR_JP("開く"),
+        STR_KO("열기"),
         STR_PT("Abrir"),
         STR_NL("Open"),
-        STR_KO("열기"),
         STR_RU("Открыть"),
         STR_ZH_HANS("打开"),
         STR_ZH_HANT("開啟"),
@@ -326,9 +329,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Retour"),
         STR_IT("Indietro"),
         STR_JP("戻る"),
+        STR_KO("뒤로가기"),
         STR_PT("Regressar"),
         STR_NL("Terug"),
-        STR_KO("뒤로 가기"),
         STR_RU("Назад"),
         STR_ZH_HANS("返回"),
         STR_ZH_HANT("返回"),
@@ -368,6 +371,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("Agregar a favoritos"),
         STR_IT("Aggiungi ai preferiti"),
         STR_FR("Ajouter aux favoris"),
+        STR_KO("즐겨찾기에 추가"),
         STR_ZH_HANS("收藏"),
         STR_RU("Добавить в избранное"),
     },
@@ -378,6 +382,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_ES("Borrar de favoritos"),
         STR_IT("Rimuovi dai preferiti"),
         STR_FR("Retirer des favoris"),
+        STR_KO("즐겨찾기에 삭제"),
         STR_ZH_HANS("取消收藏"),
         STR_RU("Удалить из избранного")
     },
@@ -417,6 +422,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_DE("Standard Theme"),
         STR_IT("Tema di default"),
         STR_ES("Tema por defecto"),
+        STR_KO("기본 테마"),
         STR_ZH_HANS("默认主题"),
         STR_ZH_HANT("預設主題"),
         STR_RU("Тема по умолчанию"),
@@ -461,6 +467,12 @@ const char* const g_strings[StrId_Max][17] =
             "  \xEE\x80\x80 再起動\n"
             "  \xEE\x80\x81 キャンセル"
         ),
+        STR_KO(
+            "\xEE\x81\xB3HOME 으로 돌아갈 수 없습니다.\n"
+            "콘솔을 재부팅할 것 입니다.\n\n"
+            "  \xEE\x80\x80 재부팅\n"
+            "  \xEE\x80\x81 취소"
+        ),
         STR_PT(
             "Regressar para \xEE\x81\xB3HOME não está\n"
             "disponível. Está a reiniciar a sua consola.\n\n"
@@ -472,12 +484,6 @@ const char* const g_strings[StrId_Max][17] =
             "beschikbaar.Wil je de console herstarten?\n\n"
             "  \xEE\x80\x80 Herstarten\n"
             "  \xEE\x80\x81 Annuleren"
-        ),
-        STR_KO(
-            "\xEE\x81\xB3HOME 으로 돌아갈 수 없습니다.\n"
-            "콘솔을 재부팅할 것 입니다.\n\n"
-            "  \xEE\x80\x80 재부팅\n"
-            "  \xEE\x80\x81 취소"
         ),
         STR_RU(
             "Возврат к \xEE\x81\xB3HOME недоступен.\n"
@@ -537,6 +543,12 @@ const char* const g_strings[StrId_Max][17] =
             "  \xEE\x80\x81 キャンセル\n"
             "  \xEE\x80\x82 再起動"
         ),
+        STR_KO(
+            "\xEE\x81\xB3HOME으로 돌아가려고 합니다.\n\n"
+            "  \xEE\x80\x80 돌아가기\n"
+            "  \xEE\x80\x81 취소\n"
+            "  \xEE\x80\x82 재부팅"
+        ),
         STR_PT(
             "Regressar ao menu \xEE\x81\xB3HOME.\n\n"
             "  \xEE\x80\x80 Regressar\n"
@@ -548,12 +560,6 @@ const char* const g_strings[StrId_Max][17] =
             "  \xEE\x80\x80 Doorgaan\n"
             "  \xEE\x80\x81 Annuleren\n"
             "  \xEE\x80\x82 Herstarten"
-        ),
-        STR_KO(
-            "\xEE\x81\xB3HOME 으로 돌아갈 것 입니다.\n\n"
-            "  \xEE\x80\x80 돌아가기\n"
-            "  \xEE\x80\x81 취소\n"
-            "  \xEE\x80\x82 재부팅"
         ),
         STR_RU(
             "Вы возвращаетесь в \xEE\x81\xB3HOME.\n\n"
@@ -583,9 +589,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Sélecteur de titre"),
         STR_IT("Selettore del titolo"),
         STR_JP("タイトルセレクタ"),
+        STR_KO("타이틀 선택기"),
         STR_PT("Selector de Títulos"),
         STR_NL("Titel selector"),
-        STR_KO("타이틀 선택기"),
         STR_RU("Селектор заголовков"),
         STR_ZH_HANS("应用启动器"),
         STR_ZH_HANT("自製程式啓動器"),
@@ -602,9 +608,9 @@ const char* const g_strings[StrId_Max][17] =
         ),
         STR_IT("Errore nella lettura dei metadata dei titoli.\n%08lX%08lX@%d"),
         STR_JP("タイトルメタデータを読み取ることができませんでした。\n%08lX%08lX@%d"),
+        STR_KO("타이틀 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
         STR_PT("Erro a ler os metadados do título.\n%08lX%08lX@%d"),
         STR_NL("Fout bij het lezen van titel metadata.\n%08lX%08lX@%d"),
-        STR_KO("타이틀 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
         STR_RU("Ошибка чтения метаданных заголовка\n.%08lX%08lX@%d"),
         STR_ZH_HANS("读取软件相关信息时发生错误：\n%08lX%08lX@%d"),
         STR_ZH_HANT("讀取軟體相關資訊時發生錯誤：\n%08lX%08lX@%d"),
@@ -618,9 +624,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Aucun titre trouvé."),
         STR_IT("Nessun titolo trovato."),
         STR_JP("タイトルが見つかりませんでした。"),
+        STR_KO("타이틀을 찾을 수 없습니다."),
         STR_PT("Nenhum título foi encontrado."),
         STR_NL("Geen titels gevonden."),
-        STR_KO("타이틀을 찾을 수 없습니다."),
         STR_RU("Заголовки не обнаружены"),
         STR_ZH_HANS("主机内找不到任何软件。"),
         STR_ZH_HANT("主機内找不到任何軟體。"),
@@ -658,6 +664,11 @@ const char* const g_strings[StrId_Max][17] =
             "  \xEE\x80\x80 選択\n"
             "  \xEE\x80\x81 キャンセル"
         ),
+        STR_KO(
+            "대상 타이틀을 선택해 주세요.\n\n"
+            "  \xEE\x80\x80 선택\n"
+            "  \xEE\x80\x81 취소"
+        ),
         STR_PT(
             "Por favor escolha um título alvo.\n\n"
             "  \xEE\x80\x80 Escolher\n"
@@ -667,11 +678,6 @@ const char* const g_strings[StrId_Max][17] =
             "Selecteer een titel.\n\n"
             "  \xEE\x80\x80 Selecteer\n"
             "  \xEE\x80\x81 Annuleren"
-        ),
-        STR_KO(
-            "대상 타이틀을 선택해 주십시오.\n\n"
-            "  \xEE\x80\x80 선택\n"
-            "  \xEE\x80\x81 취소"
         ),
         STR_RU(
             "Выберите целевой заголовок.\n\n"
@@ -722,6 +728,11 @@ const char* const g_strings[StrId_Max][17] =
             "下でアプリを起動することができません。\n"
             "別のエクスプロイトを使用してください。"
         ),
+        STR_KO(
+            "이 홈브류 익스플로잇은 해당 타이틀에서 애플리케이션을\n"
+            "실행하는 것을 지원하지 않습니다.\n"
+            "다른 익스플로잇을 사용해 주세요."
+        ),
         STR_PT(
             "Este exploit homebrew não têm suporte\n"
             "para executar aplicações no título alvo.\n"
@@ -731,11 +742,6 @@ const char* const g_strings[StrId_Max][17] =
             "Deze homebrew exploit heeft geen ondersteuning\n"
             "voor het starten van toepassingen met de gekozen titlel.\n"
             "Gebruik een andere exploit."
-        ),
-        STR_KO(
-            "이 홈브류 익스플로잇은 해당 타이틀에서 애플리케이션을\n"
-            "실행하는 것을 지원하지 않습니다.\n"
-            "다른 익스플로잇을 사용해 주십시오."
         ),
         STR_RU(
             "Этот эксплойт homebrew не поддерживает запуск\n"
@@ -780,6 +786,10 @@ const char* const g_strings[StrId_Max][17] =
             "このアプリを実行するために\n"
             "必要なタイトルがインストールされていません。"
         ),
+        STR_KO(
+            "해당 애플리케이션은 시스템에 설치되지 않은\n"
+            "타이틀을 요구합니다."
+        ),
         STR_PT(
             "A aplicação que acabou de tentar executar requer\n"
             "um título que não está instalado neste sistema."
@@ -787,10 +797,6 @@ const char* const g_strings[StrId_Max][17] =
         STR_NL(
             "De toepassing die je probeert te starten\n"
             "vereist een titel die niet geinstalleerd is."
-        ),
-        STR_KO(
-            "해당 애플리케이션은 시스템에 설치되지 않은\n"
-            "타이틀을 요구합니다."
         ),
         STR_RU(
             "Для приложения требуется зависимость,\n"
@@ -814,9 +820,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("NetLoader"),
         STR_IT("Caricamento programmi"),
         STR_JP("ネットローダ"),
+        STR_KO("네트워크 로더"),
         STR_PT("Carregador de programas"),
         STR_NL("netwerk lader"),
-        STR_KO("네트워크 로더"),
         STR_RU("NetLoader"),
         STR_ZH_HANS("网络执行模块"),
         STR_ZH_HANT("網路執行模組"),
@@ -830,9 +836,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Le programme nxlink est indisponible."),
         STR_IT("Il caricamento programmi nxlink non è disponibile."),
         STR_JP("nxlinkネットローダは現在利用できません。"),
+        STR_KO("현재 네트워크 로더는 사용이 불가합니다."),
         STR_PT("O carregador de programas está de momento indisponível."),
         STR_NL("De netwerk lader is niet beschikbaar."),
-        STR_KO("현재 네트워크 로더는 사용이 불가합니다."),
         STR_RU("NetLoader в настоящее время недоступен."),
         STR_ZH_HANS("无法启动 nxlink 网络执行模块。"),
         STR_ZH_HANT("無法啓動 nxlink 網路執行模組。"),
@@ -846,9 +852,9 @@ const char* const g_strings[StrId_Max][17] =
         STR_FR("Une erreur s'est produite.\nDétails techniques : [%s:%d]"),
         STR_IT("Si è verificato un errore.\nDettagli tecnici : [%s:%d]"),
         STR_JP("エラーが発生しました。\n技術的な詳細：[%s:%d]"),
+        STR_KO("오류가 발생했습니다.\n기술적인 세부사항: [%s:%d]"),
         STR_PT("Ocorreu um erro.\nDetalhes técnicos: [%s:%d]"),
         STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
-        STR_KO("오류가 발생했습니다.\n기술적인 세부사항: [%s:%d]"),
         STR_RU("Произошла ошибка.\nТехнические подробности: [%s:%d]"),
         STR_ZH_HANS("发生错误。\n详细错误信息：[%s:%d]"),
         STR_ZH_HANT("發生錯誤。\n詳細錯誤資訊：[%s:%d]"),
@@ -894,6 +900,10 @@ const char* const g_strings[StrId_Max][17] =
             "nxlinkが接続されるのを待っています…\n"
             "IPアドレス：%lu.%lu.%lu.%lu, ポート番号：%d"
         ),
+        STR_KO(
+            "nxlink의 연결을 대기중…\n"
+            "IP 주소: %lu.%lu.%lu.%lu, 포트: %d"
+        ),
         STR_PT(
             "A aguardar pela conexão do nxlink…\n"
             "End. IP: %lu.%lu.%lu.%lu, Porta: %d"
@@ -901,10 +911,6 @@ const char* const g_strings[StrId_Max][17] =
         STR_NL(
             "Wachten op nxlink verbinding…\n"
             "IP Addr: %lu.%lu.%lu.%lu, Poort: %d"
-        ),
-        STR_KO(
-            "nxlink의 연결을 대기중…\n"
-            "IP 주소: %lu.%lu.%lu.%lu, 포트: %d"
         ),
         STR_RU(
             "Ожидание подключения nxlink…\n"
@@ -946,6 +952,10 @@ const char* const g_strings[StrId_Max][17] =
             "データを転送しています…\n"
             "%zu / %zu KiB 転送済み"
         ),
+        STR_KO(
+            "전송 중…\n"
+            "%zu / %zu KiB 쓰여짐"
+        ),
         STR_PT(
             "A transferir…\n"
             "%zu de %zu KiB escritos"
@@ -953,10 +963,6 @@ const char* const g_strings[StrId_Max][17] =
         STR_NL(
             "Overbrengen…\n"
             "%zu van %zu KiB geschreven"
-        ),
-        STR_KO(
-            "전송중…\n"
-            "%zu / %zu KiB 쓰여짐"
         ),
         STR_RU(
             "Передача…\n"
