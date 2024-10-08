@@ -68,7 +68,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_NL("Map"),
         STR_KO("디렉토리"),
         STR_RU("Директория"),
-        STR_ZH_HANS("目录"),
+        STR_ZH_HANS("文件夹"),
         STR_ZH_HANT("資料夾"),
     },
 
@@ -141,7 +141,8 @@ const char* const g_strings[StrId_Max][17] =
         STR_EN("Could not find executable: %s"),
         STR_FR("Impossible trouver l'exécutable : %s"),
         STR_KO("실행 파일을 찾을 수 없습니다: %s"),
-        STR_ZH_HANS("找不到可执行文件"),
+        STR_ZH_HANS("找不到可执行文件: %s"),
+        STR_ZH_HANT("沒有可執行檔案: %s"),
         STR_RU("Не удалось найти исполняемый файл: %s"),
     },
 
@@ -220,8 +221,8 @@ const char* const g_strings[StrId_Max][17] =
         ),
         STR_ZH_HANS(
             "找不到任何自制程序(nro)。\n"
-            "在SD卡根目录建立“switch”文件夹，\n"
-            "并将自制程序(nro)放在其中。"
+            "请在SD卡根目录创建“switch”文件夹，\n"
+            "并将自制程序(nro)放入其中。"
         ),
         STR_ZH_HANT(
             "記憶卡內沒有可供執行的應用程式。\n"
@@ -301,7 +302,7 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Lançamento"),
         STR_NL("Lancering"),
         STR_RU("Запустить"),
-        STR_ZH_HANS("发射"),
+        STR_ZH_HANS("启动"),
         STR_ZH_HANT("啟動"),
     },
 
@@ -824,8 +825,8 @@ const char* const g_strings[StrId_Max][17] =
         STR_PT("Carregador de programas"),
         STR_NL("netwerk lader"),
         STR_RU("NetLoader"),
-        STR_ZH_HANS("网络执行模块"),
-        STR_ZH_HANT("網路執行模組"),
+        STR_ZH_HANS("从网络加载程序"),
+        STR_ZH_HANT("從網路載入程式"),
     },
 
     [StrId_NetLoaderUnavailable] =
