@@ -1,6 +1,6 @@
 #include <inttypes.h>
 
-#include "../common/common.h"
+#include "../../common/common.h"
 
 static char argBuf[ENTRY_ARGBUFSIZE];
 
