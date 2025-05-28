@@ -1,9 +1,7 @@
 HOST_OS := $(shell uname -s)
-FREETYPE2_PKG_CONFIG := pkg-config freetype2
 
 ifeq ($(strip $(HOST_OS)),Darwin)
 BIN2S_FLAGS := --apple-llvm
-FREETYPE2_PKG_CONFIG := freetype-config
 endif
 
 ifneq (,$(findstring MINGW,$(HOST_OS)))
@@ -16,7 +14,7 @@ test : pc_main/main.cpp pc_main/pc_launch.c pc_main/pc_power.c pc_main/pc_netsta
 	common/menu-entry.c common/menu-list.c common/message-box.c common/text.c \
 	common/ui.c common/assets.c common/math.c common/theme.c \
 	common/netloader.c
-	gcc -Wall -O2 -g -DVERSION=\"v$(APP_VERSION)\" $(EXTRA_CFLAGS)  `$(FREETYPE2_PKG_CONFIG) --cflags` $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -lpthread `$(FREETYPE2_PKG_CONFIG) --libs` -lm -lphysfs -lz -lconfig -lturbojpeg -lpng $(EXTRA_LDFLAGS) -I. -iquote $(DEVKITPRO)/libnx/include -Ibuild_pc -g -o $@
+	gcc -Wall -O2 -g -DVERSION=\"v$(APP_VERSION)\" $(EXTRA_CFLAGS)  `pkg-config --cflags` $^ -lsfml-graphics -lsfml-window -lsfml-system -lstdc++ -lpthread `pkg-config --libs` -lm -lphysfs -lz -lconfig -lturbojpeg -lpng $(EXTRA_LDFLAGS) -I. -iquote $(DEVKITPRO)/libnx/include -Ibuild_pc -g -o $@
 
 clean:
 	rm -rf build_pc/ test test.*
