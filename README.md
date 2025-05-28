@@ -20,6 +20,7 @@ The following libraries are required to build for PC:
 - `libconfig`
 - `libjpeg-turbo`
 - `libphysfs`
+- `sfml`
 
 Building for Switch/PC requires `zip`.
 
@@ -29,3 +30,4 @@ Since C11 threads are used, building for the PC may fail if C11 threads are not 
 
 * This uses code based on 3DS [new-hbmenu](https://github.com/fincs/new-hbmenu).
 * `libjpeg-turbo` is used for handling JPEG icons. This library doesn't support lossless JPEG (likewise for official sw which uses `libjpeg-turbo`).
+* `c11threads` is used for implement C11 Threads on Windows and macOS.
