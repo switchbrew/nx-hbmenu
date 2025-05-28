@@ -20,7 +20,7 @@ The following libraries are required to build for PC:
 - `libconfig`
 - `libjpeg-turbo`
 - `libphysfs`
-- `sfml`
+- `sdl2`
 
 Building for Switch/PC requires `zip`.
 
