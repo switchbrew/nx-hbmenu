@@ -14,7 +14,6 @@ find_package(libconfig REQUIRED)
 
 add_compile_options(
     -DVERSION=\"3.6.0\"
-    -iquote $ENV{DEVKITPRO}/libnx/include
 )
 
 add_executable(${PROJECT_NAME})
