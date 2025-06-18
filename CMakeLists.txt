@@ -19,6 +19,33 @@ add_compile_options(
 
 add_executable(${PROJECT_NAME})
 
+add_custom_command(
+  OUTPUT ${CMAKE_SOURCE_DIR}/romfs/assets.zip
+  COMMAND mkdir -p ${CMAKE_SOURCE_DIR}/romfs
+  COMMAND rm -f ${CMAKE_SOURCE_DIR}/romfs/assets.zip
+  COMMAND zip -rj ${CMAKE_SOURCE_DIR}/romfs/assets.zip ${CMAKE_SOURCE_DIR}/assets
+  DEPENDS assets
+          assets/eth_icon.bin
+          assets/airplane_icon.bin
+          assets/folder_icon.bin
+          assets/battery_icon.bin
+          assets/wifi_none_icon.bin
+          assets/theme_icon_dark.bin
+          assets/hbmenu_logo_light.bin
+          assets/wifi2_icon.bin
+          assets/wifi3_icon.bin
+          assets/theme_icon_light.bin
+          assets/invalid_icon.bin
+          assets/charging_icon.bin
+          assets/wifi1_icon.bin
+          assets/hbmenu_logo_dark.bin
+          assets/eth_none_icon.bin
+  VERBATIM)
+
+add_custom_target(assets_zip DEPENDS romfs/assets.zip)
+
+add_dependencies(${PROJECT_NAME} assets_zip)
+
 target_sources(${PROJECT_NAME} PRIVATE
     common/menu-list.c
     common/worker.c
