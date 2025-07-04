@@ -97,8 +97,8 @@ typedef enum
 
 // when building for pc we need to include these separately
 #ifndef __SWITCH__
-#include "switch/nro.h"
-#include "switch/nacp.h"
+#include "nro.h"
+#include "nacp.h"
 #endif
 
 #include "font.h"
