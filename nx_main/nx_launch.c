@@ -29,6 +29,40 @@ const loaderFuncs_s* launchGetLoader(void) {
     return s_loader;
 }
 
+bool menuEntryLoadABIRevision(menuEntry_s* me) {
+    NroStart start;
+
+    FILE* f = fopen(me->path, "rb");
+    if (!f) return false;
+
+    if (fread(&start, sizeof(start), 1, f) != 1)
+    {
+        fclose(f);
+        return false;
+    }
+
+    fseek(f, start.mod_offset + 0x34, SEEK_SET);
+
+    u32 magic = 0;
+
+    if (fread(&magic, sizeof(magic), 1, f) != 1
+        || magic != NRO_ABI_MAGIC)
+    {
+        fclose(f);
+        return false;
+    }
+
+    me->abi_revision = 0;
+    if (fread(&me->abi_revision, sizeof(me->abi_revision), 1, f) != 1)
+    {
+        fclose(f);
+        return false;
+    }
+
+    fclose(f);
+    return true;
+}
+
 void launchMenuEntry(menuEntry_s* me) {
     /*bool canUseTitles = loaderCanUseTitles();
     if (me->descriptor.numTargetTitles && canUseTitles)

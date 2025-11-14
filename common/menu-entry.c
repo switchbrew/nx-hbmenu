@@ -132,40 +132,6 @@ static bool menuEntryImportIconGfx(menuEntry_s* me, uint8_t* icon_gfx, uint8_t* 
     return me->icon_gfx && me->icon_gfx_small;
 }
 
-static bool menuEntryLoadABIRevision(menuEntry_s* me) {
-    NroStart start;
-
-    FILE* f = fopen(me->path, "rb");
-    if (!f) return false;
-
-    if (fread(&start, sizeof(start), 1, f) != 1)
-    {
-        fclose(f);
-        return false;
-    }
-
-    fseek(f, start.mod_offset + 0x34, SEEK_SET);
-
-    u32 magic = 0;
-
-    if (fread(&magic, sizeof(magic), 1, f) != 1
-        || magic != NRO_ABI_MAGIC)
-    {
-        fclose(f);
-        return false;
-    }
-
-    me->abi_revision = 0;
-    if (fread(&me->abi_revision, sizeof(me->abi_revision), 1, f) != 1)
-    {
-        fclose(f);
-        return false;
-    }
-
-    fclose(f);
-    return true;
-}
-
 static bool menuEntryLoadEmbeddedNacp(menuEntry_s* me) {
     NroHeader header;
     NroAssetHeader asset_header;
@@ -440,7 +406,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
         /*if (shortcut)
             shortcutFree(&sc);*/
     }
-    
+
     if (me->type == ENTRY_TYPE_THEME) {
         config_t cfg = {0};
         config_init(&cfg);
@@ -610,7 +576,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
     int strptrLen = strlen(strptr);
     snprintf(me->starpath, sizeof(me->starpath)-1, "%.*s.%.*s.star", (int)(strlen(me->path) - strptrLen), me->path, (int)strptrLen, strptr);
     me->starred = fileExists(me->starpath);
-    
+
     return true;
 }
 
@@ -840,7 +806,7 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
             pixelY = (int)sourceY;
 
             // get colours from four surrounding pixels
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 pos = ((pixelY + 0) * srcWidth + pixelX + 0) * 4;
             else
                 pos = ((pixelY + 0) * srcWidth + pixelX + 0) * 3;
@@ -848,12 +814,12 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
             r1 = image[pos+0];
             g1 = image[pos+1];
             b1 = image[pos+2];
-            
-            if (mode == IMAGE_MODE_RGBA32) 
+
+            if (mode == IMAGE_MODE_RGBA32)
                 a1 = image[pos+3];
 
 
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 pos = ((pixelY + 0) * srcWidth + pixelX + 1) * 4;
             else
                 pos = ((pixelY + 0) * srcWidth + pixelX + 1) * 3;
@@ -862,11 +828,11 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
             g2 = image[pos+1];
             b2 = image[pos+2];
 
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 a2 = image[pos+3];
 
 
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 pos = ((pixelY + 1) * srcWidth + pixelX + 0) * 4;
             else
                 pos = ((pixelY + 1) * srcWidth + pixelX + 0) * 3;
@@ -875,11 +841,11 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
             g3 = image[pos+1];
             b3 = image[pos+2];
 
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 a3 = image[pos+3];
 
 
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 pos = ((pixelY + 1) * srcWidth + pixelX + 1) * 4;
             else
                 pos = ((pixelY + 1) * srcWidth + pixelX + 1) * 3;
@@ -888,7 +854,7 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
             g4 = image[pos+1];
             b4 = image[pos+2];
 
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 a4 = image[pos+3];
 
             // determine weights
@@ -901,9 +867,9 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
             w2 = (int)(fx*fy1*256.0);
             w3 = (int)(fx1*fy*256.0);
             w4 = (int)(fx*fy*256.0);
- 
+
             // set output pixels
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 pos = ((tmpy*destWidth) + tmpx) * 4;
             else
                 pos = ((tmpy*destWidth) + tmpx) * 3;
@@ -912,7 +878,7 @@ uint8_t *downscaleImg(const uint8_t *image, int srcWidth, int srcHeight, int des
             out[pos+1] = (uint8_t)((g1 * w1 + g2 * w2 + g3 * w3 + g4 * w4) >> 8);
             out[pos+2] = (uint8_t)((b1 * w1 + b2 * w2 + b3 * w3 + b4 * w4) >> 8);
 
-            if (mode == IMAGE_MODE_RGBA32) 
+            if (mode == IMAGE_MODE_RGBA32)
                 out[pos+3] = (uint8_t)((a1 * w1 + a2 * w2 + a3 * w3 + a4 * w4) >> 8);
         }
     }

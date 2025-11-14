@@ -70,7 +70,7 @@ struct menuEntry_s_tag
     size_t icon_size;
     uint8_t *icon_gfx;
     uint8_t *icon_gfx_small;
-    
+
     bool starred;
 
     NacpStruct *nacp;
@@ -122,6 +122,8 @@ void menuHandleAButton(void);
 void menuHandleXButton(void);
 
 bool menuIsNetloaderActive(void);
+
+bool menuEntryLoadABIRevision(menuEntry_s* me);
 
 #ifdef __cplusplus
 }
