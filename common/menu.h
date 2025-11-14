@@ -123,8 +123,6 @@ void menuHandleXButton(void);
 
 bool menuIsNetloaderActive(void);
 
-bool menuEntryLoadABIRevision(menuEntry_s* me);
-
 #ifdef __cplusplus
 }
 #endif

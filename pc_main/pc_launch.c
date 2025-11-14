@@ -14,7 +14,7 @@ const loaderFuncs_s* launchGetLoader(void) {
     return s_loader;
 }
 
-bool menuEntryLoadABIRevision(menuEntry_s* me) {
+bool launchMenuEntryLoadABIRevision(menuEntry_s* me) {
     me->abi_revision = NRO_ABI_CURRENT_REVISION;
     return true;
 }

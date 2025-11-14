@@ -354,7 +354,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
             menuEntryParseIcon(me);
         }
 
-        menuEntryLoadABIRevision(me);
+        launchMenuEntryLoadABIRevision(me);
 
         bool nacpLoaded = false;
 

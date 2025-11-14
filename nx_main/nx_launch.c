@@ -29,7 +29,7 @@ const loaderFuncs_s* launchGetLoader(void) {
     return s_loader;
 }
 
-bool menuEntryLoadABIRevision(menuEntry_s* me) {
+bool launchMenuEntryLoadABIRevision(menuEntry_s* me) {
     NroStart start;
 
     FILE* f = fopen(me->path, "rb");
