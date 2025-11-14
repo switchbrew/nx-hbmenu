@@ -92,6 +92,7 @@ typedef enum
     ThemeLayoutId_MenuActiveEntryName,
     ThemeLayoutId_MenuActiveEntryAuthor,
     ThemeLayoutId_MenuActiveEntryVersion,
+    ThemeLayoutId_MenuActiveEntryRecompileWarning,
     ThemeLayoutId_Total,
 } ThemeLayoutId;
 

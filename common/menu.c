@@ -391,6 +391,13 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             snprintf(tmpstr, sizeof(tmpstr)-1, "%s: %s", textGetString(StrId_AppInfo_Version), me->version);
             layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryVersion];
             if (layoutobj->visible) DrawText(layoutobj->font, layoutobj->posStart[0], layoutobj->posStart[1], themeCurrent.textColor, tmpstr);
+        
+            if (me->abi_revision < NRO_ABI_CURRENT_REVISION) {
+                memset(tmpstr, 0, sizeof(tmpstr));
+                snprintf(tmpstr, sizeof(tmpstr)-1, "%s", textGetString(StrId_RecompileWarning));
+                layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryRecompileWarning];
+                if (layoutobj->visible) DrawText(layoutobj->font, layoutobj->posStart[0], layoutobj->posStart[1], themeCurrent.attentionTextColor, tmpstr);
+            }
         }
     }
 }

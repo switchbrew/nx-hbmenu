@@ -132,6 +132,40 @@ static bool menuEntryImportIconGfx(menuEntry_s* me, uint8_t* icon_gfx, uint8_t* 
     return me->icon_gfx && me->icon_gfx_small;
 }
 
+static bool menuEntryLoadABIRevision(menuEntry_s* me) {
+    NroStart start;
+
+    FILE* f = fopen(me->path, "rb");
+    if (!f) return false;
+
+    if (fread(&start, sizeof(start), 1, f) != 1)
+    {
+        fclose(f);
+        return false;
+    }
+
+    fseek(f, start.mod_offset + 0x34, SEEK_SET);
+
+    u32 magic = 0;
+
+    if (fread(&magic, sizeof(magic), 1, f) != 1
+        || magic != NRO_ABI_MAGIC)
+    {
+        fclose(f);
+        return false;
+    }
+
+    me->abi_revision = 0;
+    if (fread(&me->abi_revision, sizeof(me->abi_revision), 1, f) != 1)
+    {
+        fclose(f);
+        return false;
+    }
+
+    fclose(f);
+    return true;
+}
+
 static bool menuEntryLoadEmbeddedNacp(menuEntry_s* me) {
     NroHeader header;
     NroAssetHeader asset_header;
@@ -172,6 +206,7 @@ static bool menuEntryLoadEmbeddedNacp(menuEntry_s* me) {
 
     fseek(f, header.size + asset_header.nacp.offset, SEEK_SET);
     bool ok = fread(me->nacp, sizeof(NacpStruct), 1, f) == 1;
+
     fclose(f);
     return ok;
 }
@@ -352,6 +387,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
         {
             menuEntryParseIcon(me);
         }
+
+        menuEntryLoadABIRevision(me);
 
         bool nacpLoaded = false;
 

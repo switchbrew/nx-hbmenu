@@ -52,6 +52,8 @@ typedef enum
     StrId_ThemeNotApplied,
     StrId_DefaultThemeName,
 
+    StrId_RecompileWarning,
+
     StrId_Max,
 } StrId;
 
