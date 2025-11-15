@@ -15,6 +15,9 @@
 #define ENTRY_VERLENGTH   0x10
 #define ENTRY_ARGBUFSIZE 0x400
 
+#define NRO_ABI_MAGIC 0x32594E4C
+#define NRO_ABI_CURRENT_REVISION 1
+
 typedef enum
 {
     ENTRY_TYPE_FILE,
@@ -61,12 +64,13 @@ struct menuEntry_s_tag
     char name[ENTRY_NAMELENGTH+1];
     char author[ENTRY_AUTHORLENGTH+1];
     char version[ENTRY_VERLENGTH+1];
+    u32 abi_revision;
 
     uint8_t *icon;
     size_t icon_size;
     uint8_t *icon_gfx;
     uint8_t *icon_gfx_small;
-    
+
     bool starred;
 
     NacpStruct *nacp;

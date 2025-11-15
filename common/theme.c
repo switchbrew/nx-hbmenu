@@ -405,6 +405,14 @@ void themeStartup(ThemePreset preset) {
                 .posStart = {1280 - 790, 135+10 + 28 + 30 + 18 + 6 + 18},
                 .font = interuiregular14,
             },
+
+            [ThemeLayoutId_MenuActiveEntryRecompileWarning] = {
+                .visible = true,
+                .posType = false,
+                .posStart = {1280 - 790, 100 + 10 + 256 - 18},
+                .font = interuiregular14,
+            },
+
         },
     };
 

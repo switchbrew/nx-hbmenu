@@ -978,4 +978,12 @@ const char* const g_strings[StrId_Max][17] =
             "已完成 %zu / %zu KiB"
         ),
     },
+
+    [StrId_RecompileWarning] =
+    {
+        STR_EN(
+            "This application does not support the current ABI.\n"
+            "Expect compatibility issues.\n"
+        ),
+    },
 };

@@ -21,4 +21,5 @@ void launchExit(void);
 const loaderFuncs_s* launchGetLoader(void);
 size_t launchAddArg(argData_s* ad, const char* arg);
 void launchAddArgsFromString(argData_s* ad, char* arg);
+bool launchMenuEntryLoadABIRevision(menuEntry_s* me);
 void launchMenuEntry(menuEntry_s* me);
