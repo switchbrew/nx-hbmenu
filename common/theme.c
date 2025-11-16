@@ -613,6 +613,7 @@ void themeStartup(ThemePreset preset) {
             layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryName"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryName], false);
             layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryAuthor"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryAuthor], false);
             layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryVersion"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryVersion], false);
+            layoutObjectFromSetting(config_setting_lookup(layout, "menuActiveEntryRecompileWarning"), &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryRecompileWarning], false);
         }
 
         if (is_archive) assets = config_lookup(&cfg, "assets");

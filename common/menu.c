@@ -392,7 +392,7 @@ static void drawEntry(menuEntry_s* me, int off_x, int is_active) {
             layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryVersion];
             if (layoutobj->visible) DrawText(layoutobj->font, layoutobj->posStart[0], layoutobj->posStart[1], themeCurrent.textColor, tmpstr);
 
-            if (me->abi_revision < NRO_ABI_CURRENT_REVISION) {
+            if (me->type != ENTRY_TYPE_THEME && me->abi_revision < NRO_ABI_CURRENT_REVISION) {
                 strptr = textGetString(StrId_RecompileWarning);
                 layoutobj = &themeCurrent.layoutObjects[ThemeLayoutId_MenuActiveEntryRecompileWarning];
                 if (layoutobj->visible) DrawText(layoutobj->font, layoutobj->posStart[0], layoutobj->posStart[1], themeCurrent.attentionTextColor, strptr);
