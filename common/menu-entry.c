@@ -565,6 +565,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut, bool check_
             strncpy(me->path, fileassoc_me->path, sizeof(me->path));
             me->path[sizeof(me->path)-1] = 0;
 
+            me->abi_revision = fileassoc_me->abi_revision;
+
             return true;
         }
         return false;
@@ -713,6 +715,8 @@ void menuEntryFileassocLoad(const char* filepath) {
                                         launchAddArg(ad, strptr);
                                     }
                                 }
+
+                                launchMenuEntryLoadABIRevision(me);
                             }
 
                             if (me) menuFileassocAddEntry(me);
